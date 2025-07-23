@@ -1,0 +1,936 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learner Identity Management System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+            color: #333;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .header h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        
+        .nav-tabs {
+            background: white;
+            border-bottom: 1px solid #e1e5e9;
+            padding: 0 2rem;
+            display: flex;
+            gap: 0;
+        }
+        
+        .nav-tab {
+            padding: 1rem 2rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            font-weight: 500;
+            color: #64748b;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-tab.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+            background: #f8fafc;
+        }
+        
+        .nav-tab:hover {
+            background: #f1f5f9;
+            color: #475569;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.05);
+            border-left: 4px solid;
+        }
+        
+        .stat-card.users { border-left-color: #10b981; }
+        .stat-card.systems { border-left-color: #3b82f6; }
+        .stat-card.sync { border-left-color: #f59e0b; }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            color: #64748b;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+        }
+        
+        .panel {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.05);
+            overflow: hidden;
+        }
+        
+        .panel-header {
+            background: #f8fafc;
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid #e2e8f0;
+            font-weight: 600;
+            color: #334155;
+        }
+        
+        .panel-content {
+            padding: 2rem;
+        }
+        
+        .user-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .user-table th {
+            text-align: left;
+            padding: 1rem;
+            background: #f8fafc;
+            font-weight: 600;
+            color: #475569;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .user-table td {
+            padding: 1rem;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        .status-active {
+            background: #dcfce7;
+            color: #15803d;
+        }
+        
+        .status-syncing {
+            background: #fef3c7;
+            color: #d97706;
+        }
+        
+        .status-error {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+        
+        .system-integration {
+            display: grid;
+            gap: 1rem;
+        }
+        
+        .integration-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .integration-item:hover {
+            border-color: #cbd5e1;
+            background: #f8fafc;
+        }
+        
+        .integration-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .integration-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+        }
+        
+        .profile-form {
+            display: grid;
+            gap: 1.5rem;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .form-label {
+            font-weight: 500;
+            color: #374151;
+        }
+        
+        .form-input, .form-select {
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-input:focus, .form-select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            border: none;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #5a67d8;
+            transform: translateY(-1px);
+        }
+        
+        .btn-secondary {
+            background: #e2e8f0;
+            color: #475569;
+        }
+        
+        .btn-secondary:hover {
+            background: #cbd5e1;
+        }
+        
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .chart-placeholder {
+            height: 300px;
+            background: linear-gradient(45deg, #f8fafc 25%, transparent 25%), 
+                        linear-gradient(-45deg, #f8fafc 25%, transparent 25%), 
+                        linear-gradient(45deg, transparent 75%, #f8fafc 75%), 
+                        linear-gradient(-45deg, transparent 75%, #f8fafc 75%);
+            background-size: 20px 20px;
+            background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #64748b;
+            font-weight: 500;
+        }
+        
+        .version-history {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .version-item {
+            padding: 1rem;
+            border-bottom: 1px solid #f1f5f9;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .version-item:last-child {
+            border-bottom: none;
+        }
+        
+        .version-change {
+            font-size: 0.9rem;
+            color: #64748b;
+        }
+        
+        .version-time {
+            font-size: 0.8rem;
+            color: #94a3b8;
+        }
+        
+        .search-bar {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 0.75rem 1rem 0.75rem 2.5rem;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9ca3af;
+        }
+        
+        @media (max-width: 1024px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .analytics-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-tabs {
+                overflow-x: auto;
+                padding: 0 1rem;
+            }
+            
+            .container {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1>🎓 Learner Identity Management System</h1>
+    </header>
+    
+    <nav class="nav-tabs">
+        <button class="nav-tab active" onclick="showTab('dashboard')">Dashboard</button>
+        <button class="nav-tab" onclick="showTab('profile')">My Profile</button>
+        <button class="nav-tab" onclick="showTab('analytics')">Analytics</button>
+    </nav>
+    
+    <div class="container">
+        <!-- Dashboard Tab -->
+        <div id="dashboard" class="tab-content active">
+            <div class="dashboard-grid">
+                <div class="stat-card users">
+                    <div class="stat-number">47,832</div>
+                    <div class="stat-label">Active Learners</div>
+                </div>
+                <div class="stat-card systems">
+                    <div class="stat-number">8</div>
+                    <div class="stat-label">Connected Systems</div>
+                </div>
+                <div class="stat-card sync">
+                    <div class="stat-number">99.7%</div>
+                    <div class="stat-label">Profile Sync Rate</div>
+                </div>
+            </div>
+            
+            <div class="main-content">
+                <div class="panel">
+                    <div class="panel-header">Learner Directory</div>
+                    <div class="panel-content">
+                        <div class="search-bar">
+                            <span class="search-icon">🔍</span>
+                            <input type="text" class="search-input" placeholder="Search learners by name, email, department, or region...">
+                        </div>
+                        <table class="user-table">
+                            <thead>
+                                <tr>
+                                    <th>Learner</th>
+                                    <th>Department</th>
+                                    <th>Region</th>
+                                    <th>Last Active</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <div>
+                                            <strong>Sarah Chen</strong><br>
+                                            <small>sarah.chen@company.com</small>
+                                        </div>
+                                    </td>
+                                    <td>Sales</td>
+                                    <td>APAC</td>
+                                    <td>2 minutes ago</td>
+                                    <td><button class="btn btn-secondary" onclick="viewProfile('sarah')">View Profile</button></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div>
+                                            <strong>Mike Rodriguez</strong><br>
+                                            <small>mike.rodriguez@company.com</small>
+                                        </div>
+                                    </td>
+                                    <td>Field Service</td>
+                                    <td>Americas</td>
+                                    <td>15 minutes ago</td>
+                                    <td><button class="btn btn-secondary" onclick="viewProfile('mike')">View Profile</button></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div>
+                                            <strong>Emily Johnson</strong><br>
+                                            <small>emily.johnson@company.com</small>
+                                        </div>
+                                    </td>
+                                    <td>Technical</td>
+                                    <td>EMEA</td>
+                                    <td>1 hour ago</td>
+                                    <td><button class="btn btn-secondary" onclick="viewProfile('emily')">View Profile</button></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div>
+                                            <strong>David Park</strong><br>
+                                            <small>david.park@company.com</small>
+                                        </div>
+                                    </td>
+                                    <td>Training</td>
+                                    <td>APAC</td>
+                                    <td>3 hours ago</td>
+                                    <td><button class="btn btn-secondary" onclick="viewProfile('david')">View Profile</button></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div>
+                                            <strong>Maria Silva</strong><br>
+                                            <small>maria.silva@company.com</small>
+                                        </div>
+                                    </td>
+                                    <td>Customer Success</td>
+                                    <td>Americas</td>
+                                    <td>5 hours ago</td>
+                                    <td><button class="btn btn-secondary" onclick="viewProfile('maria')">View Profile</button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <div class="panel">
+                    <div class="panel-header">GenAI Profile Auto-Tagging</div>
+                    <div class="panel-content">
+                        <div style="margin-bottom: 1.5rem;">
+                            <h4 style="margin-bottom: 0.5rem; color: #374151;">Active Tagging Rules</h4>
+                            <p style="color: #64748b; font-size: 0.9rem;">Organization-defined rules for automatic profile categorization</p>
+                        </div>
+                        <div class="system-integration">
+                            <div class="integration-item">
+                                <div class="integration-info">
+                                    <div class="integration-icon" style="background: #10b981;">🌏</div>
+                                    <div>
+                                        <strong>APAC Region → Training Path A</strong><br>
+                                        <small>Auto-assigns localized sales training for Asia-Pacific learners</small>
+                                    </div>
+                                </div>
+                                <span class="status-badge status-active">234 applied</span>
+                            </div>
+                            <div class="integration-item">
+                                <div class="integration-info">
+                                    <div class="integration-icon" style="background: #3b82f6;">🔧</div>
+                                    <div>
+                                        <strong>Field Service → Technical Certification</strong><br>
+                                        <small>Triggers technical skills assessment and certification path</small>
+                                    </div>
+                                </div>
+                                <span class="status-badge status-active">89 applied</span>
+                            </div>
+                            <div class="integration-item">
+                                <div class="integration-info">
+                                    <div class="integration-icon" style="background: #f59e0b;">👥</div>
+                                    <div>
+                                        <strong>Manager Role → Leadership Track</strong><br>
+                                        <small>Enrolls in management and leadership development programs</small>
+                                    </div>
+                                </div>
+                                <span class="status-badge status-active">45 applied</span>
+                            </div>
+                            <div class="integration-item">
+                                <div class="integration-info">
+                                    <div class="integration-icon" style="background: #8b5cf6;">🎯</div>
+                                    <div>
+                                        <strong>New Hire → Onboarding Journey</strong><br>
+                                        <small>Automatically assigns foundational training and compliance courses</small>
+                                    </div>
+                                </div>
+                                <span class="status-badge status-active">67 applied</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Profile Management Tab -->
+        <div id="profile" class="tab-content">
+            <div class="main-content">
+                <div class="panel">
+                    <div class="panel-header">My Profile Dashboard - Sarah Chen</div>
+                    <div class="panel-content">
+                        <div style="margin-bottom: 2rem; padding: 1rem; background: #f0f9ff; border-radius: 8px; border-left: 4px solid #0284c7;">
+                            <h4 style="margin-bottom: 0.5rem; color: #0c4a6e;">🔗 Unified SSO Access</h4>
+                            <p style="margin: 0; color: #075985; font-size: 0.9rem;">Your profile automatically syncs across all connected learning systems. Changes made here will personalize your experience in LMS, chatbots, and certification platforms.</p>
+                        </div>
+                        
+                        <form class="profile-form">
+                            <div style="background: #f8fafc; padding: 1.5rem; border-radius: 8px; margin-bottom: 2rem;">
+                                <h4 style="margin-bottom: 1rem; color: #374151;">📋 SSO Profile Information</h4>
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                                    <div class="form-group">
+                                        <label class="form-label">Full Name</label>
+                                        <input type="text" class="form-input" value="Sarah Chen" readonly style="background: #f3f4f6;">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Email Address</label>
+                                        <input type="email" class="form-input" value="sarah.chen@company.com" readonly style="background: #f3f4f6;">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Department</label>
+                                        <input type="text" class="form-input" value="Sales" readonly style="background: #f3f4f6;">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Region</label>
+                                        <input type="text" class="form-input" value="APAC" readonly style="background: #f3f4f6;">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Role</label>
+                                        <input type="text" class="form-input" value="Senior Sales Representative" readonly style="background: #f3f4f6;">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Team</label>
+                                        <input type="text" class="form-input" value="Enterprise Sales - Asia" readonly style="background: #f3f4f6;">
+                                    </div>
+                                </div>
+                                <small style="color: #6b7280; font-style: italic;">✨ Auto-populated from Azure AD • Last synced: 2 minutes ago</small>
+                            </div>
+                            
+                            <h4 style="margin-bottom: 1rem; color: #374151;">🎯 Personalization Preferences</h4>
+                            <div class="form-group">
+                                <label class="form-label">Preferred Learning Formats</label>
+                                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 0.5rem; margin-top: 0.5rem;">
+                                    <label style="display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem; border: 1px solid #d1d5db; border-radius: 6px; cursor: pointer; background: white;">
+                                        <input type="checkbox" checked> Video-based
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem; border: 1px solid #d1d5db; border-radius: 6px; cursor: pointer; background: white;">
+                                        <input type="checkbox"> Reading/Text
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem; border: 1px solid #d1d5db; border-radius: 6px; cursor: pointer; background: white;">
+                                        <input type="checkbox" checked> Practice-based
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem; border: 1px solid #d1d5db; border-radius: 6px; cursor: pointer; background: white;">
+                                        <input type="checkbox"> Interactive
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Notification Preferences</label>
+                                <div style="display: grid; gap: 0.5rem; margin-top: 0.5rem;">
+                                    <label style="display: flex; align-items: center; gap: 0.5rem;">
+                                        <input type="checkbox" checked> Email notifications for new courses
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 0.5rem;">
+                                        <input type="checkbox" checked> GenAI chat reminders
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 0.5rem;">
+                                        <input type="checkbox"> SMS for certification deadlines
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 0.5rem;">
+                                        <input type="checkbox" checked> Weekly progress summaries
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                                <div class="form-group">
+                                    <label class="form-label">Language Preference</label>
+                                    <select class="form-select">
+                                        <option value="en" selected>English</option>
+                                        <option value="zh">中文 (Chinese)</option>
+                                        <option value="ja">日本語 (Japanese)</option>
+                                        <option value="ko">한국어 (Korean)</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Timezone</label>
+                                    <select class="form-select">
+                                        <option value="sg" selected>Singapore Time (SGT)</option>
+                                        <option value="hk">Hong Kong Time (HKT)</option>
+                                        <option value="jp">Japan Standard Time (JST)</option>
+                                        <option value="au">Australia Eastern Time (AEST)</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Professional Interests & Career Goals</label>
+                                <textarea class="form-input" rows="3" placeholder="Describe your areas of interest, career goals, or skills you'd like to develop...">Sales strategy optimization, customer relationship management, emerging market analysis, leadership development</textarea>
+                            </div>
+                            
+                            <div style="background: #f0fdf4; padding: 1rem; border-radius: 8px; margin: 1.5rem 0; border-left: 4px solid #22c55e;">
+                                <h4 style="margin-bottom: 0.5rem; color: #15803d;">🤖 How GenAI Uses Your Profile</h4>
+                                <ul style="margin: 0; padding-left: 1.5rem; color: #166534; font-size: 0.9rem;">
+                                    <li>Tailors course recommendations based on your role and interests</li>
+                                    <li>Adjusts AI chat responses to your learning preferences</li>
+                                    <li>Triggers relevant certifications and learning nudges</li>
+                                    <li>Personalizes content delivery format and timing</li>
+                                </ul>
+                            </div>
+                            
+                            <div style="display: flex; gap: 1rem;">
+                                <button type="submit" class="btn btn-primary">Save Profile Changes</button>
+                                <button type="button" class="btn btn-secondary">Reset to Defaults</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                
+                <div class="panel">
+                    <div class="panel-header">🔄 Connected Learning Systems</div>
+                    <div class="panel-content">
+                        <div style="margin-bottom: 1rem;">
+                            <p style="color: #64748b; font-size: 0.9rem;">Your unified profile provides seamless access across all learning platforms</p>
+                        </div>
+                        <div class="system-integration">
+                            <div class="integration-item">
+                                <div class="integration-info">
+                                    <div class="integration-icon" style="background: #e74c3c;">📚</div>
+                                    <div>
+                                        <strong>Learning Management System</strong><br>
+                                        <small>Access courses and track progress</small>
+                                    </div>
+                                </div>
+                                <button class="btn btn-primary" style="font-size: 0.8rem;">Launch LMS</button>
+                            </div>
+                            <div class="integration-item">
+                                <div class="integration-info">
+                                    <div class="integration-icon" style="background: #22c55e;">🤖</div>
+                                    <div>
+                                        <strong>GenAI Learning Chat</strong><br>
+                                        <small>Personalized AI assistance and guidance</small>
+                                    </div>
+                                </div>
+                                <button class="btn btn-primary" style="font-size: 0.8rem;">Open Chat</button>
+                            </div>
+                            <div class="integration-item">
+                                <div class="integration-info">
+                                    <div class="integration-icon" style="background: #3b82f6;">🏆</div>
+                                    <div>
+                                        <strong>Certification Portal</strong><br>
+                                        <small>Track certifications and achievements</small>
+                                    </div>
+                                </div>
+                                <button class="btn btn-primary" style="font-size: 0.8rem;">View Certs</button>
+                            </div>
+                            <div class="integration-item">
+                                <div class="integration-info">
+                                    <div class="integration-icon" style="background: #8b5cf6;">📊</div>
+                                    <div>
+                                        <strong>Performance Dashboard</strong><br>
+                                        <small>Review learning analytics and progress</small>
+                                    </div>
+                                </div>
+                                <button class="btn btn-primary" style="font-size: 0.8rem;">View Stats</button>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-top: 1.5rem; padding: 1rem; background: #fef3c7; border-radius: 8px; border-left: 4px solid #f59e0b;">
+                            <h4 style="margin-bottom: 0.5rem; color: #92400e;">🔐 Session Persistence</h4>
+                            <p style="margin: 0; color: #a16207; font-size: 0.9rem;">Federated identity tokens allow you to switch between learning tools without repeated login. Your session remains active across all connected systems.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Analytics Tab -->
+        <div id="analytics" class="tab-content">
+            <div class="panel">
+                <div class="panel-header">Learning Analytics Dashboard</div>
+                <div class="panel-content">
+                    <div class="dashboard-grid">
+                        <div class="stat-card users">
+                            <div class="stat-number">87%</div>
+                            <div class="stat-label">Course Completion Rate</div>
+                        </div>
+                        <div class="stat-card systems">
+                            <div class="stat-number">156</div>
+                            <div class="stat-label">Certifications Earned</div>
+                        </div>
+                        <div class="stat-card sync">
+                            <div class="stat-number">4.2</div>
+                            <div class="stat-label">Avg. Learning Hours/Week</div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 2rem;">
+                        <div class="panel">
+                            <div class="panel-header">📊 Central Data Lake Analytics</div>
+                            <div class="panel-content">
+                                <div style="margin-bottom: 1.5rem;">
+                                    <h4 style="margin-bottom: 0.5rem; color: #374151;">Unified Data Architecture</h4>
+                                    <p style="color: #64748b; font-size: 0.9rem;">All learner profile and behavior data flows into a central data lake, creating comprehensive analytics across systems</p>
+                                </div>
+                                
+                                <div class="analytics-grid">
+                                    <div class="panel" style="margin: 0;">
+                                        <div class="panel-header">Data Sources</div>
+                                        <div class="panel-content">
+                                            <div style="display: grid; gap: 0.75rem;">
+                                                <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem; background: #f8fafc; border-radius: 6px;">
+                                                    <span style="font-weight: 500;">LMS Course Progress</span>
+                                                    <span style="color: #10b981; font-size: 0.8rem;">47K records</span>
+                                                </div>
+                                                <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem; background: #f8fafc; border-radius: 6px;">
+                                                    <span style="font-weight: 500;">GenAI Chat Interactions</span>
+                                                    <span style="color: #10b981; font-size: 0.8rem;">1.2M logs</span>
+                                                </div>
+                                                <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem; background: #f8fafc; border-radius: 6px;">
+                                                    <span style="font-weight: 500;">Certification Completions</span>
+                                                    <span style="color: #10b981; font-size: 0.8rem;">8.7K certs</span>
+                                                </div>
+                                                <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem; background: #f8fafc; border-radius: 6px;">
+                                                    <span style="font-weight: 500;">HRIS Performance Data</span>
+                                                    <span style="color: #10b981; font-size: 0.8rem;">15K reviews</span>
+                                                </div>
+                                                <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem; background: #f8fafc; border-radius: 6px;">
+                                                    <span style="font-weight: 500;">CRM Activity Sync</span>
+                                                    <span style="color: #10b981; font-size: 0.8rem;">89K activities</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="panel" style="margin: 0;">
+                                        <div class="panel-header">Analytics Dashboards</div>
+                                        <div class="panel-content">
+                                            <div style="display: grid; gap: 0.75rem;">
+                                                <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem; background: #f0f9ff; border-radius: 6px;">
+                                                    <span style="font-weight: 500;">By Role</span>
+                                                    <span style="color: #0284c7; font-size: 0.8rem;">12 segments</span>
+                                                </div>
+                                                <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem; background: #f0f9ff; border-radius: 6px;">
+                                                    <span style="font-weight: 500;">By Department</span>
+                                                    <span style="color: #0284c7; font-size: 0.8rem;">8 departments</span>
+                                                </div>
+                                                <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem; background: #f0f9ff; border-radius: 6px;">
+                                                    <span style="font-weight: 500;">By Region</span>
+                                                    <span style="color: #0284c7; font-size: 0.8rem;">3 regions</span>
+                                                </div>
+                                                <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem; background: #f0f9ff; border-radius: 6px;">
+                                                    <span style="font-weight: 500;">Learning Paths</span>
+                                                    <span style="color: #0284c7; font-size: 0.8rem;">45 paths</span>
+                                                </div>
+                                                <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem; background: #f0f9ff; border-radius: 6px;">
+                                                    <span style="font-weight: 500;">GenAI Effectiveness</span>
+                                                    <span style="color: #0284c7; font-size: 0.8rem;">Real-time</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div style="margin-top: 1.5rem; display: flex; gap: 1rem;">
+                                    <button class="btn btn-primary">View Full Analytics</button>
+                                    <button class="btn btn-secondary">Export Data</button>
+                                    <button class="btn btn-secondary">API Documentation</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+         </div>
+        
+        <!-- System Integrations Tab -->
+        <div id="integrations" class="tab-content">
+    </div>
+    
+    <script>
+        // Add some interactive behavior
+        function viewProfile(userKey) {
+            // Switch to profile tab and show selected user
+            showTab('profile');
+            
+            // Mock data for different users
+            const profiles = {
+                'sarah': {
+                    name: 'Sarah Chen',
+                    email: 'sarah.chen@company.com',
+                    department: 'Sales',
+                    region: 'APAC',
+                    role: 'Senior Sales Representative',
+                    team: 'Enterprise Sales - Asia'
+                },
+                'mike': {
+                    name: 'Mike Rodriguez', 
+                    email: 'mike.rodriguez@company.com',
+                    department: 'Field Service',
+                    region: 'Americas',
+                    role: 'Field Service Technician',
+                    team: 'Technical Support - West'
+                },
+                'emily': {
+                    name: 'Emily Johnson',
+                    email: 'emily.johnson@company.com', 
+                    department: 'Technical',
+                    region: 'EMEA',
+                    role: 'Senior Technical Specialist',
+                    team: 'Product Engineering - Europe'
+                },
+                'david': {
+                    name: 'David Park',
+                    email: 'david.park@company.com',
+                    department: 'Training',
+                    region: 'APAC', 
+                    role: 'Learning & Development Manager',
+                    team: 'Corporate Training - Asia'
+                },
+                'maria': {
+                    name: 'Maria Silva',
+                    email: 'maria.silva@company.com',
+                    department: 'Customer Success',
+                    region: 'Americas',
+                    role: 'Customer Success Manager',
+                    team: 'Client Relations - South'
+                }
+            };
+            
+            const profile = profiles[userKey];
+            if (profile) {
+                // Update profile header
+                document.querySelector('#profile .panel-header').textContent = `My Profile Dashboard - ${profile.name}`;
+                
+                // Update form fields
+                const form = document.querySelector('#profile form');
+                form.querySelector('input[value="Sarah Chen"]').value = profile.name;
+                form.querySelector('input[value="sarah.chen@company.com"]').value = profile.email;
+                form.querySelector('input[value="Sales"]').value = profile.department;
+                form.querySelector('input[value="APAC"]').value = profile.region;
+                form.querySelector('input[value="Senior Sales Representative"]').value = profile.role;
+                form.querySelector('input[value="Enterprise Sales - Asia"]').value = profile.team;
+            }
+            
+            // Add visual feedback
+            setTimeout(() => {
+                document.querySelector('#profile').scrollIntoView({ behavior: 'smooth' });
+            }, 100);
+        }
+        
+        function showTab(tabName) {
+            // Hide all tab contents
+            const contents = document.querySelectorAll('.tab-content');
+            contents.forEach(content => content.classList.remove('active'));
+            
+            // Remove active class from all tabs
+            const tabs = document.querySelectorAll('.nav-tab');
+            tabs.forEach(tab => tab.classList.remove('active'));
+            
+            // Show selected tab content
+            document.getElementById(tabName).classList.add('active');
+            
+            // Add active class to clicked tab
+            document.querySelector(`[onclick="showTab('${tabName}')"]`).classList.add('active');
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add hover effects and click handlers
+            const integrationItems = document.querySelectorAll('.integration-item');
+            integrationItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    // Add subtle click effect
+                    this.style.transform = 'scale(0.98)';
+                    setTimeout(() => {
+                        this.style.transform = 'scale(1)';
+                    }, 100);
+                });
+            });
+            
+            // Simulate real-time updates
+            setInterval(() => {
+                const timestamps = document.querySelectorAll('.version-time');
+                timestamps.forEach(timestamp => {
+                    if (timestamp.textContent.includes('2 minutes ago')) {
+                        timestamp.textContent = '3 minutes ago';
+                    } else if (timestamp.textContent.includes('15 minutes ago')) {
+                        timestamp.textContent = '16 minutes ago';
+                    }
+                });
+            }, 60000);
+        });
+    </script>
+</body>
+</html>
