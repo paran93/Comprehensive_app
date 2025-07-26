@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LearnAI - Personalized Learning Platform</title>
+    <title>GenAI Learning & Enablement Platform</title>
     <style>
         /* Global Reset & Box-sizing */
         * {
@@ -15,24 +15,24 @@
         /* Body Styling */
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #f5f7fa 0%, #eef2f7 100%);
             min-height: 100vh;
-            display: flex; /* Use flexbox for centering content */
+            display: flex;
             justify-content: center;
-            align-items: flex-start; /* Align to the top */
-            padding: 20px; /* Add some padding around the container */
+            align-items: flex-start;
+            padding: 20px;
         }
 
         /* Main Container */
         .container {
-            max-width: 1400px;
-            width: 100%; /* Ensure it takes full width on smaller screens */
+            max-width: 1600px;
+            width: 100%;
             margin: 0 auto;
             background: white;
-            min-height: 90vh; /* Adjusted for better fit within viewport */
-            box-shadow: 0 0 20px rgba(0,0,0,0.1);
-            border-radius: 15px; /* Rounded corners for the main container */
-            overflow: hidden; /* Ensures content respects border-radius */
+            min-height: 90vh;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border-radius: 15px;
+            overflow: hidden;
         }
 
         /* Header */
@@ -44,8 +44,6 @@
             justify-content: space-between;
             align-items: center;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            border-bottom-left-radius: 15px; /* Rounded bottom-left corner */
-            border-bottom-right-radius: 15px; /* Rounded bottom-right corner */
         }
 
         .logo {
@@ -72,7 +70,6 @@
             box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
 
-        /* Persona Selector Styling */
         #persona-selector {
             background: rgba(255,255,255,0.9);
             border: 1px solid rgba(255,255,255,0.5);
@@ -97,8 +94,8 @@
             border-bottom: 1px solid #e9ecef;
             display: flex;
             gap: 2rem;
-            overflow-x: auto; /* Enable horizontal scrolling on small screens */
-            -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
         }
 
         .nav-item {
@@ -107,7 +104,7 @@
             border-bottom: 3px solid transparent;
             transition: all 0.3s ease;
             font-weight: 500;
-            white-space: nowrap; /* Prevent text wrapping */
+            white-space: nowrap;
         }
 
         .nav-item.active {
@@ -122,30 +119,19 @@
         /* Main Content Area */
         .main-content {
             padding: 2rem;
-            display: grid;
-            grid-template-columns: 1fr 300px; /* Two columns: main content and sidebar */
-            gap: 2rem;
+        }
+        
+        .section {
+            display: none;
+        }
+        
+        .section.active {
+            display: block;
         }
 
-        .content-area {
-            display: flex;
-            flex-direction: column;
-            gap: 2rem;
-        }
-
-        .sidebar {
-            background: #f8f9fa;
-            border-radius: 12px;
-            padding: 1.5rem;
-            height: fit-content; /* Adjust height to content */
-            border: 1px solid #e9ecef;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-        }
-
-        /* Dashboard Cards */
         .dashboard-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Responsive grid */
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 1.5rem;
         }
 
@@ -187,290 +173,12 @@
             color: #2c3e50;
         }
 
-        /* Recommendations */
-        .recommendation-item {
-            display: flex;
-            gap: 1rem;
-            padding: 1rem;
-            border: 1px solid #e9ecef;
-            border-radius: 8px;
-            margin-bottom: 1rem;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-
-        .recommendation-item:hover {
-            border-color: #667eea;
-            background: #f8f9ff;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.08);
-        }
-
-        .recommendation-thumbnail {
-            width: 80px;
-            height: 60px;
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            border-radius: 6px;
-            display: flex;
-            flex-direction: column; /* Stack emoji and text */
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 0.8rem;
-            text-align: center;
-            font-weight: bold;
-            line-height: 1.2;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-
-        .recommendation-content {
-            flex: 1;
-        }
-
-        .recommendation-title {
-            font-weight: 600;
-            color: #2c3e50;
-            margin-bottom: 0.5rem;
-        }
-
-        .recommendation-meta {
-            font-size: 0.9rem;
-            color: #6c757d;
-            margin-bottom: 0.5rem;
-        }
-
-        .recommendation-tags {
-            display: flex;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-        }
-
-        .tag {
-            background: #e3f2fd;
-            color: #1976d2;
-            padding: 0.2rem 0.5rem;
-            border-radius: 12px;
-            font-size: 0.75rem;
-            font-weight: 500;
-        }
-
-        .tag.priority {
-            background: #fff3e0;
-            color: #f57c00;
-        }
-
-        .tag.skill-gap {
-            background: #ffebee;
-            color: #d32f2f;
-        }
-
-        /* Profile Settings Modal */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
-            z-index: 1000;
-            backdrop-filter: blur(5px); /* Blur background */
-        }
-
-        .modal.active {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .modal-content {
-            background: white;
-            border-radius: 12px;
-            padding: 2rem;
-            width: 90%;
-            max-width: 600px;
-            max-height: 80vh;
-            overflow-y: auto;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-            animation: fadeInScale 0.3s ease-out; /* Modal animation */
-        }
-
-        @keyframes fadeInScale {
-            from {
-                opacity: 0;
-                transform: scale(0.9);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid #e9ecef;
-        }
-
-        .close-btn {
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: #6c757d;
-            transition: color 0.2s ease;
-        }
-
-        .close-btn:hover {
-            color: #2c3e50;
-        }
-
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .form-label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 600;
-            color: #2c3e50;
-        }
-
-        .form-control {
-            width: 100%;
-            padding: 0.75rem;
-            border: 1px solid #e9ecef;
-            border-radius: 6px;
-            font-size: 1rem;
-            transition: border-color 0.2s ease, box-shadow 0.2s ease;
-        }
-
-        .form-control:focus {
-            outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2);
-        }
-
-        .checkbox-group {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 0.5rem;
-        }
-
-        .checkbox-item {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .btn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            padding: 0.75rem 1.5rem;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-
-        .btn:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
-        }
-
-        .btn-secondary {
-            background: #6c757d;
-        }
-
-        /* Progress Bars */
-        .progress-bar {
-            width: 100%;
-            height: 8px;
-            background: #e9ecef;
-            border-radius: 4px;
-            overflow: hidden;
-            margin-top: 0.5rem;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #667eea, #764ba2);
-            transition: width 0.3s ease;
-        }
-
-        /* Learning Path */
-        .learning-path {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-
-        .path-item {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            padding: 1rem;
-            border: 1px solid #e9ecef;
-            border-radius: 8px;
-            position: relative;
-            background: white;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        }
-
-        .path-item.completed {
-            background: #f8fff8;
-            border-color: #4caf50;
-        }
-
-        .path-item.current {
-            background: #fff8e1;
-            border-color: #ff9800;
-        }
-
-        .path-number {
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            background: #e9ecef;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 0.9rem;
-            flex-shrink: 0; /* Prevent shrinking */
-        }
-
-        .path-number.completed {
-            background: #4caf50;
-            color: white;
-        }
-
-        .path-number.current {
-            background: #ff9800;
-            color: white;
-        }
-
-        /* Persona-specific content visibility */
-        .persona-content {
-            display: block; /* Default to block, then hide with JS */
-        }
-
-        .persona-content.hidden {
-            display: none;
-        }
-
-        /* AI Insights Panel */
         .ai-insights {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border-radius: 12px;
             padding: 1.5rem;
-            margin-bottom: 1.5rem;
+            margin-top: 1.5rem;
             box-shadow: 0 5px 15px rgba(0,0,0,0.15);
         }
 
@@ -481,7 +189,7 @@
             gap: 0.5rem;
             font-size: 1.3rem;
         }
-
+        
         .insight-item {
             background: rgba(255,255,255,0.1);
             border-radius: 8px;
@@ -490,2891 +198,306 @@
             font-size: 0.95rem;
             line-height: 1.4;
         }
-
-        .insight-item:last-child {
-            margin-bottom: 0;
+        
+        /* Unified Platform Styles */
+        .unified-header {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .unified-nav {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 0.5rem;
         }
 
-        /* Responsive Adjustments */
-        @media (max-width: 1024px) {
-            .main-content {
-                grid-template-columns: 1fr; /* Stack content and sidebar on tablets */
-                padding: 1.5rem;
-            }
-            .sidebar {
-                margin-top: 1.5rem;
-            }
+        .unified-nav-item {
+            flex: 1;
+            text-align: center;
+            padding: 0.75rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
         }
-
-        @media (max-width: 768px) {
-            body {
-                padding: 10px;
-            }
-            .container {
-                min-height: auto;
-            }
-            .header {
-                flex-direction: column;
-                align-items: flex-start;
-                padding: 1rem;
-                gap: 1rem;
-            }
-            .user-profile {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 0.5rem;
-            }
-            #persona-selector {
-                margin-right: 0;
-                width: 100%;
-            }
-            .nav {
-                padding: 0 1rem;
-                gap: 1rem;
-            }
-            .main-content {
-                padding: 1rem;
-            }
-            .dashboard-grid {
-                grid-template-columns: 1fr; /* Single column on mobile */
-            }
-            .modal-content {
-                padding: 1.5rem;
-            }
-            .checkbox-group {
-                grid-template-columns: 1fr;
-            }
+        
+        .unified-nav-item.active {
+            background: #667eea;
+            color: white;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.4);
         }
+        
+        /* SSO Management Styles */
+        .sso-panel {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.05);
+            overflow: hidden;
+            margin-top: 2rem;
+        }
+        
+        .sso-panel-header {
+            background: #f8fafc;
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid #e2e8f0;
+            font-weight: 600;
+            color: #334155;
+        }
+        
+        .sso-panel-content {
+            padding: 2rem;
+        }
+        
+        .user-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .user-table th, .user-table td {
+            text-align: left;
+            padding: 1rem;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            border: none;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #667eea;
+            color: white;
+        }
+        
+        .btn:hover {
+            background: #5a67d8;
+        }
+        
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- Header -->
         <header class="header">
-            <div class="logo">🎓 LearnAI</div>
+            <div class="logo">🚀 GenAI Learning & Enablement Platform</div>
             <div class="user-profile">
-                <select id="persona-selector" onchange="switchPersona()" style="background: rgba(255,255,255,0.9); border: 1px solid rgba(255,255,255,0.5); color: #2c3e50; padding: 0.5rem; border-radius: 6px; margin-right: 1rem; font-weight: 600;">
+                <select id="persona-selector" onchange="switchPersona()">
                     <option value="learner">Frontline Learner</option>
                     <option value="sales">Sales Representative</option>
-                    <option value="technician">Technician / Service Professional</option>
-                    <option value="trainer">Trainer / L&D Specialist</option>
-                    <option value="manager">Manager / Team Lead</option>
+                    <option value="technician">Technician</option>
+                    <option value="manager">Manager</option>
+                    <option value="trainer">L&D Specialist</option>
                     <option value="compliance">Compliance Officer</option>
                     <option value="hr">HR Business Partner</option>
-                    <option value="it">IT / Systems Administrator</option>
-                    <option value="executive">Executive / VP of L&D</option>
+                    <option value="it">IT Administrator</option>
+                    <option value="executive">Executive</option>
                 </select>
-                <div class="avatar" id="user-avatar">SC</div>
+                <div class="avatar" id="user-avatar">AL</div>
                 <div>
-                    <div style="font-weight: 600;" id="user-name">Sam Cooper</div>
-                    <div style="font-size: 0.9rem; opacity: 0.8;" id="user-role">Dealer Sales Consultant</div>
+                    <div style="font-weight: 600;" id="user-name">Alex Learner</div>
+                    <div style="font-size: 0.9rem; opacity: 0.8;" id="user-role">Frontline Employee</div>
                 </div>
             </div>
         </header>
 
-        <!-- Navigation -->
         <nav class="nav">
             <div class="nav-item active" onclick="showSection('dashboard', this)">Dashboard</div>
-            <div class="nav-item" onclick="showSection('recommendations', this)">Recommendations</div>
-            <div class="nav-item" onclick="showSection('learning-path', this)">My Learning Path</div>
-            <div class="nav-item" onclick="showSection('analytics', this)">Analytics</div>
-            <div class="nav-item" onclick="openProfileModal()">Profile Settings</div>
+            <div class="nav-item" onclick="showSection('top-performers', this)">Top Performer Analysis</div>
+            <div class="nav-item" onclick="showSection('profile-management', this)">Profile & SSO</div>
+            <div class="nav-item" onclick="openProfileModal()">My Preferences</div>
         </nav>
 
-        <!-- Main Content -->
         <main class="main-content">
-            <div class="content-area">
-                <!-- Dashboard Section -->
-                <div id="dashboard-section" class="section">
-                    <!-- Learner Dashboard -->
-                    <div id="learner-dashboard" class="persona-content">
-                        <div class="dashboard-grid">
-                            <div class="card">
-                                <div class="card-header">
-                                    <div class="card-icon" style="background: #e8f5e8; color: #4caf50;">📈</div>
-                                    <div class="card-title">Learning Progress</div>
-                                </div>
-                                <div style="font-size: 2rem; font-weight: bold; color: #4caf50; margin-bottom: 0.5rem;">78%</div>
-                                <div style="color: #6c757d; margin-bottom: 1rem;">Monthly Goals</div>
-                                <div class="progress-bar">
-                                    <div class="progress-fill" style="width: 78%;"></div>
-                                </div>
-                            </div>
-
-                            <div class="card">
-                                <div class="card-header">
-                                    <div class="card-icon" style="background: #fff3e0; color: #ff9800;">🎯</div>
-                                    <div class="card-title">Skills Gaps</div>
-                                </div>
-                                <div style="font-size: 2rem; font-weight: bold; color: #ff9800; margin-bottom: 0.5rem;">2</div>
-                                <div style="color: #6c757d; margin-bottom: 1rem;">Priority Areas</div>
-                                <div style="font-size: 0.9rem;">
-                                    <div>• Digital Tools Proficiency</div>
-                                    <div>• Advanced Problem Solving</div>
-                                </div>
-                            </div>
-
-                            <div class="card">
-                                <div class="card-header">
-                                    <div class="card-icon" style="background: #e3f2fd; color: #2196f3;">🏆</div>
-                                    <div class="card-title">Badges Earned</div>
-                                </div>
-                                <div style="font-size: 2rem; font-weight: bold; color: #2196f3; margin-bottom: 0.5rem;">5</div>
-                                <div style="color: #6c757d; margin-bottom: 1rem;">This Quarter</div>
-                                <div style="font-size: 0.9rem; color: #4caf50;">Latest: Customer Service Pro</div>
-                            </div>
-
-                            <div class="card">
-                                <div class="card-header">
-                                    <div class="card-icon" style="background: #f3e5f5; color: #9c27b0;">📱</div>
-                                    <div class="card-title">Mobile Learning</div>
-                                </div>
-                                <div style="font-size: 2rem; font-weight: bold; color: #9c27b0; margin-bottom: 0.5rem;">65%</div>
-                                <div style="color: #6c757d; margin-bottom: 1rem;">On Mobile Device</div>
-                                <div style="font-size: 0.9rem;">Perfect for microlearning!</div>
-                            </div>
-                        </div>
-
-                        <div class="ai-insights">
-                            <h3>🤖 AI Learning Assistant</h3>
-                            <div class="insight-item">
-                                <strong>Personalized Pace:</strong> Your learning improves 35% with 15-minute sessions. We've adjusted recommendations accordingly.
-                            </div>
-                            <div class="insight-item">
-                                <strong>Mobile Preference:</strong> You complete 80% more content on mobile. Consider downloading modules for offline access.
-                            </div>
-                            <div class="insight-item">
-                                <strong>Skills Alert:</strong> Digital tools training now available - critical for your role advancement.
-                            </div>
-                        </div>
+            <div id="dashboard-section" class="section active">
+                <div id="learner-dashboard" class="persona-content">
+                    <h2>Welcome, <span id="learner-name-display">Alex Learner</span>!</h2>
+                    <p>Here's your personalized learning overview.</p>
+                    <div class="dashboard-grid">
+                       <div class="card">
+                           <div class="card-header"><div class="card-icon">📈</div><div class="card-title">Progress</div></div>
+                           <p>78% monthly goal</p>
+                       </div>
+                       <div class="card">
+                           <div class="card-header"><div class="card-icon">🎯</div><div class="card-title">Skill Gaps</div></div>
+                           <p>2 priority areas</p>
+                       </div>
+                       <div class="card">
+                           <div class="card-header"><div class="card-icon">🏆</div><div class="card-title">STAR Points</div></div>
+                           <p>1,250 points</p>
+                       </div>
                     </div>
-
-                    <!-- Sales Representative Dashboard -->
-                    <div id="sales-dashboard" class="persona-content" style="display: none;">
-                        <div class="dashboard-grid">
-                            <div class="card">
-                                <div class="card-header">
-                                    <div class="card-icon" style="background: #e8f5e8; color: #4caf50;">💰</div>
-                                    <div class="card-title">Sales Performance</div>
-                                </div>
-                                <div style="font-size: 2rem; font-weight: bold; color: #4caf50; margin-bottom: 0.5rem;">124%</div>
-                                <div style="color: #6c757d; margin-bottom: 1rem;">Quota Achievement</div>
-                                <div style="font-size: 0.9rem; color: #4caf50;">🎯 Above target!</div>
-                            </div>
-
-                            <div class="card">
-                                <div class="card-header">
-                                    <div class="card-icon" style="background: #fff3e0; color: #ff9800;">📚</div>
-                                    <div class="card-title">Product Knowledge</div>
-                                </div>
-                                <div style="font-size: 2rem; font-weight: bold; color: #ff9800; margin-bottom: 0.5rem;">89%</div>
-                                <div style="color: #6c757d; margin-bottom: 1rem;">Certification Level</div>
-                                <div style="font-size: 0.9rem;">2 new products to learn</div>
-                            </div>
-
-                            <div class="card">
-                                <div class="card-header">
-                                    <div class="card-icon" style="background: #e3f2fd; color: #2196f3;">🎮</div>
-                                    <div class="card-title">Leaderboard</div>
-                                </div>
-                                <div style="font-size: 2rem; font-weight: bold; color: #2196f3; margin-bottom: 0.5rem;">#3</div>
-                                <div style="color: #6c757d; margin-bottom: 1rem;">Team Ranking</div>
-                                <div style="font-size: 0.9rem;">🔥 Moving up!</div>
-                            </div>
-
-                            <div class="card">
-                                <div class="card-header">
-                                    <div class="card-icon" style="background: #f3e5f5; color: #9c27b0;">🎯</div>
-                                    <div class="card-title">Micro-Certifications</div>
-                                </div>
-                                <div style="font-size: 2rem; font-weight: bold; color: #9c27b0; margin-bottom: 0.5rem;">8</div>
-                                <div style="color: #6c757d; margin-bottom: 1rem;">Completed</div>
-                                <div style="font-size: 0.9rem;">Latest: New Model Launch</div>
-                            </div>
-                        </div>
-
-                        <div class="ai-insights">
-                            <h3>🤖 Sales AI Coach</h3>
-                            <div class="insight-item">
-                                <strong>Win Rate Correlation:</strong> Your closing rate improves 28% after objection handling refreshers. Schedule one before big deals.
-                            </div>
-                            <div class="insight-item">
-                                <strong>CRM Usage:</strong> Your pipeline accuracy increased 15% this month. Keep leveraging those new CRM skills!
-                            </div>
-                            <div class="insight-item">
-                                <strong>Product Alert:</strong> New model launching next week. Complete certification to access early demo units.
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Technician Dashboard -->
-                    <div id="technician-dashboard" class="persona-content" style="display: none;">
-                        <div class="dashboard-grid">
-                            <div class="card">
-                                <div class="card-header">
-                                    <div class="card-icon" style="background: #e8f5e8; color: #4caf50;">🔧</div>
-                                    <div class="card-title">Certifications</div>
-                                </div>
-                                <div style="font-size: 2rem; font-weight: bold; color: #4caf50; margin-bottom: 0.5rem;">12</div>
-                                <div style="color: #6c757d; margin-bottom: 1rem;">Active Certifications</div>
-                                <div style="font-size: 0.9rem; color: #ff9800;">2 expire in 30 days</div>
-                            </div>
-
-                            <div class="card">
-                                <div class="card-header">
-                                    <div class="card-icon" style="background: #fff3e0; color: #ff9800;">⚡</div>
-                                    <div class="card-title">Just-in-Time Help</div>
-                                </div>
-                                <div style="font-size: 2rem; font-weight: bold; color: #ff9800; margin-bottom: 0.5rem;">47</div>
-                                <div style="color: #6c757d; margin-bottom: 1rem;">Voice Queries This Week</div>
-                                <div style="font-size: 0.9rem;">Hands-free learning!</div>
-                            </div>
-
-                            <div class="card">
-                                <div class="card-header">
-                                    <div class="card-icon" style="background: #e3f2fd; color: #2196f3;">📱</div>
-                                    <div class="card-title">Mobile Usage</div>
-                                </div>
-                                <div style="font-size: 2rem; font-weight: bold; color: #2196f3; margin-bottom: 0.5rem;">92%</div>
-                                <div style="color: #6c757d; margin-bottom: 1rem;">On Mobile/Tablet</div>
-                                <div style="font-size: 0.9rem;">Garage & field ready</div>
-                            </div>
-
-                            <div class="card">
-                                <div class="card-header">
-                                    <div class="card-icon" style="background: #f3e5f5; color: #9c27b0;">🎯</div>
-                                    <div class="card-title">Safety Score</div>
-                                </div>
-                                <div style="font-size: 2rem; font-weight: bold; color: #9c27b0; margin-bottom: 0.5rem;">98%</div>
-                                <div style="color: #6c757d; margin-bottom: 1rem;">Compliance Rate</div>
-                                <div style="font-size: 0.9rem; color: #4caf50;">Excellent!</div>
-                            </div>
-                        </div>
-
-                        <div class="ai-insights">
-                            <h3>🤖 Technical Assistant</h3>
-                            <div class="insight-item">
-                                <strong>Error Pattern:</strong> Smart nudge: Review torque sequence training - detected 3 similar issues this week.
-                            </div>
-                            <div class="insight-item">
-                                <strong>Tool Integration:</strong> New diagnostic tool update available. Training module synced to your tablet.
-                            </div>
-                            <div class="insight-item">
-                                <strong>Recertification Alert:</strong> Safety protocols certification expires in 25 days. Schedule refresher?
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Manager Dashboard -->
-                    <div id="manager-dashboard" class="persona-content" style="display: none;">
-                        <div class="dashboard-grid">
-                            <div class="card">
-                                <div class="card-header">
-                                    <div class="card-icon" style="background: #e8f5e8; color: #4caf50;">👥</div>
-                                    <div class="card-title">Team Progress</div>
-                                </div>
-                                <div style="font-size: 2rem; font-weight: bold; color: #4caf50; margin-bottom: 0.5rem;">78%</div>
-                                <div style="color: #6c757d; margin-bottom: 1rem;">Average Completion</div>
-                                <div class="progress-bar">
-                                    <div class="progress-fill" style="width: 78%;"></div>
-                                </div>
-                            </div>
-
-                            <div class="card">
-                                <div class="card-header">
-                                    <div class="card-icon" style="background: #fff3e0; color: #ff9800;">⚠️</div>
-                                    <div class="card-title">Skills Gaps (Team)</div>
-                                </div>
-                                <div style="font-size: 2rem; font-weight: bold; color: #ff9800; margin-bottom: 0.5rem;">5</div>
-                                <div style="color: #6c757d; margin-bottom: 1rem;">Critical Areas</div>
-                                <div style="font-size: 0.9rem;">
-                                    <div>• Digital Sales Tools (8/12 need training)</div>
-                                    <div>• Luxury Vehicle Features (6/12)</div>
-                                </div>
-                            </div>
-
-                            <div class="card">
-                                <div class="card-header">
-                                    <div class="card-icon" style="background: #e3f2fd; color: #2196f3;">📊</div>
-                                    <div class="card-title">Team Performance</div>
-                                </div>
-                                <div style="font-size: 2rem; font-weight: bold; color: #2196f3; margin-bottom: 0.5rem;">+15%</div>
-                                <div style="color: #6c757d; margin-bottom: 1rem;">Sales Improvement</div>
-                                <div style="font-size: 0.9rem; color: #4caf50;">Post-training impact</div>
-                            </div>
-
-                            <div class="card">
-                                <div class="card-header">
-                                    <div class="card-icon" style="background: #f3e5f5; color: #9c27b0;">🎯</div>
-                                    <div class="card-title">At-Risk Learners</div>
-                                </div>
-                                <div style="font-size: 2rem; font-weight: bold; color: #9c27b0; margin-bottom: 0.5rem;">2</div>
-                                <div style="color: #6c757d; margin-bottom: 1rem;">Require Attention</div>
-                                <div style="font-size: 0.9rem;">Mike T., Jessica R.</div>
-                            </div>
-                        </div>
-
-                        <div class="ai-insights">
-                            <h3>🤖 Team Management Insights</h3>
-                            <div class="insight-item">
-                                <strong>Training Impact:</strong> Team members who completed "Customer Psychology" showed 22% higher close rates this month.
-                            </div>
-                            <div class="insight-item">
-                                <strong>Engagement Alert:</strong> 2 team members haven't accessed training in 10+ days. Recommend personalized check-ins.
-                            </div>
-                            <div class="insight-item">
-                                <strong>Skill Optimization:</strong> Assigning "Digital Sales Tools" to 8 team members could increase monthly revenue by estimated $45K.
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Trainer Dashboard -->
-                    <div id="trainer-dashboard" class="persona-content" style="display: none;">
-                        <div class="dashboard-grid">
-                            <div class="card">
-                                <div class="card-header">
-                                    <div class="card-icon" style="background: #e8f5e8; color: #4caf50;">📚</div>
-                                    <div class="card-title">Active Learners</div>
-                                </div>
-                                <div style="font-size: 2rem; font-weight: bold; color: #4caf50; margin-bottom: 0.5rem;">1,247</div>
-                                <div style="color: #6c757d; margin-bottom: 1rem;">Across All Programs</div>
-                                <div style="font-size: 0.9rem; color: #4caf50;">+18% from last month</div>
-                            </div>
-
-                            <div class="card">
-                                <div class="card-header">
-                                    <div class="card-icon" style="background: #fff3e0; color: #ff9800;">🎯</div>
-                                    <div class="card-title">Content Effectiveness</div>
-                                </div>
-                                <div style="font-size: 2rem; font-weight: bold; color: #ff9800; margin-bottom: 0.5rem;">87%</div>
-                                <div style="color: #6c757d; margin-bottom: 1rem;">Avg. Completion Rate</div>
-                                <div style="font-size: 0.9rem;">Interactive content: 94%</div>
-                            </div>
-
-                            <div class="card">
-                                <div class="card-header">
-                                    <div class="card-icon" style="background: #e3f2fd; color: #2196f3;">🔄</div>
-                                    <div class="card-title">Adaptive Adjustments</div>
-                                </div>
-                                <div style="font-size: 2rem; font-weight: bold; color: #2196f3; margin-bottom: 0.5rem;">156</div>
-                                <div style="color: #6c757d; margin-bottom: 1rem;">Auto-optimizations</div>
-                                <div style="font-size: 0.9rem;">This week</div>
-                            </div>
-
-                            <div class="card">
-                                <div class="card-header">
-                                    <div class="card-icon" style="background: #f3e5f5; color: #9c27b0;">📈</div>
-                                    <div class="card-title">Learning Paths</div>
-                                </div>
-                                <div style="font-size: 2rem; font-weight: bold; color: #9c27b0; margin-bottom: 0.5rem;">24</div>
-                                <div style="color: #6c757d; margin-bottom: 1rem;">Active Curriculums</div>
-                                <div style="font-size: 0.9rem;">3 new this month</div>
-                            </div>
-                        </div>
-
-                        <div class="ai-insights">
-                            <h3>🤖 Content Design Insights</h3>
-                            <div class="insight-item">
-                                <strong>Content Optimization:</strong> Learners prefer 7-minute modules over 15-minute ones. Consider breaking down longer content.
-                            </div>
-                            <div class="insight-item">
-                                <strong>Engagement Patterns:</strong> Tuesday/Wednesday show highest completion rates. Schedule new releases accordingly.
-                            </div>
-                            <div class="insight-item">
-                                <strong>Skill Gap Trend:</strong> "Electric Vehicle Technology" emerging as top requested topic across 3 dealership groups.
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Compliance Officer Dashboard -->
-                    <div id="compliance-dashboard" class="persona-content" style="display: none;">
-                        <div class="dashboard-grid">
-                            <div class="card">
-                                <div class="card-header">
-                                    <div class="card-icon" style="background: #e8f5e8; color: #4caf50;">✅</div>
-                                    <div class="card-title">Compliance Rate</div>
-                                </div>
-                                <div style="font-size: 2rem; font-weight: bold; color: #4caf50; margin-bottom: 0.5rem;">94.2%</div>
-                                <div style="color: #6c757d; margin-bottom: 1rem;">Organization Wide</div>
-                                <div style="font-size: 0.9rem; color: #4caf50;">Target: 95%</div>
-                            </div>
-
-                            <div class="card">
-                                <div class="card-header">
-                                    <div class="card-icon" style="background: #fff3e0; color: #ff9800;">⚠️</div>
-                                    <div class="card-title">Overdue Training</div>
-                                </div>
-                                <div style="font-size: 2rem; font-weight: bold; color: #ff9800; margin-bottom: 0.5rem;">127</div>
-                                <div style="color: #6c757d; margin-bottom: 1rem;">Employees</div>
-                                <div style="font-size: 0.9rem;">Auto-escalated</div>
-                            </div>
-
-                            <div class="card">
-                                <div class="card-header">
-                                    <div class="card-icon" style="background: #e3f2fd; color: #2196f3;">📋</div>
-                                    <div class="card-title">Audit Readiness</div>
-                                </div>
-                                <div style="font-size: 2rem; font-weight: bold; color: #2196f3; margin-bottom: 0.5rem;">98%</div>
-                                <div style="color: #6c757d; margin-bottom: 1rem;">Documentation Complete</div>
-                                <div style="font-size: 0.9rem; color: #4caf50;">Audit ready!</div>
-                            </div>
-
-                            <div class="card">
-                                <div class="card-header">
-                                    <div class="card-icon" style="background: #f3e5f5; color: #9c27b0;">🔒</div>
-                                    <div class="card-title">Risk Mitigation</div>
-                                </div>
-                                <div style="font-size: 2rem; font-weight: bold; color: #9c27b0; margin-bottom: 0.5rem;">High</div>
-                                <div style="color: #6c757d; margin-bottom: 1rem;">Current Status</div>
-                                <div style="font-size: 0.9rem;">2 critical areas addressed</div>
-                            </div>
-                        </div>
-
-                        <div class="ai-insights">
-                            <h3>🤖 Compliance Intelligence</h3>
-                            <div class="insight-item">
-                                <strong>Risk Alert:</strong> Safety training completion dropped 3% in Manufacturing. Auto-lockout rules may be triggered.
-                            </div>
-                            <div class="insight-item">
-                                <strong>Trend Analysis:</strong> Q4 compliance dips detected historically. Proactive reminders scheduled.
-                            </div>
-                            <div class="insight-item">
-                                <strong>Audit Prep:</strong> All training records exportable. 127 employees need immediate attention.
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- HR Business Partner Dashboard -->
-                    <div id="hr-dashboard" class="persona-content" style="display: none;">
-                        <div class="dashboard-grid">
-                            <div class="card">
-                                <div class="card-header">
-                                    <div class="card-icon" style="background: #e8f5e8; color: #4caf50;">👥</div>
-                                    <div class="card-title">Skills Coverage</div>
-                                </div>
-                                <div style="font-size: 2rem; font-weight: bold; color: #4caf50; margin-bottom: 0.5rem;">87%</div>
-                                <div style="color: #6c757d; margin-bottom: 1rem;">Role Requirements Met</div>
-                                <div style="font-size: 0.9rem;">13% skill gaps identified</div>
-                            </div>
-
-                            <div class="card">
-                                <div class="card-header">
-                                    <div class="card-icon" style="background: #fff3e0; color: #ff9800;">📈</div>
-                                    <div class="card-title">Career Mobility</div>
-                                </div>
-                                <div style="font-size: 2rem; font-weight: bold; color: #ff9800; margin-bottom: 0.5rem;">234</div>
-                                <div style="color: #6c757d; margin-bottom: 1rem;">Promotion Ready</div>
-                                <div style="font-size: 0.9rem;">Based on learning data</div>
-                            </div>
-
-                            <div class="card">
-                                <div class="card-header">
-                                    <div class="card-icon" style="background: #e3f2fd; color: #2196f3;">🚀</div>
-                                    <div class="card-title">Onboarding Success</div>
-                                </div>
-                                <div style="font-size: 2rem; font-weight: bold; color: #2196f3; margin-bottom: 0.5rem;">92%</div>
-                                <div style="color: #6c757d; margin-bottom: 1rem;">90-Day Completion</div>
-                                <div style="font-size: 0.9rem; color: #4caf50;">Above target!</div>
-                            </div>
-
-                            <div class="card">
-                                <div class="card-header">
-                                    <div class="card-icon" style="background: #f3e5f5; color: #9c27b0;">🔄</div>
-                                    <div class="card-title">Retention Impact</div>
-                                </div>
-                                <div style="font-size: 2rem; font-weight: bold; color: #9c27b0; margin-bottom: 0.5rem;">+23%</div>
-                                <div style="color: #6c757d; margin-bottom: 1rem;">Learning-Linked Retention</div>
-                                <div style="font-size: 0.9rem;">Strong correlation</div>
-                            </div>
-                        </div>
-
-                        <div class="ai-insights">
-                            <h3>🤖 Workforce Intelligence</h3>
-                            <div class="insight-item">
-                                <strong>Skills Gap Analysis:</strong> Digital transformation skills needed across 40% of roles. Reskilling program recommended.
-                            </div>
-                            <div class="insight-item">
-                                <strong>Retention Predictor:</strong> Employees with <30 learning hours show 2.3x higher turnover risk.
-                            </div>
-                            <div class="insight-item">
-                                <strong>Succession Planning:</strong> 67 high-potential employees identified through learning patterns and performance correlation.
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- IT Administrator Dashboard -->
-                    <div id="it-dashboard" class="persona-content" style="display: none;">
-                        <div class="dashboard-grid">
-                            <div class="card">
-                                <div class="card-header">
-                                    <div class="card-icon" style="background: #e8f5e8; color: #4caf50;">🖥️</div>
-                                    <div class="card-title">System Health</div>
-                                </div>
-                                <div style="font-size: 2rem; font-weight: bold; color: #4caf50; margin-bottom: 0.5rem;">99.8%</div>
-                                <div style="color: #6c757d; margin-bottom: 1rem;">Uptime</div>
-                                <div style="font-size: 0.9rem; color: #4caf50;">All systems operational</div>
-                            </div>
-
-                            <div class="card">
-                                <div class="card-header">
-                                    <div class="card-icon" style="background: #fff3e0; color: #ff9800;">🔗</div>
-                                    <div class="card-title">SSO Integration</div>
-                                </div>
-                                <div style="font-size: 2rem; font-weight: bold; color: #ff9800; margin-bottom: 0.5rem;">12</div>
-                                <div style="color: #6c757d; margin-bottom: 1rem;">Connected Systems</div>
-                                <div style="font-size: 0.9rem;">HRIS, CRM, Knowledge Base</div>
-                            </div>
-
-                            <div class="card">
-                                <div class="card-header">
-                                    <div class="card-icon" style="background: #e3f2fd; color: #2196f3;">⚡</div>
-                                    <div class="card-title">API Performance</div>
-                                </div>
-                                <div style="font-size: 2rem; font-weight: bold; color: #2196f3; margin-bottom: 0.5rem;">1.2s</div>
-                                <div style="color: #6c757d; margin-bottom: 1rem;">Avg Response Time</div>
-                                <div style="font-size: 0.9rem;">Target: <2s ✅</div>
-                            </div>
-
-                            <div class="card">
-                                <div class="card-header">
-                                    <div class="card-icon" style="background: #f3e5f5; color: #9c27b0;">🔐</div>
-                                    <div class="card-title">Security Score</div>
-                                </div>
-                                <div style="font-size: 2rem; font-weight: bold; color: #9c27b0; margin-bottom: 0.5rem;">A+</div>
-                                <div style="color: #6c757d; margin-bottom: 1rem;">Security Rating</div>
-                                <div style="font-size: 0.9rem;">0 incidents</div>
-                            </div>
-                        </div>
-
-                        <div class="ai-insights">
-                            <h3>🤖 System Intelligence</h3>
-                            <div class="insight-item">
-                                <strong>Performance Optimization:</strong> CDN implementation reduced load times by 35%. Consider expanding to video content.
-                            </div>
-                            <div class="insight-item">
-                                <strong>Security Alert:</strong> GDPR compliance update required by next month. Auto-scheduled maintenance window.
-                            </div>
-                            <div class="insight-item">
-                                <strong>Usage Patterns:</strong> Peak load occurs 9-11 AM EST. Load balancing optimization recommended.
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Executive Dashboard -->
-                    <div id="executive-dashboard" class="persona-content" style="display: none;">
-                        <div class="dashboard-grid">
-                            <div class="card">
-                                <div class="card-header">
-                                    <div class="card-icon" style="background: #e8f5e8; color: #4caf50;">💰</div>
-                                    <div class="card-title">Training ROI</div>
-                                </div>
-                                <div style="font-size: 2rem; font-weight: bold; color: #4caf50; margin-bottom: 0.5rem;">312%</div>
-                                <div style="color: #6c757d; margin-bottom: 1rem;">Return on Investment</div>
-                                <div style="font-size: 0.9rem; color: #4caf50;">$4.2M value generated</div>
-                            </div>
-
-                            <div class="card">
-                                <div class="card-header">
-                                    <div class="card-icon" style="background: #fff3e0; color: #ff9800;">📊</div>
-                                    <div class="card-title">Business Impact</div>
-                                </div>
-                                <div style="font-size: 2rem; font-weight: bold; color: #ff9800; margin-bottom: 0.5rem;">+18%</div>
-                                <div style="color: #6c757d; margin-bottom: 1rem;">Performance Improvement</div>
-                                <div style="font-size: 0.9rem;">Post-training correlation</div>
-                            </div>
-
-                            <div class="card">
-                                <div class="card-header">
-                                    <div class="card-icon" style="background: #e3f2fd; color: #2196f3;">👥</div>
-                                    <div class="card-title">Engagement Rate</div>
-                                </div>
-                                <div style="font-size: 2rem; font-weight: bold; color: #2196f3; margin-bottom: 0.5rem;">89%</div>
-                                <div style="color: #6c757d; margin-bottom: 1rem;">Active Participation</div>
-                                <div style="font-size: 0.9rem;">Above industry avg</div>
-                            </div>
-
-                            <div class="card">
-                                <div class="card-header">
-                                    <div class="card-icon" style="background: #f3e5f5; color: #9c27b0;">🔮</div>
-                                    <div class="card-title">Future Readiness</div>
-                                </div>
-                                <div style="font-size: 2rem; font-weight: bold; color: #9c27b0; margin-bottom: 0.5rem;">76%</div>
-                                <div style="color: #6c757d; margin-bottom: 1rem;">Skills for 2025</div>
-                                <div style="font-size: 0.9rem;">AI/Digital focus needed</div>
-                            </div>
-                        </div>
-
-                        <div class="ai-insights">
-                            <h3>🤖 Strategic Intelligence</h3>
-                            <div class="insight-item">
-                                <strong>Investment Opportunity:</strong> AI-powered personalization increased completion rates 45%. Scale recommendation: $2.3M additional budget.
-                            </div>
-                            <div class="insight-item">
-                                <strong>Competitive Advantage:</strong> Our learning velocity 23% above industry. Key differentiator for talent retention.
-                            </div>
-                            <div class="insight-item">
-                                <strong>Future Skills Gap:</strong> 67% of workforce needs digital transformation training within 18 months.
-                            </div>
-                        </div>
+                    <div class="ai-insights">
+                        <h3>🤖 AI Learning Assistant</h3>
+                        <div class="insight-item"><strong>Pace:</strong> Learning improves with 15-min sessions.</div>
+                        <div class="insight-item"><strong>Skills Alert:</strong> New Digital Tools training available.</div>
                     </div>
                 </div>
-
-                <!-- Recommendations Section -->
-                <div id="recommendations-section" class="section" style="display: none;">
-                    <!-- Learner Recommendations -->
-                    <div id="learner-recommendations" class="persona-content">
-                        <h2 style="margin-bottom: 1.5rem; color: #2c3e50;">Sales Training Recommendations</h2>
-                        
-                        <div style="margin-bottom: 2rem;">
-                            <h3 style="color: #667eea; margin-bottom: 1rem;">🎯 Priority Training for You</h3>
-                            
-                            <div class="recommendation-item">
-                                <div class="recommendation-thumbnail">🤝<br>OBJ</div>
-                                <div class="recommendation-content">
-                                    <div class="recommendation-title">Advanced Objection Handling Techniques</div>
-                                    <div class="recommendation-meta">4.9 ⭐ • 45 min • Intermediate</div>
-                                    <div class="recommendation-tags">
-                                        <span class="tag skill-gap">Skill Gap Identified</span>
-                                        <span class="tag priority">High Impact</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="recommendation-item">
-                                <div class="recommendation-thumbnail">💰<br>F&I</div>
-                                <div class="recommendation-content">
-                                    <div class="recommendation-title">Finance & Insurance Products Mastery</div>
-                                    <div class="recommendation-meta">4.7 ⭐ • 1.2 hours • Beginner</div>
-                                    <div class="recommendation-tags">
-                                        <span class="tag skill-gap">Skill Gap Identified</span>
-                                        <span class="tag">Revenue Impact</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="recommendation-item">
-                                <div class="recommendation-thumbnail">🚗<br>EV</div>
-                                <div class="recommendation-content">
-                                    <div class="recommendation-title">Electric Vehicle Features & Benefits</div>
-                                    <div class="recommendation-meta">4.8 ⭐ • 30 min • Beginner</div>
-                                    <div class="recommendation-tags">
-                                        <span class="tag">Trending</span>
-                                        <span class="tag">Popular in Your Role</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div style="margin-bottom: 2rem;">
-                            <h3 style="color: #667eea; margin-bottom: 1rem;">👥 Top Performers Also Completed</h3>
-                            
-                            <div class="recommendation-item">
-                                <div class="recommendation-thumbnail">🧠<br>PSYC</div>
-                                <div class="recommendation-content">
-                                    <div class="recommendation-title">Customer Psychology & Buying Behavior</div>
-                                    <div class="recommendation-meta">4.9 ⭐ • 50 min • Advanced</div>
-                                    <div class="recommendation-tags">
-                                        <span class="tag">Top Performer Favorite</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="recommendation-item">
-                                <div class="recommendation-thumbnail">📱<br>DIGI</div>
-                                <div class="recommendation-content">
-                                    <div class="recommendation-title">Digital Sales Tools Mastery</div>
-                                    <div class="recommendation-meta">4.6 ⭐ • 40 min • Intermediate</div>
-                                    <div class="recommendation-tags">
-                                        <span class="tag">Efficiency Booster</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                
+                <div id="manager-dashboard" class="persona-content" style="display: none;">
+                    <div class="unified-header">
+                        <h1>Manager Dashboard</h1>
+                        <p>Oversee your team's learning and compliance.</p>
                     </div>
-
-                    <!-- Sales Representative Recommendations -->
-                    <div id="sales-recommendations" class="persona-content" style="display: none;">
-                        <h2 style="margin-bottom: 1.5rem; color: #2c3e50;">Sales Training Recommendations</h2>
-                        
-                        <div style="margin-bottom: 2rem;">
-                            <h3 style="color: #667eea; margin-bottom: 1rem;">🎯 Performance Boosters</h3>
-                            
-                            <div class="recommendation-item">
-                                <div class="recommendation-thumbnail">🤝<br>OBJ</div>
-                                <div class="recommendation-content">
-                                    <div class="recommendation-title">Advanced Objection Handling Mastery</div>
-                                    <div class="recommendation-meta">28% win rate improvement after completion</div>
-                                    <div class="recommendation-tags">
-                                        <span class="tag priority">High Impact</span>
-                                        <span class="tag">Performance Boost</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="recommendation-item">
-                                <div class="recommendation-thumbnail">📱<br>CRM</div>
-                                <div class="recommendation-content">
-                                    <div class="recommendation-title">CRM Pipeline Optimization</div>
-                                    <div class="recommendation-meta">15% accuracy improvement • Better forecasting</div>
-                                    <div class="recommendation-tags">
-                                        <span class="tag">Tools Mastery</span>
-                                        <span class="tag">Efficiency</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="recommendation-item">
-                                <div class="recommendation-thumbnail">🚗<br>PROD</div>
-                                <div class="recommendation-content">
-                                    <div class="recommendation-title">New Model Launch Certification</div>
-                                    <div class="recommendation-meta">Unlock demo units • Early access advantage</div>
-                                    <div class="recommendation-tags">
-                                        <span class="tag">Product Knowledge</span>
-                                        <span class="tag">Competitive Edge</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div style="margin-bottom: 2rem;">
-                            <h3 style="color: #667eea; margin-bottom: 1rem;">🏆 Top Performer Secrets</h3>
-                            
-                            <div class="recommendation-item">
-                                <div class="recommendation-thumbnail">🧠<br>PSYC</div>
-                                <div class="recommendation-content">
-                                    <div class="recommendation-title">Customer Psychology & Buying Triggers</div>
-                                    <div class="recommendation-meta">What top 10% salespeople know • Advanced techniques</div>
-                                    <div class="recommendation-tags">
-                                        <span class="tag">Elite Skills</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="recommendation-item">
-                                <div class="recommendation-thumbnail">💰<br>NEG</div>
-                                <div class="recommendation-content">
-                                    <div class="recommendation-title">Strategic Negotiation Techniques</div>
-                                    <div class="recommendation-meta">Win-win outcomes • Higher margins</div>
-                                    <div class="recommendation-tags">
-                                        <span class="tag">Advanced</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div>
-                            <h3 style="color: #667eea; margin-bottom: 1rem;">🚀 Career Advancement</h3>
-                            
-                            <div class="recommendation-item">
-                                <div class="recommendation-thumbnail">👥<br>LEAD</div>
-                                <div class="recommendation-content">
-                                    <div class="recommendation-title">Sales Leadership Development</div>
-                                    <div class="recommendation-meta">Prepare for team lead role • Management track</div>
-                                    <div class="recommendation-tags">
-                                        <span class="tag">Career Development</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Technician Recommendations -->
-                    <div id="technician-recommendations" class="persona-content" style="display: none;">
-                        <h2 style="margin-bottom: 1.5rem; color: #2c3e50;">Technical Training Recommendations</h2>
-                        
-                        <div style="margin-bottom: 2rem;">
-                            <h3 style="color: #667eea; margin-bottom: 1rem;">⚠️ Certification Renewals</h3>
-                            
-                            <div class="recommendation-item">
-                                <div class="recommendation-thumbnail">🛡️<br>SAFE</div>
-                                <div class="recommendation-content">
-                                    <div class="recommendation-title">Safety Protocols Recertification</div>
-                                    <div class="recommendation-meta">Expires in 25 days • Mandatory renewal</div>
-                                    <div class="recommendation-tags">
-                                        <span class="tag priority">Urgent</span>
-                                        <span class="tag skill-gap">Required</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="recommendation-item">
-                                <div class="recommendation-thumbnail">🔧<br>HYD</div>
-                                <div class="recommendation-content">
-                                    <div class="recommendation-title">Hydraulic Systems Advanced Certification</div>
-                                    <div class="recommendation-meta">Expires in 12 days • Equipment access dependent</div>
-                                    <div class="recommendation-tags">
-                                        <span class="tag priority">Critical</span>
-                                        <span class="tag">Access Required</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div style="margin-bottom: 2rem;">
-                            <h3 style="color: #667eea; margin-bottom: 1rem;">🔍 Smart Learning Alerts</h3>
-                            
-                            <div class="recommendation-item">
-                                <div class="recommendation-thumbnail">⚡<br>TORQ</div>
-                                <div class="recommendation-content">
-                                    <div class="recommendation-title">Torque Sequence Refresher</div>
-                                    <div class="recommendation-meta">Pattern detected • 3 similar issues this week</div>
-                                    <div class="recommendation-tags">
-                                        <span class="tag">Smart Alert</span>
-                                        <span class="tag">Quality Improvement</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="recommendation-item">
-                                <div class="recommendation-thumbnail">📱<br>TOOL</div>
-                                <div class="recommendation-content">
-                                    <div class="recommendation-title">New Diagnostic Tool Training</div>
-                                    <div class="recommendation-meta">Latest update available • Enhanced capabilities</div>
-                                    <div class="recommendation-tags">
-                                        <span class="tag">Tool Update</span>
-                                        <span class="tag">Efficiency</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div>
-                            <h3 style="color: #667eea; margin-bottom: 1rem;">🚀 Skill Advancement</h3>
-                            
-                            <div class="recommendation-item">
-                                <div class="recommendation-thumbnail">📡<br>IOT</div>
-                                <div class="recommendation-content">
-                                    <div class="recommendation-title">IoT & Connected Equipment Systems</div>
-                                    <div class="recommendation-meta">Future-ready skills • Industry 4.0 preparation</div>
-                                    <div class="recommendation-tags">
-                                        <span class="tag">Future Skills</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Manager Recommendations -->
-                    <div id="manager-recommendations" class="persona-content" style="display: none;">
-                        <h2 style="margin-bottom: 1.5rem; color: #2c3e50;">Team Training Assignments</h2>
-                        
-                        <div style="margin-bottom: 2rem;">
-                            <h3 style="color: #667eea; margin-bottom: 1rem;">⚠️ Critical Team Skill Gaps</h3>
-                            
-                            <div class="recommendation-item">
-                                <div class="recommendation-thumbnail">📱<br>DIGI</div>
-                                <div class="recommendation-content">
-                                    <div class="recommendation-title">Digital Sales Tools Training</div>
-                                    <div class="recommendation-meta">8 team members need this • Est. ROI: $45K/month</div>
-                                    <div class="recommendation-tags">
-                                        <span class="tag skill-gap">Team Gap</span>
-                                        <span class="tag priority">High ROI</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="recommendation-item">
-                                <div class="recommendation-thumbnail">🏎️<br>LUX</div>
-                                <div class="recommendation-content">
-                                    <div class="recommendation-title">Luxury Vehicle Features Certification</div>
-                                    <div class="recommendation-meta">6 team members need this • Avg completion: 95%</div>
-                                    <div class="recommendation-tags">
-                                        <span class="tag">High Margin</span>
-                                        <span class="tag">Quick Win</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div style="margin-bottom: 2rem;">
-                            <h3 style="color: #667eea; margin-bottom: 1rem;">📊 AI-Recommended Team Assignments</h3>
-                            
-                            <div class="recommendation-item">
-                                <div class="recommendation-thumbnail">🤝<br>LEAD</div>
-                                <div class="recommendation-content">
-                                    <div class="recommendation-title">Team Leadership Fundamentals</div>
-                                    <div class="recommendation-meta">For high performers ready for advancement</div>
-                                    <div class="recommendation-tags">
-                                        <span class="tag">Career Development</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div style="margin-bottom: 2rem;">
-                            <h3 style="color: #667eea; margin-bottom: 1rem;">📊 Performance Enhancement</h3>
-                            
-                            <div class="recommendation-item">
-                                <div class="recommendation-thumbnail">📈<br>ROI</div>
-                                <div class="recommendation-content">
-                                    <div class="recommendation-title">Training ROI Optimization</div>
-                                    <div class="recommendation-meta">+15% performance after targeted training • Scale approach</div>
-                                    <div class="recommendation-tags">
-                                        <span class="tag">Proven Results</span>
-                                        <span class="tag">Scale Success</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="recommendation-item">
-                                <div class="recommendation-thumbnail">🤝<br>PEER</div>
-                                <div class="recommendation-content">
-                                    <div class="recommendation-title">Peer Learning & Mentoring Program</div>
-                                    <div class="recommendation-meta">Connect high performers with developing team members</div>
-                                    <div class="recommendation-tags">
-                                        <span class="tag">Team Building</span>
-                                        <span class="tag">Knowledge Transfer</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div>
-                            <h3 style="color: #667eea; margin-bottom: 1rem;">🎯 Strategic Team Development</h3>
-                            
-                            <div class="recommendation-item">
-                                <div class="recommendation-thumbnail">📊<br>DATA</div>
-                                <div class="recommendation-content">
-                                    <div class="recommendation-title">Data-Driven Team Performance Analysis</div>
-                                    <div class="recommendation-meta">Learning correlation with KPIs • Optimize assignments</div>
-                                    <div class="recommendation-tags">
-                                        <span class="tag">Analytics</span>
-                                        <span class="tag">Strategic Planning</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Trainer Recommendations -->
-                    <div id="trainer-recommendations" class="persona-content" style="display: none;">
-                        <h2 style="margin-bottom: 1.5rem; color: #2c3e50;">Content Development & Learning Design</h2>
-                        
-                        <div style="margin-bottom: 2rem;">
-                            <h3 style="color: #667eea; margin-bottom: 1rem;">📈 High-Demand Content Requests</h3>
-                            
-                            <div class="recommendation-item">
-                                <div class="recommendation-thumbnail">🤖<br>AI</div>
-                                <div class="recommendation-content">
-                                    <div class="recommendation-title">AI-Powered Learning Content Creation</div>
-                                    <div class="recommendation-meta">247 requests • Emerging technology focus</div>
-                                    <div class="recommendation-tags">
-                                        <span class="tag priority">High Demand</span>
-                                        <span class="tag">Innovation</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="recommendation-item">
-                                <div class="recommendation-thumbnail">📱<br>MICRO</div>
-                                <div class="recommendation-content">
-                                    <div class="recommendation-title">Microlearning Module Development</div>
-                                    <div class="recommendation-meta">7-minute optimal length • 94% completion rate</div>
-                                    <div class="recommendation-tags">
-                                        <span class="tag">Format Optimization</span>
-                                        <span class="tag">Engagement</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="recommendation-item">
-                                <div class="recommendation-thumbnail">🎮<br>VR</div>
-                                <div class="recommendation-content">
-                                    <div class="recommendation-title">Immersive Learning Experiences</div>
-                                    <div class="recommendation-meta">VR/AR integration • Next-gen learning</div>
-                                    <div class="recommendation-tags">
-                                        <span class="tag">Cutting Edge</span>
-                                        <span class="tag">High Impact</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div style="margin-bottom: 2rem;">
-                            <h3 style="color: #667eea; margin-bottom: 1rem;">🔄 Content Optimization Analytics</h3>
-                            
-                            <div class="recommendation-item">
-                                <div class="recommendation-thumbnail">📊<br>DROP</div>
-                                <div class="recommendation-content">
-                                    <div class="recommendation-title">High Dropout Rate Analysis</div>
-                                    <div class="recommendation-meta">3 modules under 70% completion • Redesign needed</div>
-                                    <div class="recommendation-tags">
-                                        <span class="tag">Performance Issue</span>
-                                        <span class="tag">Redesign Required</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="recommendation-item">
-                                <div class="recommendation-thumbnail">⭐<br>TOP</div>
-                                <div class="recommendation-content">
-                                    <div class="recommendation-title">Replicate Top-Performing Content</div>
-                                    <div class="recommendation-meta">Interactive scenarios: 96% completion • Scale approach</div>
-                                    <div class="recommendation-tags">
-                                        <span class="tag">Success Pattern</span>
-                                        <span class="tag">Scale Model</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div>
-                            <h3 style="color: #667eea; margin-bottom: 1rem;">🚀 Innovation Opportunities</h3>
-                            
-                            <div class="recommendation-item">
-                                <div class="recommendation-thumbnail">🧠<br>ADAPT</div>
-                                <div class="recommendation-content">
-                                    <div class="recommendation-title">Advanced Adaptive Learning Paths</div>
-                                    <div class="recommendation-meta">156 auto-optimizations this week • ML-powered personalization</div>
-                                    <div class="recommendation-tags">
-                                        <span class="tag">AI Enhancement</span>
-                                        <span class="tag">Personalization</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="recommendation-item">
-                                <div class="recommendation-thumbnail">📈<br>PRED</div>
-                                <div class="recommendation-content">
-                                    <div class="recommendation-title">Predictive Content Recommendations</div>
-                                    <div class="recommendation-meta">Anticipate learning needs • Proactive content delivery</div>
-                                    <div class="recommendation-tags">
-                                        <span class="tag">Future Tech</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Compliance Recommendations -->
-                    <div id="compliance-recommendations" class="persona-content" style="display: none;">
-                        <h2 style="margin-bottom: 1.5rem; color: #2c3e50;">Compliance & Risk Management</h2>
-                        
-                        <div style="margin-bottom: 2rem;">
-                            <h3 style="color: #667eea; margin-bottom: 1rem;">🚨 Critical Compliance Issues</h3>
-                            
-                            <div class="recommendation-item">
-                                <div class="recommendation-thumbnail">⚠️<br>OVER</div>
-                                <div class="recommendation-content">
-                                    <div class="recommendation-title">Overdue Training Recovery Program</div>
-                                    <div class="recommendation-meta">127 employees overdue • Auto-escalation to managers</div>
-                                    <div class="recommendation-tags">
-                                        <span class="tag priority">Critical</span>
-                                        <span class="tag skill-gap">Immediate Action</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="recommendation-item">
-                                <div class="recommendation-thumbnail">🏭<br>MFG</div>
-                                <div class="recommendation-content">
-                                    <div class="recommendation-title">Manufacturing Safety Training Intervention</div>
-                                    <div class="recommendation-meta">-3% completion rate • Risk mitigation required</div>
-                                    <div class="recommendation-tags">
-                                        <span class="tag priority">High Risk</span>
-                                        <span class="tag">Safety Critical</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="recommendation-item">
-                                <div class="recommendation-thumbnail">📋<br>AUDIT</div>
-                                <div class="recommendation-content">
-                                    <div class="recommendation-title">External Audit Preparation</div>
-                                    <div class="recommendation-meta">45 days remaining • Documentation 98% complete</div>
-                                    <div class="recommendation-tags">
-                                        <span class="tag">Audit Ready</span>
-                                        <span class="tag">Final Push</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div style="margin-bottom: 2rem;">
-                            <h3 style="color: #667eea; margin-bottom: 1rem;">📊 Risk Assessment & Mitigation</h3>
-                            
-                            <div class="recommendation-item">
-                                <div class="recommendation-thumbnail">🟡<br>MED</div>
-                                <div class="recommendation-content">
-                                    <div class="recommendation-title">Medium Risk Department Intervention</div>
-                                    <div class="recommendation-meta">Manufacturing at 91% • Target: 95%+ compliance</div>
-                                    <div class="recommendation-tags">
-                                        <span class="tag">Risk Reduction</span>
-                                        <span class="tag">Process Improvement</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="recommendation-item">
-                                <div class="recommendation-thumbnail">🔒<br>LOCK</div>
-                                <div class="recommendation-content">
-                                    <div class="recommendation-title">Automated Lockout System Enhancement</div>
-                                    <div class="recommendation-meta">Prevent non-compliant access • Policy enforcement</div>
-                                    <div class="recommendation-tags">
-                                        <span class="tag">Policy Enforcement</span>
-                                        <span class="tag">Automation</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div>
-                            <h3 style="color: #667eea; margin-bottom: 1rem;">📈 Compliance Excellence</h3>
-                            
-                            <div class="recommendation-item">
-                                <div class="recommendation-thumbnail">🎯<br>GOAL</div>
-                                <div class="recommendation-content">
-                                    <div class="recommendation-title">95% Organization-wide Compliance Target</div>
-                                    <div class="recommendation-meta">Currently 94.2% • Stretch goal achievement</div>
-                                    <div class="recommendation-tags">
-                                        <span class="tag">Excellence</span>
-                                        <span class="tag">Organizational Goal</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="recommendation-item">
-                                <div class="recommendation-thumbnail">📊<br>DASH</div>
-                                <div class="recommendation-content">
-                                    <div class="recommendation-title">Executive Compliance Dashboard</div>
-                                    <div class="recommendation-meta">Real-time reporting • Board-ready metrics</div>
-                                    <div class="recommendation-tags">
-                                        <span class="tag">Executive Reporting</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- HR Recommendations -->
-                    <div id="hr-recommendations" class="persona-content" style="display: none;">
-                        <h2 style="margin-bottom: 1.5rem; color: #2c3e50;">Workforce Development Insights</h2>
-                        
-                        <div style="margin-bottom: 2rem;">
-                            <h3 style="color: #667eea; margin-bottom: 1rem;">🎯 Critical Skills Gaps</h3>
-                            
-                            <div class="recommendation-item">
-                                <div class="recommendation-thumbnail">🤖<br>AI</div>
-                                <div class="recommendation-content">
-                                    <div class="recommendation-title">AI & Digital Transformation Skills</div>
-                                    <div class="recommendation-meta">40% of roles affected • High priority for reskilling</div>
-                                    <div class="recommendation-tags">
-                                        <span class="tag skill-gap">Organization-wide Gap</span>
-                                        <span class="tag priority">Strategic Priority</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="recommendation-item">
-                                <div class="recommendation-thumbnail">👥<br>LEAD</div>
-                                <div class="recommendation-content">
-                                    <div class="recommendation-title">Leadership Development Program</div>
-                                    <div class="recommendation-meta">234 promotion-ready employees identified</div>
-                                    <div class="recommendation-tags">
-                                        <span class="tag">Succession Planning</span>
-                                        <span class="tag">Career Development</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="recommendation-item">
-                                <div class="recommendation-thumbnail">🔄<br>RET</div>
-                                <div class="recommendation-content">
-                                    <div class="recommendation-title">Retention Risk Mitigation Training</div>
-                                    <div class="recommendation-meta">245 at-risk employees • Learning correlation strong</div>
-                                    <div class="recommendation-tags">
-                                        <span class="tag skill-gap">Urgent</span>
-                                        <span class="tag">Retention Impact</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div style="margin-bottom: 2rem;">
-                            <h3 style="color: #667eea; margin-bottom: 1rem;">📈 High-Impact Programs</h3>
-                            
-                            <div class="recommendation-item">
-                                <div class="recommendation-thumbnail">🚀<br>ONBD</div>
-                                <div class="recommendation-content">
-                                    <div class="recommendation-title">Enhanced Onboarding Experience</div>
-                                    <div class="recommendation-meta">92% completion rate • Opportunity for 98%+ target</div>
-                                    <div class="recommendation-tags">
-                                        <span class="tag">Process Improvement</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="recommendation-item">
-                                <div class="recommendation-thumbnail">📊<br>DATA</div>
-                                <div class="recommendation-content">
-                                    <div class="recommendation-title">People Analytics Certification</div>
-                                    <div class="recommendation-meta">For HR team • Data-driven decision making</div>
-                                    <div class="recommendation-tags">
-                                        <span class="tag">Professional Development</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div>
-                            <h3 style="color: #667eea; margin-bottom: 1rem;">🔮 Predictive Insights</h3>
-                            
-                            <div class="recommendation-item">
-                                <div class="recommendation-thumbnail">⚡<br>SKILL</div>
-                                <div class="recommendation-content">
-                                    <div class="recommendation-title">Future Skills Assessment</div>
-                                    <div class="recommendation-meta">Identify emerging skill needs • 18-month forecast</div>
-                                    <div class="recommendation-tags">
-                                        <span class="tag">Strategic Planning</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- IT Recommendations -->
-                    <div id="it-recommendations" class="persona-content" style="display: none;">
-                        <h2 style="margin-bottom: 1.5rem; color: #2c3e50;">System Optimization Recommendations</h2>
-                        
-                        <div style="margin-bottom: 2rem;">
-                            <h3 style="color: #667eea; margin-bottom: 1rem;">⚡ Performance Optimizations</h3>
-                            
-                            <div class="recommendation-item">
-                                <div class="recommendation-thumbnail">🖥️<br>CDN</div>
-                                <div class="recommendation-content">
-                                    <div class="recommendation-title">Enable CDN for Video Content</div>
-                                    <div class="recommendation-meta">Reduce load times by 35% • Cost: $200/month</div>
-                                    <div class="recommendation-tags">
-                                        <span class="tag priority">Performance</span>
-                                        <span class="tag">User Experience</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="recommendation-item">
-                                <div class="recommendation-thumbnail">🔧<br>API</div>
-                                <div class="recommendation-content">
-                                    <div class="recommendation-title">Upgrade Recommendation Engine API</div>
-                                    <div class="recommendation-meta">ML model v2.3 available • 15% accuracy improvement</div>
-                                    <div class="recommendation-tags">
-                                        <span class="tag">System Update</span>
-                                        <span class="tag">AI Enhancement</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="recommendation-item">
-                                <div class="recommendation-thumbnail">⚖️<br>LOAD</div>
-                                <div class="recommendation-content">
-                                    <div class="recommendation-title">Load Balancing Optimization</div>
-                                    <div class="recommendation-meta">Peak usage 9-11 AM EST • Auto-scaling recommended</div>
-                                    <div class="recommendation-tags">
-                                        <span class="tag">Scalability</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div style="margin-bottom: 2rem;">
-                            <h3 style="color: #667eea; margin-bottom: 1rem;">🔐 Security & Compliance</h3>
-                            
-                            <div class="recommendation-item">
-                                <div class="recommendation-thumbnail">🛡️<br>SEC</div>
-                                <div class="recommendation-content">
-                                    <div class="recommendation-title">Update Data Retention Policies</div>
-                                    <div class="recommendation-meta">New GDPR guidelines effective next month</div>
-                                    <div class="recommendation-tags">
-                                        <span class="tag">Compliance</span>
-                                        <span class="tag priority">Required</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="recommendation-item">
-                                <div class="recommendation-thumbnail">🔑<br>SSO</div>
-                                <div class="recommendation-content">
-                                    <div class="recommendation-title">Multi-Factor Authentication Enhancement</div>
-                                    <div class="recommendation-meta">Strengthen identity management • Zero incidents goal</div>
-                                    <div class="recommendation-tags">
-                                        <span class="tag">Security</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div>
-                            <h3 style="color: #667eea; margin-bottom: 1rem;">🚀 Innovation Opportunities</h3>
-                            
-                            <div class="recommendation-item">
-                                <div class="recommendation-thumbnail">🤖<br>AUTO</div>
-                                <div class="recommendation-content">
-                                    <div class="recommendation-title">Automated System Monitoring</div>
-                                    <div class="recommendation-meta">AI-powered anomaly detection • Proactive maintenance</div>
-                                    <div class="recommendation-tags">
-                                        <span class="tag">Automation</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Executive Recommendations -->
-                    <div id="executive-recommendations" class="persona-content" style="display: none;">
-                        <h2 style="margin-bottom: 1.5rem; color: #2c3e50;">Strategic Learning Initiatives</h2>
-                        
-                        <div style="margin-bottom: 2rem;">
-                            <h3 style="color: #667eea; margin-bottom: 1rem;">💰 High-ROI Investment Opportunities</h3>
-                            
-                            <div class="recommendation-item">
-                                <div class="recommendation-thumbnail">🤖<br>AI</div>
-                                <div class="recommendation-content">
-                                    <div class="recommendation-title">Scale AI-Powered Personalization</div>
-                                    <div class="recommendation-meta">45% completion rate increase • $2.3M additional budget recommended</div>
-                                    <div class="recommendation-tags">
-                                        <span class="tag priority">High ROI</span>
-                                        <span class="tag">Strategic Initiative</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="recommendation-item">
-                                <div class="recommendation-thumbnail">🔄<br>TRANS</div>
-                                <div class="recommendation-content">
-                                    <div class="recommendation-title">Digital Transformation Learning Program</div>
-                                    <div class="recommendation-meta">67% workforce needs upskilling • 18-month timeline</div>
-                                    <div class="recommendation-tags">
-                                        <span class="tag skill-gap">Organization-wide</span>
-                                        <span class="tag">Future Ready</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="recommendation-item">
-                                <div class="recommendation-thumbnail">📊<br>MEAS</div>
-                                <div class="recommendation-content">
-                                    <div class="recommendation-title">Advanced Learning Analytics Platform</div>
-                                    <div class="recommendation-meta">Predictive insights • Business performance correlation</div>
-                                    <div class="recommendation-tags">
-                                        <span class="tag">Data-Driven</span>
-                                        <span class="tag">Competitive Advantage</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div style="margin-bottom: 2rem;">
-                            <h3 style="color: #667eea; margin-bottom: 1rem;">🎯 Strategic Focus Areas</h3>
-                            
-                            <div class="recommendation-item">
-                                <div class="recommendation-thumbnail">👥<br>CULT</div>
-                                <div class="recommendation-content">
-                                    <div class="recommendation-title">Learning Culture Transformation</div>
-                                    <div class="recommendation-meta">89% engagement rate • Target: 95%+ industry leadership</div>
-                                    <div class="recommendation-tags">
-                                        <span class="tag">Culture Change</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="recommendation-item">
-                                <div class="recommendation-thumbnail">🏆<br>BENCH</div>
-                                <div class="recommendation-content">
-                                    <div class="recommendation-title">Industry Benchmarking Study</div>
-                                    <div class="recommendation-meta">Learning velocity 23% above industry • Maintain competitive edge</div>
-                                    <div class="recommendation-tags">
-                                        <span class="tag">Market Position</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div>
-                            <h3 style="color: #667eea; margin-bottom: 1rem;">📈 Board-Ready Initiatives</h3>
-                            
-                            <div class="recommendation-item">
-                                <div class="recommendation-thumbnail">💼<br>EXEC</div>
-                                <div class="recommendation-content">
-                                    <div class="recommendation-title">Executive Learning Dashboard</div>
-                                    <div class="recommendation-meta">Real-time ROI tracking • Board presentation ready</div>
-                                    <div class="recommendation-tags">
-                                        <span class="tag">Executive Reporting</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Learning Path Section -->
-                <div id="learning-path-section" class="section" style="display: none;">
-                    <!-- Learner Learning Path -->
-                    <div id="learner-learning-path" class="persona-content">
-                        <h2 style="margin-bottom: 1.5rem; color: #2c3e50;">My Learning Path: Customer Service Excellence</h2>
-                        
-                        <div class="learning-path">
-                            <div class="path-item completed">
-                                <div class="path-number completed">✓</div>
-                                <div style="flex: 1;">
-                                    <div style="font-weight: 600; margin-bottom: 0.5rem;">Communication Fundamentals</div>
-                                    <div style="font-size: 0.9rem; color: #6c757d;">Completed • 92% score</div>
-                                </div>
-                            </div>
-
-                            <div class="path-item completed">
-                                <div class="path-number completed">✓</div>
-                                <div style="flex: 1;">
-                                    <div style="font-weight: 600; margin-bottom: 0.5rem;">Product Knowledge Basics</div>
-                                    <div style="font-size: 0.9rem; color: #6c757d;">Completed • 88% score</div>
-                                </div>
-                            </div>
-
-                            <div class="path-item current">
-                                <div class="path-number current">3</div>
-                                <div style="flex: 1;">
-                                    <div style="font-weight: 600; margin-bottom: 0.5rem;">Advanced Problem Solving</div>
-                                    <div style="font-size: 0.9rem; color: #6c757d;">In Progress • 65% complete</div>
-                                    <div class="progress-bar" style="margin-top: 0.5rem;">
-                                        <div class="progress-fill" style="width: 65%;"></div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="path-item">
-                                <div class="path-number">4</div>
-                                <div style="flex: 1;">
-                                    <div style="font-weight: 600; margin-bottom: 0.5rem;">Digital Tools Mastery</div>
-                                    <div style="font-size: 0.9rem; color: #6c757d;">Next • Unlocks after current course</div>
-                                </div>
-                            </div>
-
-                            <div class="path-item">
-                                <div class="path-number">5</div>
-                                <div style="flex: 1;">
-                                    <div style="font-weight: 600; margin-bottom: 0.5rem;">Customer Service Excellence Certification</div>
-                                    <div style="font-size: 0.9rem; color: #6c757d;">Final Assessment</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Sales Learning Path -->
-                    <div id="sales-learning-path" class="persona-content" style="display: none;">
-                        <h2 style="margin-bottom: 1.5rem; color: #2c3e50;">My Learning Path: Sales Mastery Program</h2>
-                        
-                        <div class="learning-path">
-                            <div class="path-item completed">
-                                <div class="path-number completed">✓</div>
-                                <div style="flex: 1;">
-                                    <div style="font-weight: 600; margin-bottom: 0.5rem;">Sales Fundamentals</div>
-                                    <div style="font-size: 0.9rem; color: #6c757d;">Completed • 95% score</div>
-                                </div>
-                            </div>
-
-                            <div class="path-item completed">
-                                <div class="path-number completed">✓</div>
-                                <div style="flex: 1;">
-                                    <div style="font-weight: 600; margin-bottom: 0.5rem;">Product Knowledge Deep Dive</div>
-                                    <div style="font-size: 0.9rem; color: #6c757d;">Completed • 89% score</div>
-                                </div>
-                            </div>
-
-                            <div class="path-item current">
-                                <div class="path-number current">3</div>
-                                <div style="flex: 1;">
-                                    <div style="font-weight: 600; margin-bottom: 0.5rem;">Advanced Objection Handling</div>
-                                    <div style="font-size: 0.9rem; color: #6c757d;">In Progress • 75% complete</div>
-                                    <div class="progress-bar" style="margin-top: 0.5rem;">
-                                        <div class="progress-fill" style="width: 75%;"></div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="path-item">
-                                <div class="path-number">4</div>
-                                <div style="flex: 1;">
-                                    <div style="font-weight: 600; margin-bottom: 0.5rem;">CRM & Pipeline Management</div>
-                                    <div style="font-size: 0.9rem; color: #6c757d;">Next • High-value skill</div>
-                                </div>
-                            </div>
-
-                            <div class="path-item">
-                                <div class="path-number">5</div>
-                                <div style="flex: 1;">
-                                    <div style="font-weight: 600; margin-bottom: 0.5rem;">Negotiation & Closing Mastery</div>
-                                    <div style="font-size: 0.9rem; color: #6c757d;">Advanced</div>
-                                </div>
-                            </div>
-
-                            <div class="path-item">
-                                <div class="path-number">6</div>
-                                <div style="flex: 1;">
-                                    <div style="font-weight: 600; margin-bottom: 0.5rem;">Sales Leadership Track</div>
-                                    <div style="font-size: 0.9rem; color: #6c757d;">Career Development</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Technician Learning Path -->
-                    <div id="technician-learning-path" class="persona-content" style="display: none;">
-                        <h2 style="margin-bottom: 1.5rem; color: #2c3e50;">My Learning Path: Technical Certification Track</h2>
-                        
-                        <div class="learning-path">
-                            <div class="path-item completed">
-                                <div class="path-number completed">✓</div>
-                                <div style="flex: 1;">
-                                    <div style="font-weight: 600; margin-bottom: 0.5rem;">Safety Protocols & Compliance</div>
-                                    <div style="font-size: 0.9rem; color: #6c757d;">Completed • Certified</div>
-                                </div>
-                            </div>
-
-                            <div class="path-item completed">
-                                <div class="path-number completed">✓</div>
-                                <div style="flex: 1;">
-                                    <div style="font-weight: 600; margin-bottom: 0.5rem;">Basic Diagnostic Tools</div>
-                                    <div style="font-size: 0.9rem; color: #6c757d;">Completed • 94% score</div>
-                                </div>
-                            </div>
-
-                            <div class="path-item current">
-                                <div class="path-number current">3</div>
-                                <div style="flex: 1;">
-                                    <div style="font-weight: 600; margin-bottom: 0.5rem;">Advanced Troubleshooting</div>
-                                    <div style="font-size: 0.9rem; color: #6c757d;">In Progress • 40% complete</div>
-                                    <div class="progress-bar" style="margin-top: 0.5rem;">
-                                        <div class="progress-fill" style="width: 40%;"></div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="path-item">
-                                <div class="path-number">4</div>
-                                <div style="flex: 1;">
-                                    <div style="font-weight: 600; margin-bottom: 0.5rem;">Hydraulic Systems Certification</div>
-                                    <div style="font-size: 0.9rem; color: #6c757d;">Next • Expires in 12 days</div>
-                                </div>
-                            </div>
-
-                            <div class="path-item">
-                                <div class="path-number">5</div>
-                                <div style="flex: 1;">
-                                    <div style="font-weight: 600; margin-bottom: 0.5rem;">Mobile Technology Integration</div>
-                                    <div style="font-size: 0.9rem; color: #6c757d;">Upcoming</div>
-                                </div>
-                            </div>
-
-                            <div class="path-item">
-                                <div class="path-number">6</div>
-                                <div style="flex: 1;">
-                                    <div style="font-weight: 600; margin-bottom: 0.5rem;">Senior Technician Leadership</div>
-                                    <div style="font-size: 0.9rem; color: #6c757d;">Career Advancement</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Trainer Learning Path -->
-                    <div id="trainer-learning-path" class="persona-content" style="display: none;">
-                        <h2 style="margin-bottom: 1.5rem; color: #2c3e50;">My Learning Path: Learning Design Excellence</h2>
-                        
-                        <div class="learning-path">
-                            <div class="path-item completed">
-                                <div class="path-number completed">✓</div>
-                                <div style="flex: 1;">
-                                    <div style="font-weight: 600; margin-bottom: 0.5rem;">Instructional Design Fundamentals</div>
-                                    <div style="font-size: 0.9rem; color: #6c757d;">Completed • Expert Level</div>
-                                </div>
-                            </div>
-
-                            <div class="path-item completed">
-                                <div class="path-number completed">✓</div>
-                                <div style="flex: 1;">
-                                    <div style="font-weight: 600; margin-bottom: 0.5rem;">Learning Technology Platforms</div>
-                                    <div style="font-size: 0.9rem; color: #6c757d;">Completed • 96% score</div>
-                                </div>
-                            </div>
-
-                            <div class="path-item current">
-                                <div class="path-number current">3</div>
-                                <div style="flex: 1;">
-                                    <div style="font-weight: 600; margin-bottom: 0.5rem;">AI in Learning & Development</div>
-                                    <div style="font-size: 0.9rem; color: #6c757d;">In Progress • 80% complete</div>
-                                    <div class="progress-bar" style="margin-top: 0.5rem;">
-                                        <div class="progress-fill" style="width: 80%;"></div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="path-item">
-                                <div class="path-number">4</div>
-                                <div style="flex: 1;">
-                                    <div style="font-weight: 600; margin-bottom: 0.5rem;">Advanced Learning Analytics</div>
-                                    <div style="font-size: 0.9rem; color: #6c757d;">Next • Data-driven insights</div>
-                                </div>
-                            </div>
-
-                            <div class="path-item">
-                                <div class="path-number">5</div>
-                                <div style="flex: 1;">
-                                    <div style="font-weight: 600; margin-bottom: 0.5rem;">Content Development Mastery</div>
-                                    <div style="font-size: 0.9rem; color: #6c757d;">Advanced</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Manager Learning Path -->
-                    <div id="manager-learning-path" class="persona-content" style="display: none;">
-                        <h2 style="margin-bottom: 1.5rem; color: #2c3e50;">My Learning Path: Leadership Development Program</h2>
-                        
-                        <div class="learning-path">
-                            <div class="path-item completed">
-                                <div class="path-number completed">✓</div>
-                                <div style="flex: 1;">
-                                    <div style="font-weight: 600; margin-bottom: 0.5rem;">Team Management Fundamentals</div>
-                                    <div style="font-size: 0.9rem; color: #6c757d;">Completed • 91% score</div>
-                                </div>
-                            </div>
-
-                            <div class="path-item completed">
-                                <div class="path-number completed">✓</div>
-                                <div style="flex: 1;">
-                                    <div style="font-weight: 600; margin-bottom: 0.5rem;">Performance Management Systems</div>
-                                    <div style="font-size: 0.9rem; color: #6c757d;">Completed • 88% score</div>
-                                </div>
-                            </div>
-
-                            <div class="path-item current">
-                                <div class="path-number current">3</div>
-                                <div style="flex: 1;">
-                                    <div style="font-weight: 600; margin-bottom: 0.5rem;">Coaching & Mentoring Excellence</div>
-                                    <div style="font-size: 0.9rem; color: #6c757d;">In Progress • 55% complete</div>
-                                    <div class="progress-bar" style="margin-top: 0.5rem;">
-                                        <div class="progress-fill" style="width: 55%;"></div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="path-item">
-                                <div class="path-number">4</div>
-                                <div style="flex: 1;">
-                                    <div style="font-weight: 600; margin-bottom: 0.5rem;">People Analytics & Decision Making</div>
-                                    <div style="font-size: 0.9rem; color: #6c757d;">Next • Data-driven leadership</div>
-                                </div>
-                            </div>
-
-                            <div class="path-item">
-                                <div class="path-number">5</div>
-                                <div style="flex: 1;">
-                                    <div style="font-weight: 600; margin-bottom: 0.5rem;">Strategic Leadership</div>
-                                    <div style="font-size: 0.9rem; color: #6c757d;">Executive Track</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Compliance Learning Path -->
-                    <div id="compliance-learning-path" class="persona-content" style="display: none;">
-                        <h2 style="margin-bottom: 1.5rem; color: #2c3e50;">My Learning Path: Compliance Mastery Program</h2>
-                        
-                        <div class="learning-path">
-                            <div class="path-item completed">
-                                <div class="path-number completed">✓</div>
-                                <div style="flex: 1;">
-                                    <div style="font-weight: 600; margin-bottom: 0.5rem;">Regulatory Framework Essentials</div>
-                                    <div style="font-size: 0.9rem; color: #6c757d;">Completed • Certified</div>
-                                </div>
-                            </div>
-
-                            <div class="path-item completed">
-                                <div class="path-number completed">✓</div>
-                                <div style="flex: 1;">
-                                    <div style="font-weight: 600; margin-bottom: 0.5rem;">Audit Management & Controls</div>
-                                    <div style="font-size: 0.9rem; color: #6c757d;">Completed • 93% score</div>
-                                </div>
-                            </div>
-
-                            <div class="path-item current">
-                                <div class="path-number current">3</div>
-                                <div style="flex: 1;">
-                                    <div style="font-weight: 600; margin-bottom: 0.5rem;">Advanced Risk Assessment</div>
-                                    <div style="font-size: 0.9rem; color: #6c757d;">In Progress • 70% complete</div>
-                                    <div class="progress-bar" style="margin-top: 0.5rem;">
-                                        <div class="progress-fill" style="width: 70%;"></div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="path-item">
-                                <div class="path-number">4</div>
-                                <div style="flex: 1;">
-                                    <div style="font-weight: 600; margin-bottom: 0.5rem;">Policy Development & Implementation</div>
-                                    <div style="font-size: 0.9rem; color: #6c757d;">Next • Strategic impact</div>
-                                </div>
-                            </div>
-
-                            <div class="path-item">
-                                <div class="path-number">5</div>
-                                <div style="flex: 1;">
-                                    <div style="font-weight: 600; margin-bottom: 0.5rem;">Chief Compliance Officer Track</div>
-                                    <div style="font-size: 0.9rem; color: #6c757d;">Executive Development</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- HR Learning Path -->
-                    <div id="hr-learning-path" class="persona-content" style="display: none;">
-                        <h2 style="margin-bottom: 1.5rem; color: #2c3e50;">My Learning Path: Strategic HR Leadership</h2>
-                        
-                        <div class="learning-path">
-                            <div class="path-item completed">
-                                <div class="path-number completed">✓</div>
-                                <div style="flex: 1;">
-                                    <div style="font-weight: 600; margin-bottom: 0.5rem;">Workforce Planning Fundamentals</div>
-                                    <div style="font-size: 0.9rem; color: #6c757d;">Completed • 90% score</div>
-                                </div>
-                            </div>
-
-                            <div class="path-item completed">
-                                <div class="path-number completed">✓</div>
-                                <div style="flex: 1;">
-                                    <div style="font-weight: 600; margin-bottom: 0.5rem;">People Analytics & Insights</div>
-                                    <div style="font-size: 0.9rem; color: #6c757d;">Completed • 87% score</div>
-                                </div>
-                            </div>
-
-                            <div class="path-item current">
-                                <div class="path-number current">3</div>
-                                <div style="flex: 1;">
-                                    <div style="font-weight: 600; margin-bottom: 0.5rem;">Advanced Talent Development</div>
-                                    <div style="font-size: 0.9rem; color: #6c757d;">In Progress • 60% complete</div>
-                                    <div class="progress-bar" style="margin-top: 0.5rem;">
-                                        <div class="progress-fill" style="width: 60%;"></div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="path-item">
-                                <div class="path-number">4</div>
-                                <div style="flex: 1;">
-                                    <div style="font-weight: 600; margin-bottom: 0.5rem;">Succession Planning & Career Pathing</div>
-                                    <div style="font-size: 0.9rem; color: #6c757d;">Next • Strategic capability</div>
-                                </div>
-                            </div>
-
-                            <div class="path-item">
-                                <div class="path-number">5</div>
-                                <div style="flex: 1;">
-                                    <div style="font-weight: 600; margin-bottom: 0.5rem;">Chief People Officer Development</div>
-                                    <div style="font-size: 0.9rem; color: #6c757d;">Executive Leadership</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- IT Learning Path -->
-                    <div id="it-learning-path" class="persona-content" style="display: none;">
-                        <h2 style="margin-bottom: 1.5rem; color: #2c3e50;">My Learning Path: Enterprise Technology Leadership</h2>
-                        
-                        <div class="learning-path">
-                            <div class="path-item completed">
-                                <div class="path-number completed">✓</div>
-                                <div style="flex: 1;">
-                                    <div style="font-weight: 600; margin-bottom: 0.5rem;">System Security & Identity Management</div>
-                                    <div style="font-size: 0.9rem; color: #6c757d;">Completed • Expert Level</div>
-                                </div>
-                            </div>
-
-                            <div class="path-item completed">
-                                <div class="path-number completed">✓</div>
-                                <div style="flex: 1;">
-                                    <div style="font-weight: 600; margin-bottom: 0.5rem;">API Integration & Performance</div>
-                                    <div style="font-size: 0.9rem; color: #6c757d;">Completed • 95% score</div>
-                                </div>
-                            </div>
-
-                            <div class="path-item current">
-                                <div class="path-number current">3</div>
-                                <div style="flex: 1;">
-                                    <div style="font-weight: 600; margin-bottom: 0.5rem;">Advanced System Optimization</div>
-                                    <div style="font-size: 0.9rem; color: #6c757d;">In Progress • 85% complete</div>
-                                    <div class="progress-bar" style="margin-top: 0.5rem;">
-                                        <div class="progress-fill" style="width: 85%;"></div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="path-item">
-                                <div class="path-number">4</div>
-                                <div style="flex: 1;">
-                                    <div style="font-weight: 600; margin-bottom: 0.5rem;">Enterprise Architecture & Scalability</div>
-                                    <div style="font-size: 0.9rem; color: #6c757d;">Next • Strategic systems</div>
-                                </div>
-                            </div>
-
-                            <div class="path-item">
-                                <div class="path-number">5</div>
-                                <div style="flex: 1;">
-                                    <div style="font-weight: 600; margin-bottom: 0.5rem;">Technology Director Leadership</div>
-                                    <div style="font-size: 0.9rem; color: #6c757d;">Management Track</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Executive Learning Path -->
-                    <div id="executive-learning-path" class="persona-content" style="display: none;">
-                        <h2 style="margin-bottom: 1.5rem; color: #2c3e50;">My Learning Path: Strategic Learning Leadership</h2>
-                        
-                        <div class="learning-path">
-                            <div class="path-item completed">
-                                <div class="path-number completed">✓</div>
-                                <div style="flex: 1;">
-                                    <div style="font-weight: 600; margin-bottom: 0.5rem;">Learning Strategy & Business Impact</div>
-                                    <div style="font-size: 0.9rem; color: #6c757d;">Completed • Executive Level</div>
-                                </div>
-                            </div>
-
-                            <div class="path-item completed">
-                                <div class="path-number completed">✓</div>
-                                <div style="flex: 1;">
-                                    <div style="font-weight: 600; margin-bottom: 0.5rem;">ROI Measurement & Analytics</div>
-                                    <div style="font-size: 0.9rem; color: #6c757d;">Completed • 98% score</div>
-                                </div>
-                            </div>
-
-                            <div class="path-item current">
-                                <div class="path-number current">3</div>
-                                <div style="flex: 1;">
-                                    <div style="font-weight: 600; margin-bottom: 0.5rem;">Digital Learning Transformation</div>
-                                    <div style="font-size: 0.9rem; color: #6c757d;">In Progress • 45% complete</div>
-                                    <div class="progress-bar" style="margin-top: 0.5rem;">
-                                        <div class="progress-fill" style="width: 45%;"></div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="path-item">
-                                <div class="path-number">4</div>
-                                <div style="flex: 1;">
-                                    <div style="font-weight: 600; margin-bottom: 0.5rem;">AI & Future of Learning</div>
-                                    <div style="font-size: 0.9rem; color: #6c757d;">Next • Innovation focus</div>
-                                </div>
-                            </div>
-
-                            <div class="path-item">
-                                <div class="path-number">5</div>
-                                <div style="flex: 1;">
-                                    <div style="font-weight: 600; margin-bottom: 0.5rem;">Chief Learning Officer Mastery</div>
-                                    <div style="font-size: 0.9rem; color: #6c757d;">C-Suite Excellence</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Analytics Section -->
-                <div id="analytics-section" class="section" style="display: none;">
-                    <h2 style="margin-bottom: 1.5rem; color: #2c3e50;">Learning Analytics</h2>
+                    <nav class="unified-nav">
+                        <div class="unified-nav-item active" onclick="showManagerTab('team-overview')">Team Overview</div>
+                        <div class="unified-nav-item" onclick="showManagerTab('compliance')">Compliance</div>
+                        <div class="unified-nav-item" onclick="showManagerTab('nudging')">AI Nudging</div>
+                    </nav>
                     
-                    <div class="dashboard-grid" style="margin-bottom: 2rem;">
-                        <div class="card">
-                            <div class="card-header">
-                                <div class="card-icon" style="background: #e8f5e8; color: #4caf50;">📚</div>
-                                <div class="card-title">Courses Completed</div>
-                            </div>
-                            <div style="font-size: 2rem; font-weight: bold; color: #4caf50;">24</div>
-                            <div style="color: #6c757d;">This quarter</div>
+                    <div id="manager-content-area">
                         </div>
-
-                        <div class="card">
-                            <div class="card-header">
-                                <div class="card-icon" style="background: #e3f2fd; color: #2196f3;">⏱️</div>
-                                <div class="card-title">Learning Time</div>
-                            </div>
-                            <div style="font-size: 2rem; font-weight: bold; color: #2196f3;">47h</div>
-                            <div style="color: #6c757d;">This month</div>
-                        </div>
-
-                        <div class="card">
-                            <div class="card-header">
-                                <div class="card-icon" style="background: #fff3e0; color: #ff9800;">📊</div>
-                                <div class="card-title">Avg. Score</div>
-                            </div>
-                            <div style="font-size: 2rem; font-weight: bold; color: #ff9800;">91%</div>
-                            <div style="color: #6c757d;">Quiz average</div>
-                        </div>
+                </div>
+                
+                <div id="it-dashboard" class="persona-content" style="display: none;">
+                    <h2>IT Administrator Dashboard</h2>
+                    <div class="dashboard-grid">
+                        <div class="card"><div class="card-header">🖥️</div><div>System Health: 99.9% Uptime</div></div>
+                        <div class="card"><div class="card-header">🔗</div><div>SSO Integrations: 12 Active</div></div>
+                        <div class="card"><div class="card-header">🔐</div><div>Security Score: A+</div></div>
                     </div>
-
-                    <div class="card">
-                        <h3 style="margin-bottom: 1rem;">Learning Habits Analysis</h3>
-                        <div style="margin-bottom: 1rem;">
-                            <strong>Peak Learning Times:</strong>
-                            <div style="margin-top: 0.5rem; display: flex; gap: 1rem; flex-wrap: wrap;">
-                                <span class="tag">9:00 AM - 11:00 AM</span>
-                                <span class="tag">2:00 PM - 4:00 PM</span>
-                            </div>
-                        </div>
-                        <div style="margin-bottom: 1rem;">
-                            <strong>Preferred Content Types:</strong>
-                            <div style="margin-top: 0.5rem; display: flex; gap: 1rem; flex-wrap: wrap;">
-                                <span class="tag">Interactive (45%)</span>
-                                <span class="tag">Video (35%)</span>
-                                <span class="tag">Text (20%)</span>
-                            </div>
-                        </div>
-                        <div>
-                            <strong>Learning Streak:</strong> 12 days (Personal best: 28 days)
+                    <div class="sso-panel">
+                        <div class="sso-panel-header">Learner Directory</div>
+                        <div class="sso-panel-content">
+                             <input type="text" placeholder="Search learners..." style="width:100%; padding:0.5rem; margin-bottom:1rem;">
+                             <table class="user-table">
+                                 <thead><tr><th>Name</th><th>Department</th><th>Action</th></tr></thead>
+                                 <tbody>
+                                     <tr><td>Sarah Chen</td><td>Sales</td><td><button class="btn">View</button></td></tr>
+                                     <tr><td>Mike Rodriguez</td><td>Field Service</td><td><button class="btn">View</button></td></tr>
+                                 </tbody>
+                             </table>
                         </div>
                     </div>
                 </div>
+
             </div>
 
-            <!-- Sidebar -->
-            <aside class="sidebar">
-                <!-- Learner Sidebar -->
-                <div id="learner-sidebar" class="persona-sidebar">
-                    <h3 style="margin-bottom: 1rem; color: #2c3e50;">Quick Actions</h3>
-                    
-                    <button class="btn" style="width: 100%; margin-bottom: 0.5rem;" onclick="openProfileModal()">
-                        ⚙️ Update Preferences
-                    </button>
-                    
-                    <button class="btn" style="width: 100%; margin-bottom: 1rem; background: #28a745;">
-                        🎯 Start Priority Training
-                    </button>
-                    
-                    <div style="margin-bottom: 1.5rem;">
-                        <h4 style="margin-bottom: 0.5rem; color: #2c3e50;">Current Focus</h4>
-                        <div style="font-size: 0.9rem; color: #6c757d;">Objection Handling Mastery</div>
-                        <div class="progress-bar" style="margin-top: 0.5rem;">
-                            <div class="progress-fill" style="width: 68%;"></div>
-                        </div>
-                    </div>
-
-                    <div style="margin-bottom: 1.5rem;">
-                        <h4 style="margin-bottom: 0.5rem; color: #2c3e50;">Upcoming Deadlines</h4>
-                        <div style="font-size: 0.9rem; margin-bottom: 0.5rem;">
-                            <div style="font-weight: 600;">F&I Products Quiz</div>
-                            <div style="color: #ff9800;">Due in 2 days</div>
-                        </div>
-                        <div style="font-size: 0.9rem;">
-                            <div style="font-weight: 600;">Sales Certification</div>
-                            <div style="color: #6c757d;">Due in 1 week</div>
-                        </div>
-                    </div>
-
-                    <div>
-                        <h4 style="margin-bottom: 0.5rem; color: #2c3e50;">Peer Activity</h4>
-                        <div style="font-size: 0.9rem; margin-bottom: 0.5rem;">
-                            <div>Lisa completed <strong>Customer Psychology</strong></div>
-                        </div>
-                        <div style="font-size: 0.9rem;">
-                            <div>Marcus earned <strong>Digital Sales Pro</strong> badge</div>
-                        </div>
-                    </div>
+            <div id="top-performers-section" class="section">
                 </div>
 
-                <!-- Sales Representative Sidebar -->
-                <div id="sales-sidebar" class="persona-sidebar" style="display: none;">
-                    <h3 style="margin-bottom: 1rem; color: #2c3e50;">Quick Actions</h3>
-                    
-                    <button class="btn" style="width: 100%; margin-bottom: 0.5rem;" onclick="openProfileModal()">
-                        ⚙️ Update Preferences
-                    </button>
-                    
-                    <button class="btn" style="width: 100%; margin-bottom: 1rem; background: #28a745;">
-                        🎯 Start Priority Training
-                    </button>
-                    
-                    <div style="margin-bottom: 1.5rem;">
-                        <h4 style="margin-bottom: 0.5rem; color: #2c3e50;">Current Focus</h4>
-                        <div style="font-size: 0.9rem; color: #6c757d;">Advanced Objection Handling</div>
-                        <div class="progress-bar" style="margin-top: 0.5rem;">
-                            <div class="progress-fill" style="width: 75%;"></div>
-                        </div>
-                    </div>
-
-                    <div style="margin-bottom: 1.5rem;">
-                        <h4 style="margin-bottom: 0.5rem; color: #2c3e50;">Upcoming Deadlines</h4>
-                        <div style="font-size: 0.9rem; margin-bottom: 0.5rem;">
-                            <div style="font-weight: 600;">New Model Launch Cert.</div>
-                            <div style="color: #ff9800;">Due in 5 days</div>
-                        </div>
-                        <div style="font-size: 0.9rem;">
-                            <div style="font-weight: 600;">CRM Pipeline Opt.</div>
-                            <div style="color: #6c757d;">Due in 2 weeks</div>
-                        </div>
-                    </div>
-
-                    <div>
-                        <h4 style="margin-bottom: 0.5rem; color: #2c3e50;">Sales Insights</h4>
-                        <div style="font-size: 0.9rem; margin-bottom: 0.5rem;">
-                            <div>Win rate: <strong>+28%</strong> after training</div>
-                        </div>
-                        <div style="font-size: 0.9rem;">
-                            <div>Pipeline accuracy: <strong>+15%</strong></div>
-                        </div>
-                    </div>
+            <div id="profile-management-section" class="section">
                 </div>
-
-                <!-- Technician Sidebar -->
-                <div id="technician-sidebar" class="persona-sidebar" style="display: none;">
-                    <h3 style="margin-bottom: 1rem; color: #2c3e50;">Quick Actions</h3>
-                    
-                    <button class="btn" style="width: 100%; margin-bottom: 0.5rem;" onclick="openProfileModal()">
-                        ⚙️ Update Preferences
-                    </button>
-                    
-                    <button class="btn" style="width: 100%; margin-bottom: 1rem; background: #dc3545;">
-                        🚨 Renew Certifications
-                    </button>
-                    
-                    <div style="margin-bottom: 1.5rem;">
-                        <h4 style="margin-bottom: 0.5rem; color: #2c3e50;">Current Focus</h4>
-                        <div style="font-size: 0.9rem; color: #6c757d;">Advanced Troubleshooting</div>
-                        <div class="progress-bar" style="margin-top: 0.5rem;">
-                            <div class="progress-fill" style="width: 40%;"></div>
-                        </div>
-                    </div>
-
-                    <div style="margin-bottom: 1.5rem;">
-                        <h4 style="margin-bottom: 0.5rem; color: #2c3e50;">Certification Alerts</h4>
-                        <div style="font-size: 0.9rem; margin-bottom: 0.5rem;">
-                            <div style="font-weight: 600;">Safety Protocols</div>
-                            <div style="color: #dc3545;">Expires in 25 days</div>
-                        </div>
-                        <div style="font-size: 0.9rem;">
-                            <div style="font-weight: 600;">Hydraulic Systems</div>
-                            <div style="color: #ff9800;">Expires in 12 days</div>
-                        </div>
-                    </div>
-
-                    <div>
-                        <h4 style="margin-bottom: 0.5rem; color: #2c3e50;">Smart Nudges</h4>
-                        <div style="font-size: 0.9rem; margin-bottom: 0.5rem;">
-                            <div>Review Torque Sequence (3 issues)</div>
-                        </div>
-                        <div style="font-size: 0.9rem;">
-                            <div>New Diagnostic Tool training ready</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Manager Sidebar -->
-                <div id="manager-sidebar" class="persona-sidebar" style="display: none;">
-                    <h3 style="margin-bottom: 1rem; color: #2c3e50;">Quick Actions</h3>
-                    
-                    <button class="btn" style="width: 100%; margin-bottom: 0.5rem;" onclick="openProfileModal()">
-                        ⚙️ Team Settings
-                    </button>
-                    
-                    <button class="btn" style="width: 100%; margin-bottom: 0.5rem; background: #dc3545;">
-                        🚨 Assign Critical Training
-                    </button>
-                    
-                    <button class="btn" style="width: 100%; margin-bottom: 1rem; background: #17a2b8;">
-                        📊 View Team Analytics
-                    </button>
-                    
-                    <div style="margin-bottom: 1.5rem;">
-                        <h4 style="margin-bottom: 0.5rem; color: #2c3e50;">Team Focus</h4>
-                        <div style="font-size: 0.9rem; color: #6c757d;">Digital Sales Tools Training</div>
-                        <div class="progress-bar" style="margin-top: 0.5rem;">
-                            <div class="progress-fill" style="width: 45%;"></div>
-                        </div>
-                        <div style="font-size: 0.8rem; color: #6c757d; margin-top: 0.2rem;">8/12 team members assigned</div>
-                    </div>
-
-                    <div style="margin-bottom: 1.5rem;">
-                        <h4 style="margin-bottom: 0.5rem; color: #2c3e50;">Action Required</h4>
-                        <div style="font-size: 0.9rem; margin-bottom: 0.5rem;">
-                            <div style="font-weight: 600; color: #dc3545;">Mike T. - No activity (10 days)</div>
-                            <div style="font-size: 0.8rem; color: #6c757d;">Recommend check-in</div>
-                        </div>
-                        <div style="font-size: 0.9rem;">
-                            <div style="font-weight: 600; color: #ff9800;">Jessica R. - Behind target</div>
-                            <div style="font-size: 0.8rem; color: #6c757d;">Consider additional support</div>
-                        </div>
-                    </div>
-
-                    <div>
-                        <h4 style="margin-bottom: 0.5rem; color: #2c3e50;">Team Achievements</h4>
-                        <div style="font-size: 0.9rem; margin-bottom: 0.5rem;">
-                            <div>Sarah earned <strong>Sales Leader</strong> badge</div>
-                        </div>
-                        <div style="font-size: 0.9rem;">
-                            <div>Team avg. performance: <strong>+15%</strong></div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Trainer Sidebar -->
-                <div id="trainer-sidebar" class="persona-sidebar" style="display: none;">
-                    <h3 style="margin-bottom: 1rem; color: #2c3e50;">Quick Actions</h3>
-                    
-                    <button class="btn" style="width: 100%; margin-bottom: 0.5rem;" onclick="openProfileModal()">
-                        ⚙️ Content Settings
-                    </button>
-                    
-                    <button class="btn" style="width: 100%; margin-bottom: 0.5rem; background: #28a745;">
-                        ➕ Create New Content
-                    </button>
-                    
-                    <button class="btn" style="width: 100%; margin-bottom: 1rem; background: #ffc107; color: #000;">
-                        📈 Review Analytics
-                    </button>
-                    
-                    <div style="margin-bottom: 1.5rem;">
-                        <h4 style="margin-bottom: 0.5rem; color: #2c3e50;">Current Project</h4>
-                        <div style="font-size: 0.9rem; color: #6c757d;">EV Technology Course</div>
-                        <div class="progress-bar" style="margin-top: 0.5rem;">
-                            <div class="progress-fill" style="width: 75%;"></div>
-                        </div>
-                        <div style="font-size: 0.8rem; color: #6c757d; margin-top: 0.2rem;">Launch in 5 days</div>
-                    </div>
-
-                    <div style="margin-bottom: 1.5rem;">
-                        <h4 style="margin-bottom: 0.5rem; color: #2c3e50;">Content Requests</h4>
-                        <div style="font-size: 0.9rem; margin-bottom: 0.5rem;">
-                            <div style="font-weight: 600;">Electric Vehicle Tech</div>
-                            <div style="color: #dc3545;">247 requests</div>
-                        </div>
-                        <div style="font-size: 0.9rem;">
-                            <div style="font-weight: 600;">Modern Communication</div>
-                            <div style="color: #ff9800;">189 requests</div>
-                        </div>
-                    </div>
-
-                    <div>
-                        <h4 style="margin-bottom: 0.5rem; color: #2c3e50;">Recent Feedback</h4>
-                        <div style="font-size: 0.9rem; margin-bottom: 0.5rem;">
-                            <div>"Objection Handling" course: <strong>4.9/5</strong></div>
-                        </div>
-                        <div style="font-size: 0.9rem;">
-                            <div>"Sales Process" needs update</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Compliance Sidebar -->
-                <div id="compliance-sidebar" class="persona-sidebar" style="display: none;">
-                    <h3 style="margin-bottom: 1rem; color: #2c3e50;">Compliance Controls</h3>
-                    
-                    <button class="btn" style="width: 100%; margin-bottom: 0.5rem;" onclick="openProfileModal()">
-                        ⚙️ Audit Settings
-                    </button>
-                    
-                    <button class="btn" style="width: 100%; margin-bottom: 0.5rem; background: #dc3545;">
-                        🚨 Lockout Non-Compliant
-                    </button>
-                    
-                    <button class="btn" style="width: 100%; margin-bottom: 1rem; background: #17a2b8;">
-                        📊 Export Audit Report
-                    </button>
-                    
-                    <div style="margin-bottom: 1.5rem;">
-                        <h4 style="margin-bottom: 0.5rem; color: #2c3e50;">Critical Alerts</h4>
-                        <div style="font-size: 0.9rem; color: #dc3545; margin-bottom: 0.5rem;">
-                            <div style="font-weight: 600;">127 Overdue Employees</div>
-                            <div style="font-size: 0.8rem;">Auto-escalated to managers</div>
-                        </div>
-                        <div style="font-size: 0.9rem; color: #ff9800;">
-                            <div style="font-weight: 600;">Safety Training Dip</div>
-                            <div style="font-size: 0.8rem;">Manufacturing: -3% completion</div>
-                        </div>
-                    </div>
-
-                    <div style="margin-bottom: 1.5rem;">
-                        <h4 style="margin-bottom: 0.5rem; color: #2c3e50;">Audit Schedule</h4>
-                        <div style="font-size: 0.9rem; margin-bottom: 0.5rem;">
-                            <div style="font-weight: 600;">External Audit</div>
-                            <div style="color: #ff9800;">Due in 45 days</div>
-                        </div>
-                        <div style="font-size: 0.9rem;">
-                            <div style="font-weight: 600;">Documentation Review</div>
-                            <div style="color: #4caf50;">98% complete</div>
-                        </div>
-                    </div>
-
-                    <div>
-                        <h4 style="margin-bottom: 0.5rem; color: #2c3e50;">Risk Status</h4>
-                        <div style="font-size: 0.9rem; margin-bottom: 0.5rem;">
-                            <div>🟢 Low Risk: Sales (98%)</div>
-                        </div>
-                        <div style="font-size: 0.9rem;">
-                            <div>🟡 Medium Risk: Manufacturing (91%)</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- HR Business Partner Sidebar -->
-                <div id="hr-sidebar" class="persona-sidebar" style="display: none;">
-                    <h3 style="margin-bottom: 1rem; color: #2c3e50;">Quick Actions</h3>
-                    
-                    <button class="btn" style="width: 100%; margin-bottom: 0.5rem;" onclick="openProfileModal()">
-                        ⚙️ HR Settings
-                    </button>
-                    
-                    <button class="btn" style="width: 100%; margin-bottom: 0.5rem; background: #28a745;">
-                        ➕ Launch New Program
-                    </button>
-                    
-                    <button class="btn" style="width: 100%; margin-bottom: 1rem; background: #17a2b8;">
-                        📊 Workforce Analytics
-                    </button>
-                    
-                    <div style="margin-bottom: 1.5rem;">
-                        <h4 style="margin-bottom: 0.5rem; color: #2c3e50;">Key Metrics</h4>
-                        <div style="font-size: 0.9rem; color: #4caf50; margin-bottom: 0.5rem;">
-                            <div style="font-weight: 600;">Onboarding Completion</div>
-                            <div style="font-size: 0.8rem;">92% (90-day avg)</div>
-                        </div>
-                        <div style="font-size: 0.9rem; color: #ff9800;">
-                            <div style="font-weight: 600;">Retention Risk</div>
-                            <div style="font-size: 0.8rem;">245 employees at risk</div>
-                        </div>
-                    </div>
-
-                    <div style="margin-bottom: 1.5rem;">
-                        <h4 style="margin-bottom: 0.5rem; color: #2c3e50;">Skills Gap Alerts</h4>
-                        <div style="font-size: 0.9rem; margin-bottom: 0.5rem;">
-                            <div style="font-weight: 600;">Digital Transformation</div>
-                            <div style="color: #dc3545;">40% roles affected</div>
-                        </div>
-                        <div style="font-size: 0.9rem;">
-                            <div style="font-weight: 600;">Leadership Skills</div>
-                            <div style="color: #ff9800;">Emerging gap</div>
-                        </div>
-                    </div>
-
-                    <div>
-                        <h4 style="margin-bottom: 0.5rem; color: #2c3e50;">Talent Pool</h4>
-                        <div style="font-size: 0.9rem; margin-bottom: 0.5rem;">
-                            <div>234 Promotion-Ready</div>
-                        </div>
-                        <div style="font-size: 0.9rem;">
-                            <div>67 High-Potential Identified</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- IT Administrator Sidebar -->
-                <div id="it-sidebar" class="persona-sidebar" style="display: none;">
-                    <h3 style="margin-bottom: 1rem; color: #2c3e50;">System Controls</h3>
-                    
-                    <button class="btn" style="width: 100%; margin-bottom: 0.5rem;" onclick="openProfileModal()">
-                        ⚙️ System Config
-                    </button>
-                    
-                    <button class="btn" style="width: 100%; margin-bottom: 0.5rem; background: #17a2b8;">
-                        🔧 Run Diagnostics
-                    </button>
-                    
-                    <button class="btn" style="width: 100%; margin-bottom: 1rem; background: #6c757d;">
-                        📊 System Reports
-                    </button>
-                    
-                    <div style="margin-bottom: 1.5rem;">
-                        <h4 style="margin-bottom: 0.5rem; color: #2c3e50;">System Status</h4>
-                        <div style="font-size: 0.9rem; color: #4caf50; margin-bottom: 0.3rem;">✅ All Systems Operational</div>
-                        <div style="font-size: 0.8rem; color: #6c757d;">
-                            <div>API Response: 1.2s</div>
-                            <div>Active Users: 47,234</div>
-                            <div>Uptime: 99.8%</div>
-                        </div>
-                    </div>
-
-                    <div style="margin-bottom: 1.5rem;">
-                        <h4 style="margin-bottom: 0.5rem; color: #2c3e50;">Pending Updates</h4>
-                        <div style="font-size: 0.9rem; margin-bottom: 0.5rem;">
-                            <div style="font-weight: 600; color: #ff9800;">ML Model v2.3</div>
-                            <div style="font-size: 0.8rem; color: #6c757d;">Ready for deployment</div>
-                        </div>
-                        <div style="font-size: 0.9rem;">
-                            <div style="font-weight: 600; color: #dc3545;">GDPR Policy Update</div>
-                            <div style="font-size: 0.8rem; color: #6c757d;">Due next week</div>
-                        </div>
-                    </div>
-
-                    <div>
-                        <h4 style="margin-bottom: 0.5rem; color: #2c3e50;">Recent Activity</h4>
-                        <div style="font-size: 0.9rem; margin-bottom: 0.5rem;">
-                            <div>156 auto-optimizations</div>
-                        </div>
-                        <div style="font-size: 0.9rem;">
-                            <div>0 security incidents</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Executive Sidebar -->
-                <div id="executive-sidebar" class="persona-sidebar" style="display: none;">
-                    <h3 style="margin-bottom: 1rem; color: #2c3e50;">Strategic Overview</h3>
-                    
-                    <button class="btn" style="width: 100%; margin-bottom: 0.5rem;" onclick="openProfileModal()">
-                        ⚙️ Strategic Settings
-                    </button>
-                    
-                    <button class="btn" style="width: 100%; margin-bottom: 0.5rem; background: #28a745;">
-                        📈 View ROI Report
-                    </button>
-                    
-                    <button class="btn" style="width: 100%; margin-bottom: 1rem; background: #17a2b8;">
-                        📊 Board Presentation
-                    </button>
-                    
-                    <div style="margin-bottom: 1.5rem;">
-                        <h4 style="margin-bottom: 0.5rem; color: #2c3e50;">Key Performance</h4>
-                        <div style="font-size: 0.9rem; color: #4caf50; margin-bottom: 0.5rem;">
-                            <div style="font-weight: 600;">Training ROI</div>
-                            <div style="font-size: 0.8rem;">312% ($4.2M value)</div>
-                        </div>
-                        <div style="font-size: 0.9rem; color: #ff9800;">
-                            <div style="font-weight: 600;">Future Readiness</div>
-                            <div style="font-size: 0.8rem;">76% (AI/Digital focus)</div>
-                        </div>
-                    </div>
-
-                    <div style="margin-bottom: 1.5rem;">
-                        <h4 style="margin-bottom: 0.5rem; color: #2c3e50;">Strategic Alerts</h4>
-                        <div style="font-size: 0.9rem; margin-bottom: 0.5rem;">
-                            <div style="font-weight: 600; color: #dc3545;">Digital Transformation Gap</div>
-                            <div style="font-size: 0.8rem; color: #6c757d;">67% workforce needs training</div>
-                        </div>
-                        <div style="font-size: 0.9rem;">
-                            <div style="font-weight: 600; color: #ff9800;">AI Personalization Scale</div>
-                            <div style="font-size: 0.8rem; color: #6c757d;">$2.3M budget recommended</div>
-                        </div>
-                    </div>
-
-                    <div>
-                        <h4 style="margin-bottom: 0.5rem; color: #2c3e50;">Competitive Edge</h4>
-                        <div style="font-size: 0.9rem; margin-bottom: 0.5rem;">
-                            <div>Learning Velocity: <strong>+23%</strong> vs. Industry</div>
-                        </div>
-                        <div style="font-size: 0.9rem;">
-                            <div>Engagement Rate: <strong>89%</strong></div>
-                        </div>
-                    </div>
-                </div>
-            </aside>
         </main>
     </div>
 
-    <!-- Profile Settings Modal -->
-    <div id="profile-modal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>Learning Profile Settings</h2>
-                <button class="close-btn" onclick="closeProfileModal()">&times;</button>
-            </div>
-            
-            <form onsubmit="event.preventDefault(); saveProfile();">
-                <div class="form-group">
-                    <label class="form-label">Career Goals</label>
-                    <select class="form-control" id="career-goals-select">
-                        <!-- Options will be populated by JavaScript based on persona -->
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label">Preferred Content Formats</label>
-                    <div class="checkbox-group">
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="video" checked>
-                            <label for="video">Video Tutorials</label>
-                        </div>
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="interactive" checked>
-                            <label for="interactive">Interactive Simulations</label>
-                        </div>
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="roleplay">
-                            <label for="roleplay">Role-play Scenarios</label>
-                        </div>
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="text">
-                            <label for="text">Quick Reference Guides</label>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label">Learning Pace</label>
-                    <select class="form-control">
-                        <option>Intensive (2+ hours/day)</option>
-                        <option selected>Moderate (1 hour/day)</option>
-                        <option>Casual (30 min/day)</option>
-                        <option>Flexible (as available)</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label">Focus Areas</label>
-                    <div class="checkbox-group" id="focus-areas-checkboxes">
-                        <!-- Options will be populated by JavaScript based on persona -->
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label">Notification Preferences</label>
-                    <div class="checkbox-group">
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="daily-reminders" checked>
-                            <label for="daily-reminders">Daily Learning Reminders</label>
-                        </div>
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="new-recommendations" checked>
-                            <label for="new-recommendations">New Recommendations</label>
-                        </div>
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="achievement-alerts" checked>
-                            <label for="achievement-alerts">Achievement Alerts</label>
-                        </div>
-                    </div>
-                </div>
-
-                <div style="display: flex; gap: 1rem; justify-content: flex-end; margin-top: 2rem;">
-                    <button type="button" class="btn btn-secondary" onclick="closeProfileModal()">Cancel</button>
-                    <button type="submit" class="btn">Save Preferences</button>
-                </div>
-            </form>
+    <div id="profile-modal" style="display:none; position:fixed; top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:1000;">
+        <div style="background:white; margin: 15% auto; padding:20px; border-radius:12px; max-width: 600px;">
+            <h2>Learning Preferences</h2>
+            <p>Customize your learning experience.</p>
+            <button onclick="closeProfileModal()">Close</button>
         </div>
     </div>
 
     <script>
-        // Define persona data with names, roles, avatars, career goals, and focus areas
         const personaData = {
-            learner: {
-                name: "Alex Chen",
-                role: "Customer Service Rep",
-                avatar: "AC",
-                careerGoals: [
-                    "Senior Customer Service Specialist",
-                    "Team Lead", 
-                    "Customer Success Manager",
-                    "Training Coordinator"
-                ],
-                focusAreas: [
-                    { id: "communication", label: "Customer Communication" },
-                    { id: "product", label: "Product Knowledge" },
-                    { id: "problem", label: "Problem Solving" },
-                    { id: "compliance", label: "Compliance & Safety" },
-                    { id: "digital", label: "Digital Tools" },
-                    { id: "soft", label: "Soft Skills" }
-                ]
-            },
-            sales: {
-                name: "Jordan Martinez",
-                role: "Sales Representative",
-                avatar: "JM",
-                careerGoals: [
-                    "Senior Sales Rep",
-                    "Sales Team Lead",
-                    "Key Account Manager",
-                    "Sales Manager"
-                ],
-                focusAreas: [
-                    { id: "product", label: "Product Knowledge" },
-                    { id: "objection", label: "Objection Handling" },
-                    { id: "closing", label: "Closing Techniques" },
-                    { id: "crm", label: "CRM Skills" },
-                    { id: "negotiation", label: "Negotiation" },
-                    { id: "prospecting", label: "Lead Generation" }
-                ]
-            },
-            technician: {
-                name: "Riley Thompson",
-                role: "Field Service Technician",
-                avatar: "RT",
-                careerGoals: [
-                    "Senior Technician",
-                    "Field Service Supervisor",
-                    "Technical Trainer",
-                    "Service Manager"
-                ],
-                focusAreas: [
-                    { id: "troubleshooting", label: "Troubleshooting" },
-                    { id: "safety", label: "Safety Protocols" },
-                    { id: "equipment", label: "Equipment Certification" },
-                    { id: "diagnostic", label: "Diagnostic Tools" },
-                    { id: "mobile", label: "Mobile Technology" },
-                    { id: "compliance", label: "Regulatory Compliance" }
-                ]
-            },
-            trainer: {
-                name: "David Kim",
-                role: "L&D Specialist",
-                avatar: "DK",
-                careerGoals: [
-                    "Senior Learning Designer",
-                    "Training Manager",
-                    "Learning Technology Specialist",
-                    "Chief Learning Officer"
-                ],
-                focusAreas: [
-                    { id: "design", label: "Instructional Design" },
-                    { id: "tech", label: "Learning Technology" },
-                    { id: "assessment", label: "Assessment Design" },
-                    { id: "analytics", label: "Learning Analytics" },
-                    { id: "content", label: "Content Development" },
-                    { id: "ai", label: "AI in Learning" }
-                ]
-            },
-            manager: {
-                name: "Sarah Johnson",
-                role: "Team Manager",
-                avatar: "SJ",
-                careerGoals: [
-                    "Senior Manager",
-                    "Department Director",
-                    "Regional Manager",
-                    "VP of Operations"
-                ],
-                focusAreas: [
-                    { id: "team", label: "Team Development" },
-                    { id: "performance", label: "Performance Management" },
-                    { id: "coaching", label: "Coaching & Mentoring" },
-                    { id: "leadership", label: "Leadership Skills" },
-                    { id: "analytics", label: "People Analytics" },
-                    { id: "succession", label: "Succession Planning" }
-                ]
-            },
-            compliance: {
-                name: "Marcus Williams",
-                role: "Compliance Officer",
-                avatar: "MW",
-                careerGoals: [
-                    "Senior Compliance Officer",
-                    "Compliance Manager",
-                    "Risk Management Director",
-                    "Chief Compliance Officer"
-                ],
-                focusAreas: [
-                    { id: "regulatory", label: "Regulatory Management" },
-                    { id: "audit", label: "Audit & Controls" },
-                    { id: "risk", label: "Risk Assessment" },
-                    { id: "policy", label: "Policy Development" },
-                    { id: "training", label: "Compliance Training" },
-                    { id: "reporting", label: "Compliance Reporting" }
-                ]
-            },
-            hr: {
-                name: "Lisa Rodriguez",
-                role: "HR Business Partner",
-                avatar: "LR",
-                careerGoals: [
-                    "Senior HR Business Partner",
-                    "HR Manager",
-                    "Talent Development Director",
-                    "Chief People Officer"
-                ],
-                focusAreas: [
-                    { id: "workforce", label: "Workforce Planning" },
-                    { id: "talent", label: "Talent Development" },
-                    { id: "analytics", label: "People Analytics" },
-                    { id: "onboarding", label: "Onboarding & Integration" },
-                    { id: "career", label: "Career Pathing" },
-                    { id: "succession", label: "Succession Planning" }
-                ]
-            },
-            it: {
-                name: "Jennifer Chen",
-                role: "IT Administrator",
-                avatar: "JC",
-                careerGoals: [
-                    "Senior IT Administrator",
-                    "IT Manager",
-                    "Solutions Architect",
-                    "Technology Director"
-                ],
-                focusAreas: [
-                    { id: "security", label: "System Security" },
-                    { id: "integration", label: "System Integration" },
-                    { id: "performance", label: "Performance Optimization" },
-                    { id: "sso", label: "SSO & Identity Management" },
-                    { id: "api", label: "API Management" },
-                    { id: "monitoring", label: "System Monitoring" }
-                ]
-            },
-            executive: {
-                name: "Robert Davis",
-                role: "VP of Learning & Development",
-                avatar: "RD",
-                careerGoals: [
-                    "Senior VP of L&D",
-                    "Chief Learning Officer",
-                    "Chief Human Resources Officer",
-                    "Chief Executive Officer"
-                ],
-                focusAreas: [
-                    { id: "strategy", label: "Learning Strategy" },
-                    { id: "roi", label: "ROI & Business Impact" },
-                    { id: "innovation", label: "Learning Innovation" },
-                    { id: "leadership", label: "Executive Leadership" },
-                    { id: "transformation", label: "Digital Transformation" },
-                    { id: "culture", label: "Learning Culture" }
-                ]
-            }
+            learner: { name: "Alex Learner", role: "Frontline Employee", avatar: "AL" },
+            sales: { name: "Jordan Sales", role: "Sales Representative", avatar: "JS" },
+            technician: { name: "Riley Tech", role: "Technician", avatar: "RT" },
+            manager: { name: "Sarah Manager", role: "Team Manager", avatar: "SM" },
+            trainer: { name: "David Trainer", role: "L&D Specialist", avatar: "DT" },
+            compliance: { name: "Marcus Compliance", role: "Compliance Officer", avatar: "MC" },
+            hr: { name: "Lisa HR", role: "HR Business Partner", avatar: "LH" },
+            it: { name: "Jennifer IT", role: "IT Administrator", avatar: "JI" },
+            executive: { name: "Robert Exec", role: "VP of L&D", avatar: "RE" }
         };
 
-        /**
-         * Switches the displayed persona based on the selector's value.
-         * Updates user info, shows/hides persona-specific content and sidebars.
-         */
         function switchPersona() {
-            const selector = document.getElementById('persona-selector');
-            const selectedPersona = selector.value;
+            const selectedPersona = document.getElementById('persona-selector').value;
             const persona = personaData[selectedPersona];
             
-            // Update header user information
             document.getElementById('user-name').textContent = persona.name;
             document.getElementById('user-role').textContent = persona.role;
             document.getElementById('user-avatar').textContent = persona.avatar;
             
-            // Hide all persona-specific content sections (dashboards, recommendations, learning paths)
-            document.querySelectorAll('.persona-content').forEach(content => {
-                content.style.display = 'none';
-            });
+            document.querySelectorAll('.persona-content').forEach(el => el.style.display = 'none');
             
-            // Hide all persona-specific sidebars
-            document.querySelectorAll('.persona-sidebar').forEach(sidebar => {
-                sidebar.style.display = 'none';
-            });
-            
-            // Determine the currently active main section (Dashboard, Recommendations, etc.)
-            const activeNavItem = document.querySelector('.nav-item.active');
-            let activeSectionName = 'dashboard'; // Default to dashboard
-            if (activeNavItem) {
-                // Extract section name from onclick attribute (e.g., 'showSection("dashboard", this)')
-                const onclickAttr = activeNavItem.getAttribute('onclick');
-                const match = onclickAttr.match(/showSection\('([^']+)'/);
-                if (match && match[1]) {
-                    activeSectionName = match[1];
-                }
-            }
-
-            // Show the relevant content for the selected persona and active section
-            const personaContentId = `${selectedPersona}-${activeSectionName}`;
-            const personaContentElement = document.getElementById(personaContentId);
-            if (personaContentElement) {
-                personaContentElement.style.display = 'block';
-            } else {
-                // Fallback: if a specific persona content for the section doesn't exist,
-                // ensure the main section itself is shown (e.g., Analytics is generic)
-                const mainSectionElement = document.getElementById(`${activeSectionName}-section`);
-                if (mainSectionElement) {
-                    mainSectionElement.style.display = 'block';
-                }
-            }
-
-            // Show the selected persona's sidebar
-            const personaSidebarElement = document.getElementById(`${selectedPersona}-sidebar`);
-            if (personaSidebarElement) {
-                personaSidebarElement.style.display = 'block';
-            }
-            
-            // Update profile modal options based on the new persona
-            updateProfileModal(selectedPersona);
-        }
-
-        /**
-         * Populates the Career Goals dropdown and Focus Areas checkboxes in the profile modal
-         * based on the currently active persona.
-         * @param {string} persona The ID of the currently selected persona (e.g., 'learner', 'sales').
-         */
-        function updateProfileModal(persona) {
-            const data = personaData[persona];
-            
-            // Update career goals dropdown
-            const careerSelect = document.getElementById('career-goals-select');
-            careerSelect.innerHTML = ''; // Clear existing options
-            data.careerGoals.forEach(goal => {
-                const option = document.createElement('option');
-                option.value = goal;
-                option.textContent = goal;
-                careerSelect.appendChild(option);
-            });
-            
-            // Update focus areas checkboxes
-            const focusContainer = document.getElementById('focus-areas-checkboxes');
-            focusContainer.innerHTML = ''; // Clear existing checkboxes
-            data.focusAreas.forEach(area => {
-                const div = document.createElement('div');
-                div.className = 'checkbox-item';
-                // Randomly check some checkboxes to simulate saved preferences
-                div.innerHTML = `
-                    <input type="checkbox" id="${area.id}" ${Math.random() > 0.5 ? 'checked' : ''}>
-                    <label for="${area.id}">${area.label}</label>
-                `;
-                focusContainer.appendChild(div);
-            });
-        }
-
-        /**
-         * Shows the selected main content section (Dashboard, Recommendations, etc.)
-         * and updates the active navigation item.
-         * @param {string} sectionName The ID prefix of the section to show (e.g., 'dashboard', 'recommendations').
-         * @param {HTMLElement} clickedNavItem The navigation item that was clicked.
-         */
-        function showSection(sectionName, clickedNavItem) {
-            // Hide all main sections
-            document.querySelectorAll('.section').forEach(section => {
-                section.style.display = 'none';
-            });
-            
-            // Show the selected main section
-            document.getElementById(sectionName + '-section').style.display = 'block';
-            
-            // Update active class for navigation items
-            document.querySelectorAll('.nav-item').forEach(item => {
-                item.classList.remove('active');
-            });
-            clickedNavItem.classList.add('active');
-
-            // Re-apply persona-specific content visibility for the newly active section
-            const currentPersona = document.getElementById('persona-selector').value;
-            document.querySelectorAll('.persona-content').forEach(content => {
-                content.style.display = 'none'; // Hide all persona content first
-            });
-            const specificPersonaContentId = `${currentPersona}-${sectionName}`;
-            const specificPersonaContentElement = document.getElementById(specificPersonaContentId);
-            if (specificPersonaContentElement) {
-                specificPersonaContentElement.style.display = 'block';
-            } else {
-                // Fallback for sections that might not have persona-specific content (e.g., Analytics)
-                document.getElementById(`${sectionName}-section`).style.display = 'block';
+            const dashboardToShow = document.getElementById(`${selectedPersona}-dashboard`) || document.getElementById('learner-dashboard');
+            dashboardToShow.style.display = 'block';
+            if(selectedPersona === 'learner') {
+                document.getElementById('learner-name-display').textContent = persona.name;
             }
         }
 
-        /**
-         * Opens the profile settings modal.
-         */
+        function showSection(sectionId, navItem) {
+            document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+            document.getElementById(`${sectionId}-section`).classList.add('active');
+            
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            navItem.classList.add('active');
+        }
+
+        function showManagerTab(tabId) {
+            document.querySelectorAll('.unified-nav-item').forEach(item => item.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+            
+            const managerContentArea = document.getElementById('manager-content-area');
+            // Inject content based on tab
+            if(tabId === 'team-overview'){
+                managerContentArea.innerHTML = `<h3>Team Performance</h3><p>Detailed team overview goes here...</p>`;
+            } else if (tabId === 'compliance') {
+                managerContentArea.innerHTML = `<h3>Compliance Status</h3><p>Compliance charts and data go here...</p>`;
+            } else if (tabId === 'nudging') {
+                managerContentArea.innerHTML = `<h3>AI Nudging Controls</h3><p>Interface for sending nudges goes here...</p>`;
+            }
+        }
+
         function openProfileModal() {
-            document.getElementById('profile-modal').classList.add('active');
+            document.getElementById('profile-modal').style.display = 'flex';
         }
 
-        /**
-         * Closes the profile settings modal.
-         */
         function closeProfileModal() {
-            document.getElementById('profile-modal').classList.remove('active');
+            document.getElementById('profile-modal').style.display = 'none';
         }
 
-        /**
-         * Simulates saving profile preferences and displays a success message.
-         */
-        function saveProfile() {
-            // In a real application, this would send data to a backend.
-            console.log('Profile preferences saved!');
-            closeProfileModal();
-            
-            // Display a temporary success message
-            const successMsg = document.createElement('div');
-            successMsg.innerHTML = '✅ Profile preferences updated successfully!';
-            successMsg.style.cssText = `
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                background: #4caf50;
-                color: white;
-                padding: 1rem 1.5rem;
-                border-radius: 8px;
-                z-index: 1001;
-                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-                opacity: 0;
-                transform: translateY(-20px);
-                transition: all 0.3s ease-out;
+        // Function to inject content from other files
+        function loadContent() {
+            // Mock injection for Top Performer Analysis
+            const topPerformerSection = document.getElementById('top-performers-section');
+            topPerformerSection.innerHTML = `
+                <div class="unified-header">
+                    <h1>AI-Powered Top Performer Analysis</h1>
+                    <p>Identify Excellence • Extract Insights • Uplift Performance</p>
+                </div>
+                <div class="dashboard-grid">
+                    <div class="card"><h3>Sarah Chen</h3><p>Sales Consultant</p><p>Performance: 94</p></div>
+                    <div class="card"><h3>Marcus Johnson</h3><p>Sales Manager</p><p>Performance: 92</p></div>
+                    <div class="card"><h3>Lisa Rodriguez</h3><p>Service Advisor</p><p>Performance: 91</p></div>
+                </div>
+                <div class="ai-insights">
+                    <h3>Key Characteristics of Top Performers</h3>
+                    <div class="insight-item"><strong>Learning Behavior:</strong> Completes training 2x faster.</div>
+                    <div class="insight-item"><strong>Engagement:</strong> Daily LMS activity is 89% higher.</div>
+                </div>
             `;
-            document.body.appendChild(successMsg);
             
-            // Animate in
-            setTimeout(() => {
-                successMsg.style.opacity = '1';
-                successMsg.style.transform = 'translateY(0)';
-            }, 10);
-
-            // Animate out and remove after 3 seconds
-            setTimeout(() => {
-                successMsg.style.opacity = '0';
-                successMsg.style.transform = 'translateY(-20px)';
-                setTimeout(() => {
-                    successMsg.remove();
-                }, 300); // Allow time for fade out animation
-            }, 3000);
-        }
-
-        // Initialize on page load
-        document.addEventListener('DOMContentLoaded', function() {
-            // Set initial persona (default to 'learner')
-            document.getElementById('persona-selector').value = 'learner';
-            switchPersona(); // Call once to set initial state
-
-            // Simulate real-time updates for progress bars
-            setInterval(() => {
-                const progressBars = document.querySelectorAll('.progress-fill');
-                progressBars.forEach(bar => {
-                    const currentWidth = parseInt(bar.style.width);
-                    // Randomly increase progress for bars that are not yet 100%
-                    if (Math.random() > 0.7 && currentWidth < 100) {
-                        bar.style.width = (currentWidth + 1) + '%';
-                    }
-                });
-            }, 5000); // Update every 5 seconds
-
-            // Add click event listeners to recommendation items
-            // Using event delegation for efficiency and future dynamic content
-            document.body.addEventListener('click', function(event) {
-                const recommendationItem = event.target.closest('.recommendation-item');
-                if (recommendationItem) {
-                    // Prevent default link behavior if it were a real link
-                    event.preventDefault(); 
-                    // Use a custom message box instead of alert()
-                    displayMessageBox('Opening course: ' + recommendationItem.querySelector('.recommendation-title').textContent);
-                }
-            });
-        });
-
-        /**
-         * Displays a custom message box instead of alert().
-         * @param {string} message The message to display.
-         */
-        function displayMessageBox(message) {
-            const messageBox = document.createElement('div');
-            messageBox.style.cssText = `
-                position: fixed;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                background: #333;
-                color: white;
-                padding: 20px 30px;
-                border-radius: 10px;
-                box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-                z-index: 1002;
-                font-size: 1.1rem;
-                text-align: center;
-                opacity: 0;
-                transition: opacity 0.3s ease-out;
+            // Mock injection for SSO/Profile Management
+            const profileMgmtSection = document.getElementById('profile-management-section');
+            profileMgmtSection.innerHTML = `
+                 <div class="sso-panel">
+                    <div class="sso-panel-header">My Profile - Sarah Chen</div>
+                    <div class="sso-panel-content">
+                        <h4>SSO Information</h4>
+                        <p>Name: Sarah Chen (from Azure AD)</p>
+                        <p>Email: sarah.chen@company.com</p>
+                        <h4>Connected Systems</h4>
+                        <p>LMS, Certification Portal, Performance Dashboard</p>
+                    </div>
+                </div>
             `;
-            messageBox.textContent = message;
-            document.body.appendChild(messageBox);
-
-            // Fade in
-            setTimeout(() => {
-                messageBox.style.opacity = '1';
-            }, 10);
-
-            // Fade out and remove after a few seconds
-            setTimeout(() => {
-                messageBox.style.opacity = '0';
-                setTimeout(() => {
-                    messageBox.remove();
-                }, 300);
-            }, 2500);
+            
+            // Initial setup
+            switchPersona();
+            showManagerTab('team-overview'); // Set default manager tab
         }
+
+        document.addEventListener('DOMContentLoaded', loadContent);
+
     </script>
 </body>
 </html>
