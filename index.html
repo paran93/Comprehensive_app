@@ -3,500 +3,1163 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GenAI Learning & Enablement Platform</title>
+    <title>AI-Powered Workforce Learning System</title>
     <style>
-        /* Global Reset & Box-sizing */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
-        /* Body Styling */
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #f5f7fa 0%, #eef2f7 100%);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            padding: 20px;
-        }
-
-        /* Main Container */
-        .container {
-            max-width: 1600px;
-            width: 100%;
-            margin: 0 auto;
-            background: white;
-            min-height: 90vh;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            border-radius: 15px;
-            overflow: hidden;
+            overflow-x: hidden;
+            color: #334155;
         }
 
         /* Header */
         .header {
-            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
-            color: white;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
             padding: 1rem 2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
         }
 
         .logo {
-            font-size: 1.8rem;
-            font-weight: bold;
-        }
-
-        .user-profile {
             display: flex;
             align-items: center;
-            gap: 1rem;
+            gap: 12px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #4f46e5;
         }
 
-        .avatar {
+        .logo-icon {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 8px;
+            border-radius: 12px;
+            font-size: 1.2rem;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .persona-switcher {
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 8px 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .persona-switcher:hover {
+            border-color: #4f46e5;
+            transform: translateY(-2px);
+        }
+
+        .user-avatar {
             width: 40px;
             height: 40px;
             border-radius: 50%;
-            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            background: linear-gradient(135deg, #ff6b6b, #feca57);
             display: flex;
             align-items: center;
             justify-content: center;
+            color: white;
             font-weight: bold;
-            font-size: 0.8rem;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
 
-        #persona-selector {
-            background: rgba(255,255,255,0.9);
-            border: 1px solid rgba(255,255,255,0.5);
-            color: #2c3e50;
-            padding: 0.5rem;
-            border-radius: 6px;
-            margin-right: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        #persona-selector:hover {
-            background: white;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-
-        /* Navigation */
-        .nav {
-            background: #f8f9fa;
-            padding: 0 2rem;
-            border-bottom: 1px solid #e9ecef;
+        /* Main Layout */
+        .main-layout {
             display: flex;
-            gap: 2rem;
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
+            min-height: calc(100vh - 80px);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-right: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 2rem 0;
+            overflow-y: auto;
+            box-shadow: 4px 0 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-section {
+            margin-bottom: 2rem;
+        }
+
+        .nav-section h3 {
+            color: #64748b;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 0 1.5rem;
+            margin-bottom: 1rem;
         }
 
         .nav-item {
-            padding: 1rem 0;
-            cursor: pointer;
-            border-bottom: 3px solid transparent;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 1.5rem;
+            color: #475569;
+            text-decoration: none;
             transition: all 0.3s ease;
-            font-weight: 500;
-            white-space: nowrap;
-        }
-
-        .nav-item.active {
-            border-bottom-color: #667eea;
-            color: #667eea;
+            cursor: pointer;
+            border-left: 4px solid transparent;
         }
 
         .nav-item:hover {
-            color: #667eea;
+            background: rgba(99, 102, 241, 0.1);
+            color: #4f46e5;
+            border-left-color: #4f46e5;
+            transform: translateX(4px);
         }
 
-        /* Main Content Area */
-        .main-content {
+        .nav-item.active {
+            background: rgba(99, 102, 241, 0.15);
+            color: #4f46e5;
+            border-left-color: #4f46e5;
+            font-weight: 600;
+        }
+
+        .nav-item .icon {
+            width: 20px;
+            height: 20px;
+            font-size: 16px;
+        }
+
+        /* Content Area */
+        .content {
+            flex: 1;
             padding: 2rem;
-        }
-        
-        .section {
-            display: none;
-        }
-        
-        .section.active {
-            display: block;
+            overflow-y: auto;
         }
 
+        .content-header {
+            margin-bottom: 2rem;
+        }
+
+        .content-title {
+            font-size: 2rem;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .content-subtitle {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1.1rem;
+        }
+
+        /* Dashboard Cards */
         .dashboard-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 1.5rem;
+            margin-bottom: 2rem;
         }
 
         .card {
-            background: white;
-            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
             padding: 1.5rem;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.07);
-            border: 1px solid #e9ecef;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
         }
 
         .card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
         }
 
         .card-header {
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 12px;
             margin-bottom: 1rem;
         }
 
         .card-icon {
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.8rem;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            font-size: 1.5rem;
         }
 
         .card-title {
             font-size: 1.1rem;
             font-weight: 600;
-            color: #2c3e50;
+            color: #1e293b;
+        }
+        
+        .card-full {
+             grid-column: 1 / -1;
         }
 
+        .metric-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin: 0.5rem 0;
+        }
+
+        .metric-label {
+            color: #64748b;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-change {
+            font-size: 0.85rem;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-weight: 500;
+        }
+
+        .positive { background: #dcfce7; color: #166534; }
+        .negative { background: #fecaca; color: #dc2626; }
+        .warning { background: #fef3c7; color: #d97706; }
+
+        /* Progress Bars */
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 8px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        .progress-green { background: linear-gradient(90deg, #10b981, #34d399); }
+        .progress-blue { background: linear-gradient(90deg, #3b82f6, #60a5fa); }
+        .progress-purple { background: linear-gradient(90deg, #8b5cf6, #a78bfa); }
+        .progress-orange { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
+        .progress-red { background: linear-gradient(90deg, #ef4444, #f87171); }
+
+        /* AI Insights */
         .ai-insights {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.9), rgba(118, 75, 162, 0.9));
             color: white;
-            border-radius: 12px;
+            border-radius: 16px;
             padding: 1.5rem;
-            margin-top: 1.5rem;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+            margin-bottom: 2rem;
+            border: 1px solid rgba(255,255,255,0.3);
         }
 
         .ai-insights h3 {
             margin-bottom: 1rem;
+            font-size: 1.3rem;
             display: flex;
             align-items: center;
-            gap: 0.5rem;
-            font-size: 1.3rem;
-        }
-        
-        .insight-item {
-            background: rgba(255,255,255,0.1);
-            border-radius: 8px;
-            padding: 1rem;
-            margin-bottom: 1rem;
-            font-size: 0.95rem;
-            line-height: 1.4;
-        }
-        
-        /* Unified Platform Styles */
-        .unified-header {
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-        }
-        
-        .unified-nav {
-            display: flex;
-            gap: 0.5rem;
-            margin-bottom: 1.5rem;
-            background: #f8f9fa;
-            border-radius: 8px;
-            padding: 0.5rem;
+            gap: 8px;
         }
 
-        .unified-nav-item {
-            flex: 1;
-            text-align: center;
-            padding: 0.75rem 1rem;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 500;
-            transition: all 0.3s ease;
+        .insight-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            backdrop-filter: blur(5px);
         }
-        
-        .unified-nav-item.active {
-            background: #667eea;
-            color: white;
-            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.4);
+
+        .insight-item:last-child {
+            margin-bottom: 0;
         }
-        
-        /* SSO Management Styles */
-        .sso-panel {
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 2px 20px rgba(0,0,0,0.05);
-            overflow: hidden;
-            margin-top: 2rem;
+
+        /* Persona-specific content visibility */
+        .persona-content {
+            display: none;
         }
-        
-        .sso-panel-header {
-            background: #f8fafc;
-            padding: 1.5rem 2rem;
-            border-bottom: 1px solid #e2e8f0;
-            font-weight: 600;
-            color: #334155;
+
+        .persona-content.active {
+            display: block;
+            animation: fadeIn 0.6s ease-out;
         }
-        
-        .sso-panel-content {
-            padding: 2rem;
+
+        /* Hidden by default */
+        .content-section {
+            display: none;
         }
-        
-        .user-table {
+
+        .content-section.active {
+            display: block;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        /* Generic Table Styling */
+        .styled-table {
             width: 100%;
             border-collapse: collapse;
         }
-        
-        .user-table th, .user-table td {
+        .styled-table th, .styled-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e2e8f0;
             text-align: left;
+        }
+        .styled-table thead th {
+            background-color: #f8fafc;
+            font-weight: 600;
+        }
+        .styled-table tbody tr:hover {
+            background-color: #f1f5f9;
+        }
+
+
+        /* Recommendation & List Item Styling */
+        .list-item {
+            display: flex;
+            gap: 1rem;
             padding: 1rem;
-            border-bottom: 1px solid #f1f5f9;
-        }
-        
-        .btn {
-            padding: 0.75rem 1.5rem;
-            border-radius: 6px;
-            border: none;
-            font-weight: 500;
-            cursor: pointer;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            margin-bottom: 1rem;
             transition: all 0.3s ease;
-            background: #667eea;
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.95);
+        }
+
+        .list-item:hover {
+            border-color: #667eea;
+            background: #f8f9ff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+        }
+
+        .list-thumbnail {
+            width: 80px;
+            height: 60px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border-radius: 6px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
             color: white;
+            font-size: 1rem;
+            text-align: center;
+            font-weight: bold;
+            line-height: 1.2;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            flex-shrink: 0;
         }
-        
-        .btn:hover {
-            background: #5a67d8;
+
+        .list-content {
+            flex: 1;
         }
+
+        .list-title {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+
+        .list-meta {
+            font-size: 0.9rem;
+            color: #6c757d;
+            margin-bottom: 0.5rem;
+        }
+
+        .list-tags {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .tag {
+            background: #e3f2fd;
+            color: #1976d2;
+            padding: 0.2rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .tag.priority { background: #fff3e0; color: #f57c00; }
+        .tag.skill-gap { background: #ffebee; color: #d32f2f; }
+        .tag.completed { background: #e8f5e9; color: #2e7d32; }
+        .tag.gold { background-color: #ffeb3b; color: #333; }
+        .tag.silver { background-color: #e0e0e0; color: #333; }
+        .tag.bronze { background-color: #ffcdd2; color: #c62828; }
+
+
+        /* Learning Path */
+        .path-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            position: relative;
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .path-item.completed { background: #f8fff8; border-color: #4caf50; }
+        .path-item.current { background: #fff8e1; border-color: #ff9800; }
+        .path-number {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: #e9ecef;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+        .path-number.completed { background: #4caf50; color: white; }
+        .path-number.current { background: #ff9800; color: white; }
         
+        /* Modal & Forms */
+        .modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5); z-index: 1000; backdrop-filter: blur(5px);
+        }
+        .modal.active { display: flex; align-items: center; justify-content: center; }
+        .modal-content {
+            background: white; border-radius: 12px; padding: 2rem; width: 90%; max-width: 600px;
+            max-height: 80vh; overflow-y: auto; box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            animation: fadeInScale 0.3s ease-out;
+        }
+        @keyframes fadeInScale { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid #e9ecef; }
+        .close-btn { background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #6c757d; transition: color 0.2s ease; }
+        .close-btn:hover { color: #2c3e50; }
+        .form-group { margin-bottom: 1.5rem; }
+        .form-label { display: block; margin-bottom: 0.5rem; font-weight: 600; color: #2c3e50; }
+        .form-control {
+            width: 100%; padding: 0.75rem; border: 1px solid #e9ecef; border-radius: 6px;
+            font-size: 1rem; transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+        .form-control:focus { outline: none; border-color: #667eea; box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2); }
+        .checkbox-group { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.5rem; }
+        .checkbox-item { display: flex; align-items: center; gap: 0.5rem; }
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 6px;
+            cursor: pointer; font-weight: 600; transition: transform 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .btn:hover { transform: translateY(-1px); box-shadow: 0 6px 12px rgba(0,0,0,0.15); }
+        .btn-secondary { background: #6c757d; }
+        
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .main-layout { flex-direction: column; }
+            .sidebar { width: 100%; padding: 1rem 0; }
+            .dashboard-grid { grid-template-columns: 1fr; }
+            .modal-content { padding: 1.5rem; }
+            .checkbox-group { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <header class="header">
-            <div class="logo">🚀 GenAI Learning & Enablement Platform</div>
-            <div class="user-profile">
-                <select id="persona-selector" onchange="switchPersona()">
-                    <option value="learner">Frontline Learner</option>
-                    <option value="sales">Sales Representative</option>
-                    <option value="technician">Technician</option>
-                    <option value="manager">Manager</option>
-                    <option value="trainer">L&D Specialist</option>
-                    <option value="compliance">Compliance Officer</option>
-                    <option value="hr">HR Business Partner</option>
-                    <option value="it">IT Administrator</option>
-                    <option value="executive">Executive</option>
-                </select>
-                <div class="avatar" id="user-avatar">AL</div>
-                <div>
-                    <div style="font-weight: 600;" id="user-name">Alex Learner</div>
-                    <div style="font-size: 0.9rem; opacity: 0.8;" id="user-role">Frontline Employee</div>
-                </div>
+    <div class="header">
+        <div class="logo">
+            <div class="logo-icon">🧠</div>
+            <span>AI Learning Hub</span>
+        </div>
+        
+        <div class="user-info">
+            <select class="persona-switcher" id="personaSwitcher" onchange="switchPersona()">
+                <option value="learner">👤 Frontline Learner</option>
+                <option value="sales">💼 Sales Representative</option>
+                <option value="technician">🔧 Technician / Service</option>
+                <option value="manager">👔 Manager / Team Lead</option>
+                <option value="trainer">🎓 L&D Specialist</option>
+                <option value="compliance">⚖️ Compliance Officer</option>
+                <option value="hr">👥 HR Business Partner</option>
+                <option value="it">💻 IT / Systems Admin</option>
+                <option value="executive">🎯 Executive / VP</option>
+            </select>
+            <div class="user-avatar" id="userAvatar">AC</div>
+            <div>
+                <div style="font-weight: 600; color: #1e293b;" id="userName">Alex Chen</div>
+                <div style="font-size: 0.85rem; color: #64748b;" id="userRole">Customer Service Rep</div>
             </div>
-        </header>
-
-        <nav class="nav">
-            <div class="nav-item active" onclick="showSection('dashboard', this)">Dashboard</div>
-            <div class="nav-item" onclick="showSection('top-performers', this)">Top Performer Analysis</div>
-            <div class="nav-item" onclick="showSection('profile-management', this)">Profile & SSO</div>
-            <div class="nav-item" onclick="openProfileModal()">My Preferences</div>
-        </nav>
-
-        <main class="main-content">
-            <div id="dashboard-section" class="section active">
-                <div id="learner-dashboard" class="persona-content">
-                    <h2>Welcome, <span id="learner-name-display">Alex Learner</span>!</h2>
-                    <p>Here's your personalized learning overview.</p>
-                    <div class="dashboard-grid">
-                       <div class="card">
-                           <div class="card-header"><div class="card-icon">📈</div><div class="card-title">Progress</div></div>
-                           <p>78% monthly goal</p>
-                       </div>
-                       <div class="card">
-                           <div class="card-header"><div class="card-icon">🎯</div><div class="card-title">Skill Gaps</div></div>
-                           <p>2 priority areas</p>
-                       </div>
-                       <div class="card">
-                           <div class="card-header"><div class="card-icon">🏆</div><div class="card-title">STAR Points</div></div>
-                           <p>1,250 points</p>
-                       </div>
-                    </div>
-                    <div class="ai-insights">
-                        <h3>🤖 AI Learning Assistant</h3>
-                        <div class="insight-item"><strong>Pace:</strong> Learning improves with 15-min sessions.</div>
-                        <div class="insight-item"><strong>Skills Alert:</strong> New Digital Tools training available.</div>
-                    </div>
-                </div>
-                
-                <div id="manager-dashboard" class="persona-content" style="display: none;">
-                    <div class="unified-header">
-                        <h1>Manager Dashboard</h1>
-                        <p>Oversee your team's learning and compliance.</p>
-                    </div>
-                    <nav class="unified-nav">
-                        <div class="unified-nav-item active" onclick="showManagerTab('team-overview')">Team Overview</div>
-                        <div class="unified-nav-item" onclick="showManagerTab('compliance')">Compliance</div>
-                        <div class="unified-nav-item" onclick="showManagerTab('nudging')">AI Nudging</div>
-                    </nav>
-                    
-                    <div id="manager-content-area">
-                        </div>
-                </div>
-                
-                <div id="it-dashboard" class="persona-content" style="display: none;">
-                    <h2>IT Administrator Dashboard</h2>
-                    <div class="dashboard-grid">
-                        <div class="card"><div class="card-header">🖥️</div><div>System Health: 99.9% Uptime</div></div>
-                        <div class="card"><div class="card-header">🔗</div><div>SSO Integrations: 12 Active</div></div>
-                        <div class="card"><div class="card-header">🔐</div><div>Security Score: A+</div></div>
-                    </div>
-                    <div class="sso-panel">
-                        <div class="sso-panel-header">Learner Directory</div>
-                        <div class="sso-panel-content">
-                             <input type="text" placeholder="Search learners..." style="width:100%; padding:0.5rem; margin-bottom:1rem;">
-                             <table class="user-table">
-                                 <thead><tr><th>Name</th><th>Department</th><th>Action</th></tr></thead>
-                                 <tbody>
-                                     <tr><td>Sarah Chen</td><td>Sales</td><td><button class="btn">View</button></td></tr>
-                                     <tr><td>Mike Rodriguez</td><td>Field Service</td><td><button class="btn">View</button></td></tr>
-                                 </tbody>
-                             </table>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-
-            <div id="top-performers-section" class="section">
-                </div>
-
-            <div id="profile-management-section" class="section">
-                </div>
-        </main>
+        </div>
     </div>
 
-    <div id="profile-modal" style="display:none; position:fixed; top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:1000;">
-        <div style="background:white; margin: 15% auto; padding:20px; border-radius:12px; max-width: 600px;">
-            <h2>Learning Preferences</h2>
-            <p>Customize your learning experience.</p>
-            <button onclick="closeProfileModal()">Close</button>
+    <div class="main-layout">
+        <div class="sidebar">
+            <div class="nav-section">
+                <h3>Core Dashboard</h3>
+                <a class="nav-item active" onclick="showSection('dashboard', this)">
+                    <span class="icon">📊</span>
+                    Dashboard Overview
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <h3>Learning & Development</h3>
+                <a class="nav-item" onclick="showSection('recommendations', this)">
+                    <span class="icon">🎯</span>
+                    AI Recommendations
+                </a>
+                <a class="nav-item" onclick="showSection('learning-path', this)">
+                    <span class="icon">🛤️</span>
+                    My Learning Path
+                </a>
+                <a class="nav-item" onclick="showSection('training-gaps', this)">
+                    <span class="icon">📈</span>
+                    Training & Compliance
+                </a>
+                <a class="nav-item" onclick="showSection('star-rewards', this)">
+                    <span class="icon">⭐</span>
+                    STAR Rewards
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <h3>Analytics & Insights</h3>
+                <a class="nav-item" onclick="showSection('top-performers', this)">
+                    <span class="icon">🏆</span>
+                    Top Performer Analysis
+                </a>
+                <a class="nav-item" onclick="showSection('reports', this)">
+                    <span class="icon">📋</span>
+                    Generate Reports
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <h3>Profile & Settings</h3>
+                <a class="nav-item" onclick="showSection('user-profile', this)">
+                    <span class="icon">👤</span>
+                    User Profile
+                </a>
+                <a class="nav-item" onclick="openProfileModal()">
+                    <span class="icon">⚙️</span>
+                    Profile Settings
+                </a>
+                <a class="nav-item" onclick="showSection('sso-management', this)">
+                    <span class="icon">🔐</span>
+                    SSO Management
+                </a>
+            </div>
+        </div>
+
+        <div class="content">
+            <div id="dashboard" class="content-section active">
+                <div class="content-header">
+                    <h1 class="content-title">Welcome back, <span id="dashboardUserName">Alex</span>! 👋</h1>
+                    <p class="content-subtitle">Your personalized learning dashboard powered by AI insights</p>
+                </div>
+
+                <div id="learner-dashboard" class="persona-content active">
+                    <div class="dashboard-grid">
+                         <div class="card">
+                            <div class="card-header"><div class="card-icon" style="background: #dcfce7; color: #166534;">📚</div><div class="card-title">Learning Progress</div></div>
+                            <div class="metric-value" style="color: #059669;" id="learner-learningProgress">78%</div>
+                            <div class="metric-label">Monthly Goals</div>
+                            <div class="progress-bar"><div id="learner-progress-bar" class="progress-fill progress-green" style="width: 78%;"></div></div>
+                        </div>
+                        <div class="card">
+                            <div class="card-header"><div class="card-icon" style="background: #fef3c7; color: #d97706;">🎯</div><div class="card-title">Skills Gaps</div></div>
+                            <div class="metric-value" style="color: #d97706;" id="learner-skillsGaps">2</div>
+                            <div class="metric-label">Priority Areas Identified by AI</div>
+                        </div>
+                        <div class="card">
+                            <div class="card-header"><div class="card-icon" style="background: #dbeafe; color: #1e40af;">🏆</div><div class="card-title">Badges Earned</div></div>
+                            <div class="metric-value" style="color: #2563eb;" id="learner-badgesEarned">5</div>
+                            <div class="metric-label">This Quarter</div>
+                        </div>
+                        <div class="card">
+                            <div class="card-header"><div class="card-icon" style="background: #f3e5f5; color: #9c27b0;">⭐</div><div class="card-title">STAR Points</div></div>
+                            <div class="metric-value" style="color: #9c27b0;" id="learner-starPoints">1,250</div>
+                            <div class="metric-label">Current Balance</div>
+                        </div>
+                    </div>
+                    <div id="learner-ai-insights" class="ai-insights"></div>
+                </div>
+
+                <div id="sales-dashboard" class="persona-content">
+                    <div class="dashboard-grid">
+                        <div class="card">
+                            <div class="card-header"><div class="card-icon" style="background: #dcfce7; color: #166534;">💰</div><div class="card-title">Sales Performance</div></div>
+                            <div class="metric-value" style="color: #059669;" id="sales-quota">124%</div>
+                            <div class="metric-label">Quota Achievement</div>
+                            <div class="progress-bar"><div id="sales-quota-bar" class="progress-fill progress-green" style="width: 100%;"></div></div>
+                        </div>
+                        <div class="card">
+                            <div class="card-header"><div class="card-icon" style="background: #fef3c7; color: #d97706;">📚</div><div class="card-title">Product Knowledge</div></div>
+                            <div class="metric-value" style="color: #d97706;" id="sales-productKnowledge">89%</div>
+                            <div class="metric-label">Certification Level</div>
+                        </div>
+                        <div class="card">
+                            <div class="card-header"><div class="card-icon" style="background: #dbeafe; color: #1e40af;">🎮</div><div class="card-title">Leaderboard Rank</div></div>
+                            <div class="metric-value" style="color: #2563eb;" id="sales-leaderboard">#3</div>
+                            <div class="metric-label">Team Ranking</div>
+                        </div>
+                        <div class="card">
+                            <div class="card-header"><div class="card-icon" style="background: #fecaca; color: #b91c1c;">⚖️</div><div class="card-title">Compliance Status</div></div>
+                            <div class="metric-value" style="color: #b91c1c;" id="sales-complianceStatus">At Risk</div>
+                            <div class="metric-label">1 Course Overdue</div>
+                        </div>
+                    </div>
+                    <div id="sales-ai-insights" class="ai-insights"></div>
+                </div>
+                 </div>
+            
+            <div id="recommendations" class="content-section">
+                <div class="content-header">
+                    <h1 class="content-title">🎯 AI-Powered Recommendations</h1>
+                    <p class="content-subtitle">Personalized insights, smart suggestions, and optimized learning paths.</p>
+                </div>
+                <div id="learner-recommendations" class="persona-content active">
+                    <h2 style="margin-bottom: 1.5rem; color: white;">Learning Recommendations for You</h2>
+                    <div id="learner-recommendations-list"></div>
+                </div>
+                <div id="sales-recommendations" class="persona-content">
+                    <h2 style="margin-bottom: 1.5rem; color: white;">Sales Training Recommendations</h2>
+                     <div id="sales-recommendations-list"></div>
+                </div>
+            </div>
+
+            <div id="learning-path" class="content-section">
+                <div class="content-header">
+                    <h1 class="content-title">🛤️ My Learning Path</h1>
+                    <p class="content-subtitle">Structured progression, a personalized journey, and clear milestones.</p>
+                </div>
+                 <div id="learner-learning-path-container" class="persona-content active">
+                    <h2 style="margin-bottom: 1.5rem; color: white;">Customer Service Excellence Track</h2>
+                    <div class="learning-path">
+                         <div class="path-item completed"><div class="path-number completed">✓</div><div><div class="list-title">Communication Fundamentals</div><div class="list-meta">Completed • 92% score</div></div></div>
+                         <div class="path-item completed"><div class="path-number completed">✓</div><div><div class="list-title">Product Knowledge Basics</div><div class="list-meta">Completed • 88% score</div></div></div>
+                         <div class="path-item current"><div class="path-number current">3</div><div><div class="list-title">Advanced Problem Solving</div><div class="list-meta">In Progress • 65% complete</div><div class="progress-bar" style="margin-top: 0.5rem;"><div class="progress-fill progress-orange" style="width: 65%;"></div></div></div></div>
+                         <div class="path-item"><div class="path-number">4</div><div><div class="list-title">Digital Tools Mastery</div><div class="list-meta">Next • Unlocks after current course</div></div></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="training-gaps" class="content-section">
+                 <div class="content-header">
+                    <h1 class="content-title">📈 Training & Compliance</h1>
+                    <p class="content-subtitle">Identify and close gaps in your required learning and certifications.</p>
+                </div>
+                 <div id="learner-training-gaps" class="persona-content active">
+                    <div class="dashboard-grid">
+                        <div class="card card-full">
+                            <div class="card-header"><div class="card-icon" style="background: #dcfce7; color: #166534;">✅</div><div class="card-title">Your Compliance Status</div></div>
+                            <div class="metric-value" style="color: #059669;" id="learner-compliance-status">Compliant</div>
+                            <div class="metric-label">All required training is up to date.</div>
+                        </div>
+                    </div>
+                    <div class="card card-full">
+                        <div class="card-header"><div class="card-icon" style="background: #fef3c7; color: #d97706;">🔔</div><div class="card-title">Expiring Soon</div></div>
+                        <p>No certifications expiring within the next 90 days.</p>
+                    </div>
+                </div>
+                 <div id="sales-training-gaps" class="persona-content">
+                    <div class="dashboard-grid">
+                        <div class="card card-full">
+                            <div class="card-header"><div class="card-icon" style="background: #fecaca; color: #b91c1c;">🚨</div><div class="card-title">Your Compliance Status</div></div>
+                            <div class="metric-value" style="color: #b91c1c;" id="sales-compliance-status-detail">At Risk</div>
+                            <div class="metric-label">You have overdue mandatory training.</div>
+                        </div>
+                    </div>
+                     <div class="card card-full">
+                        <div class="card-header"><div class="card-icon" style="background: #fecaca; color: #b91c1c;">📚</div><div class="card-title">Missing Mandatory Courses</div></div>
+                        <div id="sales-missing-courses-list"></div>
+                    </div>
+                </div>
+                 <div id="compliance-training-gaps" class="persona-content">
+                     <div class="card card-full">
+                         <div class="card-header"><div class="card-icon" style="background: #dbeafe; color: #1e40af;">🏢</div><div class="card-title">Organizational Compliance Overview</div></div>
+                         <div class="dashboard-grid">
+                             <div class="card"><div class="metric-value" style="color: #059669;">94%</div><div class="metric-label">Overall Compliance</div></div>
+                             <div class="card"><div class="metric-value" style="color: #b91c1c;">214</div><div class="metric-label">Employees Non-Compliant</div></div>
+                             <div class="card"><div class="metric-value" style="color: #d97706;">78</div><div class="metric-label">Certs Expiring in 90 Days</div></div>
+                         </div>
+                     </div>
+                 </div>
+            </div>
+
+            <div id="star-rewards" class="content-section">
+                <div class="content-header">
+                    <h1 class="content-title">⭐ STAR Rewards</h1>
+                    <p class="content-subtitle">Track your points, view your tier, and discover how to earn more.</p>
+                </div>
+                <div id="learner-star-rewards" class="persona-content active">
+                    <div class="dashboard-grid">
+                        <div class="card">
+                           <div class="card-header"><div class="card-icon" style="background: #fef3c7; color: #d97706;">⭐</div><div class="card-title">Your STAR Tier</div></div>
+                           <div class="metric-value" style="color: #d97706;" id="star-tier-level">Gold</div>
+                           <div class="metric-label">Next Tier: Platinum</div>
+                        </div>
+                         <div class="card">
+                           <div class="card-header"><div class="card-icon" style="background: #f3e5f5; color: #9c27b0;">💰</div><div class="card-title">Points Balance</div></div>
+                           <div class="metric-value" style="color: #9c27b0;" id="star-points-balance">1,250</div>
+                           <div class="metric-label">Keep it up!</div>
+                        </div>
+                         <div class="card card-full">
+                            <div class="card-header"><div class="card-icon" style="background: #dcfce7; color: #166534;">📈</div><div class="card-title">Boost Your STAR Points</div></div>
+                            <p>Complete these courses for bonus points:</p>
+                            <div id="star-courses-list"></div>
+                         </div>
+                    </div>
+                     <div id="learner-star-ai-insights" class="ai-insights"></div>
+                </div>
+            </div>
+            
+            <div id="top-performers" class="content-section">
+                 <div class="content-header">
+                    <h1 class="content-title">🏆 Top Performer Analysis</h1>
+                    <p class="content-subtitle">Learn from the best to become the best.</p>
+                </div>
+                <div id="sales-top-performers" class="persona-content active">
+                     <div class="dashboard-grid">
+                         <div class="card"><div class="card-header"><div class="card-icon" style="background: #dbeafe; color: #1e40af;">🎮</div><div class="card-title">Your Leaderboard Rank</div></div><div class="metric-value" style="color: #2563eb;">#3</div><div class="metric-label">Top 5% in your region</div></div>
+                         <div class="card"><div class="card-header"><div class="card-icon" style="background: #dcfce7; color: #166534;">💡</div><div class="card-title">Top Performer Trait</div></div><div class="metric-value" style="color: #059669;">98%</div><div class="metric-label">Top performers complete Objection Handling modules</div></div>
+                     </div>
+                     <div class="card card-full">
+                         <div class="card-header"><div class="card-icon">👥</div><div class="card-title">Regional Sales Leaderboard</div></div>
+                         <table class="styled-table">
+                             <thead><tr><th>Rank</th><th>Consultant</th><th>Quota Met</th><th>Key Skill</th></tr></thead>
+                             <tbody>
+                                 <tr><td>1</td><td>Jessica Wong</td><td>148%</td><td>Advanced Negotiation</td></tr>
+                                 <tr><td>2</td><td>Michael Davis</td><td>135%</td><td>CRM Mastery</td></tr>
+                                 <tr style="background-color: #f0f9ff;"><td><strong>3</strong></td><td><strong>Jordan Martinez (You)</strong></td><td><strong>124%</strong></td><td><strong>Product Knowledge</strong></td></tr>
+                                 <tr><td>4</td><td>Priya Sharma</td><td>119%</td><td>Closing Techniques</td></tr>
+                             </tbody>
+                         </table>
+                     </div>
+                </div>
+                <div id="trainer-top-performers" class="persona-content">
+                    <div class="card card-full">
+                        <div class="card-header"><div class="card-icon">🧬</div><div class="card-title">Top Performer DNA</div></div>
+                        <p>AI has identified the following behaviors and learning patterns common among your top 50 performers across all roles:</p>
+                        <ul>
+                            <li style="margin: 8px 0;"><strong>Higher engagement with mobile learning</strong> (35% more than average).</li>
+                            <li style="margin: 8px 0;"><strong>Preference for interactive simulations</strong> over video content.</li>
+                            <li style="margin: 8px 0;"><strong>Proactive completion of "soft skill" courses</strong> like communication and leadership.</li>
+                            <li style="margin: 8px 0;"><strong>Average quiz scores are 18% higher</strong> in product knowledge modules.</li>
+                        </ul>
+                        <br>
+                        <button class="btn">Build Training Blueprint from these Insights</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="reports" class="content-section">
+                <div class="content-header">
+                    <h1 class="content-title">📋 Generate Reports</h1>
+                    <p class="content-subtitle">Create and export custom reports with AI-powered insights.</p>
+                </div>
+                <div id="compliance-reports" class="persona-content active">
+                    <div class="card card-full">
+                        <div class="card-header"><div class="card-icon">⚙️</div><div class="card-title">Report Generator</div></div>
+                        <div class="form-group">
+                            <label class="form-label">Report Type</label>
+                            <select class="form-control">
+                                <option>Compliance Gap Report</option>
+                                <option>Certification Status Report</option>
+                                <option>Training Completion by Region</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Filter by Region</label>
+                            <select class="form-control"><option>All Regions</option><option>Americas</option><option>EMEA</option><option>APAC</option></select>
+                        </div>
+                         <div class="form-group">
+                             <label class="form-label">Date Range</label>
+                             <input type="date" class="form-control">
+                         </div>
+                        <button class="btn">Generate & Export (CSV)</button>
+                    </div>
+                </div>
+                 <div id="learner-reports" class="persona-content">
+                    <div class="card card-full">
+                        <div class="card-header"><div class="card-icon">📄</div><div class="card-title">Your Learning Transcript</div></div>
+                        <p>Download a complete record of your learning history, including all completed courses and certifications.</p>
+                        <br>
+                        <button class="btn">Download My Transcript (PDF)</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="user-profile" class="content-section">
+                <div class="content-header">
+                    <h1 class="content-title">👤 User Profile & Personalization</h1>
+                    <p class="content-subtitle">Customize your experience, track achievements, and manage preferences.</p>
+                </div>
+                 <div class="card card-full">
+                     <div style="display: flex; gap: 2rem; align-items: start;">
+                         <div style="width: 120px; height: 120px; border-radius: 16px; background: linear-gradient(135deg, #667eea, #764ba2); display: flex; align-items: center; justify-content: center; color: white; font-size: 3rem; font-weight: bold;" id="profileAvatar">AC</div>
+                         <div style="flex: 1;">
+                             <h2 style="font-size: 2rem; font-weight: bold; margin-bottom: 0.5rem;" id="profileName">Alex Chen</h2>
+                             <p style="font-size: 1.1rem; margin-bottom: 1rem;" id="profileRoleAndDept">Customer Service Representative • Customer Service</p>
+                             <button class="btn" onclick="openProfileModal()">✏️ Edit Learning Preferences</button>
+                         </div>
+                     </div>
+                 </div>
+            </div>
+
+            <div id="sso-management" class="content-section">
+                <div class="content-header">
+                    <h1 class="content-title">🔐 SSO Management & Identity Systems</h1>
+                    <p class="content-subtitle">Unified identity, profile synchronization, and system integration.</p>
+                </div>
+                <div class="dashboard-grid">
+                    <div class="card"><div class="card-header"><div class="card-icon" style="background: #dcfce7; color: #166534;">👥</div><div class="card-title">Active Learners</div></div><div class="metric-value" style="color: #059669;">47,832</div><div class="metric-label">Across all systems</div></div>
+                    <div class="card"><div class="card-header"><div class="card-icon" style="background: #dbeafe; color: #1e40af;">🔗</div><div class="card-title">Connected Systems</div></div><div class="metric-value" style="color: #1e40af;">12</div><div class="metric-label">LMS, HRIS, CRM...</div></div>
+                    <div class="card"><div class="card-header"><div class="card-icon" style="background: #fef3c7; color: #d97706;">⚡</div><div class="card-title">Profile Sync Rate</div></div><div class="metric-value" style="color: #d97706;">99.7%</div><div class="metric-label">Successful syncs</div></div>
+                    <div class="card"><div class="card-header"><div class="card-icon" style="background: #dcfce7; color: #166534;">🛡️</div><div class="card-title">Security Status</div></div><div class="metric-value" style="color: #059669;">A+</div><div class="metric-label">0 security incidents</div></div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div id="profile-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Learning Profile Settings</h2>
+                <button class="close-btn" onclick="closeProfileModal()">&times;</button>
+            </div>
+            
+            <form onsubmit="event.preventDefault(); saveProfile();">
+                <div class="form-group">
+                    <label class="form-label">Career Goals</label>
+                    <select class="form-control" id="career-goals-select"></select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Preferred Content Formats</label>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item"><input type="checkbox" id="video" checked><label for="video">Video Tutorials</label></div>
+                        <div class="checkbox-item"><input type="checkbox" id="interactive" checked><label for="interactive">Interactive Simulations</label></div>
+                        <div class="checkbox-item"><input type="checkbox" id="roleplay"><label for="roleplay">Role-play Scenarios</label></div>
+                        <div class="checkbox-item"><input type="checkbox" id="text"><label for="text">Quick Reference Guides</label></div>
+                    </div>
+                </div>
+                 <div class="form-group">
+                    <label class="form-label">Focus Areas</label>
+                    <div class="checkbox-group" id="focus-areas-checkboxes"></div>
+                </div>
+                <div style="display: flex; gap: 1rem; justify-content: flex-end; margin-top: 2rem;">
+                    <button type="button" class="btn btn-secondary" onclick="closeProfileModal()">Cancel</button>
+                    <button type="submit" class="btn">Save Preferences</button>
+                </div>
+            </form>
         </div>
     </div>
 
     <script>
+        // --- DATA STORE ---
         const personaData = {
-            learner: { name: "Alex Learner", role: "Frontline Employee", avatar: "AL" },
-            sales: { name: "Jordan Sales", role: "Sales Representative", avatar: "JS" },
-            technician: { name: "Riley Tech", role: "Technician", avatar: "RT" },
-            manager: { name: "Sarah Manager", role: "Team Manager", avatar: "SM" },
-            trainer: { name: "David Trainer", role: "L&D Specialist", avatar: "DT" },
-            compliance: { name: "Marcus Compliance", role: "Compliance Officer", avatar: "MC" },
-            hr: { name: "Lisa HR", role: "HR Business Partner", avatar: "LH" },
-            it: { name: "Jennifer IT", role: "IT Administrator", avatar: "JI" },
-            executive: { name: "Robert Exec", role: "VP of L&D", avatar: "RE" }
+            learner: {
+                name: "Alex Chen", role: "Customer Service Rep", avatar: "AC", department: "Customer Service",
+                learningProgress: 78, skillsGaps: 2, badgesEarned: 5, starPoints: 1250, starTier: 'Gold', complianceStatus: 'Compliant',
+                aiInsights: [
+                    "Your learning improves 35% with 15-minute sessions. We've adjusted recommendations.",
+                    "You complete 80% more content on mobile. Consider downloading modules for offline access.",
+                    "Skills Alert: Digital tools training is now available - critical for your role advancement."
+                ],
+                recommendations: [
+                    { title: "Advanced Customer Communication", meta: "4.9 ⭐ • 45 min", tags: ['skill-gap', 'priority'] },
+                    { title: "Digital Tools Proficiency", meta: "4.7 ⭐ • 1.2 hours", tags: ['skill-gap'] },
+                ],
+                starCourses: [ { title: "Leadership 101", points: "+150 STAR Points" } ],
+                careerGoals: ["Senior Customer Service Specialist", "Team Lead", "Customer Success Manager"],
+                focusAreas: [ { id: "communication", label: "Customer Communication" }, { id: "product", label: "Product Knowledge" }, { id: "digital", label: "Digital Tools" } ]
+            },
+            sales: {
+                name: "Jordan Martinez", role: "Sales Representative", avatar: "JM", department: "Sales",
+                quota: 124, productKnowledge: 89, leaderboard: 3, complianceStatus: 'At Risk', starPoints: 2800, starTier: 'Gold', starRisk: true,
+                missingCourses: [{ title: 'Annual Data Security', meta: 'Overdue by 14 days', tags: ['priority'] }],
+                aiInsights: [
+                    "Your closing rate improves 28% after objection handling refreshers. We've recommended one.",
+                    "🚨 Your STAR Tier is at risk due to an overdue compliance course. Complete it now!",
+                    "Top performers in your region have mastered CRM skills. A new module is available."
+                ],
+                recommendations: [
+                    { title: "Advanced Objection Handling", meta: "High Impact • 30 min", tags: ['priority'] },
+                    { title: "CRM Pipeline Optimization", meta: "Boosts efficiency • 1 hour", tags: [] },
+                ],
+                starCourses: [ { title: "Competitive Analysis", points: "+200 STAR Points" } ],
+                careerGoals: ["Senior Sales Rep", "Sales Team Lead", "Key Account Manager"],
+                focusAreas: [ { id: "objection", label: "Objection Handling" }, { id: "closing", label: "Closing Techniques" }, { id: "crm", label: "CRM Skills" } ]
+            },
+            technician: { name: "Riley Thompson", role: "Field Service Tech", avatar: "RT", department: "Field Service" /*... more data ...*/, careerGoals: [], focusAreas: [] },
+            manager: { name: "Sarah Johnson", role: "Team Manager", avatar: "SJ", department: "Operations" /*... more data ...*/, careerGoals: [], focusAreas: [] },
+            trainer: { name: "David Kim", role: "L&D Specialist", avatar: "DK", department: "Learning & Development" /*... more data ...*/, careerGoals: [], focusAreas: [] },
+            compliance: { name: "Marcus Williams", role: "Compliance Officer", avatar: "MW", department: "Risk & Compliance" /*... more data ...*/, careerGoals: [], focusAreas: [] },
+            hr: { name: "Lisa Rodriguez", role: "HR Business Partner", avatar: "LR", department: "Human Resources" /*... more data ...*/, careerGoals: [], focusAreas: [] },
+            it: { name: "Jennifer Chen", role: "IT Administrator", avatar: "JC", department: "Information Technology" /*... more data ...*/, careerGoals: [], focusAreas: [] },
+            executive: { name: "Robert Davis", role: "VP of L&D", avatar: "RD", department: "Executive Leadership" /*... more data ...*/, careerGoals: [], focusAreas: [] },
         };
 
+        // --- GLOBAL STATE ---
+        let currentPersona = 'learner';
+        let currentSection = 'dashboard';
+        
+        // --- CORE FUNCTIONS ---
+
+        /**
+         * Switches the displayed persona and updates the entire UI.
+         */
         function switchPersona() {
-            const selectedPersona = document.getElementById('persona-selector').value;
-            const persona = personaData[selectedPersona];
+            const selector = document.getElementById('personaSwitcher');
+            currentPersona = selector.value;
+            const persona = personaData[currentPersona];
             
-            document.getElementById('user-name').textContent = persona.name;
-            document.getElementById('user-role').textContent = persona.role;
-            document.getElementById('user-avatar').textContent = persona.avatar;
+            if (!persona) return; // Exit if persona data doesn't exist
+
+            // Update Header & Welcome Message
+            document.getElementById('userName').textContent = persona.name;
+            document.getElementById('userRole').textContent = persona.role;
+            document.getElementById('userAvatar').textContent = persona.avatar;
+            document.getElementById('dashboardUserName').textContent = persona.name.split(' ')[0];
             
-            document.querySelectorAll('.persona-content').forEach(el => el.style.display = 'none');
+            // --- Update All UI Sections ---
+            updateDashboard(persona);
+            updateRecommendations(persona);
+            updateTrainingGaps(persona);
+            updateStarRewards(persona);
+            updateTopPerformers(persona);
+            updateReports(persona);
+            updateProfile(persona);
             
-            const dashboardToShow = document.getElementById(`${selectedPersona}-dashboard`) || document.getElementById('learner-dashboard');
-            dashboardToShow.style.display = 'block';
-            if(selectedPersona === 'learner') {
-                document.getElementById('learner-name-display').textContent = persona.name;
+            // Hide all persona-specific content blocks
+            document.querySelectorAll('.persona-content').forEach(content => content.classList.remove('active'));
+            
+            // Show the correct content for the active section and new persona
+            const activeContentBlocks = document.querySelectorAll(`#${currentSection} .persona-content`);
+            let blockToShow = document.getElementById(`${currentPersona}-${currentSection.replace(/-/g,'_')}`) || document.getElementById(`${currentPersona}-${currentSection}`) || document.getElementById(`learner-${currentSection}`);
+            
+            if (blockToShow) {
+                blockToShow.classList.add('active');
+            } else {
+                // Fallback to a default view if the specific persona view doesn't exist for a section
+                const fallbackBlock = document.querySelector(`#${currentSection} .persona-content`);
+                if(fallbackBlock) fallbackBlock.classList.add('active');
+            }
+            
+            // Update modal options
+            updateProfileModal(currentPersona);
+        }
+
+        /**
+         * Shows the selected main content section and updates active navigation.
+         */
+        function showSection(sectionName, element) {
+             currentSection = sectionName;
+             
+             document.querySelectorAll('.content-section').forEach(section => section.classList.remove('active'));
+             document.getElementById(sectionName).classList.add('active');
+             
+             document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+             if(element) element.classList.add('active');
+             
+             // Re-run persona switch logic to show the correct sub-content
+             switchPersona();
+        }
+
+        // --- UI UPDATE FUNCTIONS ---
+        
+        function updateDashboard(persona){
+            if (currentPersona === 'learner') {
+                document.getElementById('learner-learningProgress').textContent = `${persona.learningProgress}%`;
+                document.getElementById('learner-progress-bar').style.width = `${persona.learningProgress}%`;
+                document.getElementById('learner-skillsGaps').textContent = persona.skillsGaps;
+                document.getElementById('learner-badgesEarned').textContent = persona.badgesEarned;
+                document.getElementById('learner-starPoints').textContent = persona.starPoints.toLocaleString();
+                renderAIInsights('learner-ai-insights', persona.aiInsights);
+            } else if (currentPersona === 'sales') {
+                document.getElementById('sales-quota').textContent = `${persona.quota}%`;
+                document.getElementById('sales-quota-bar').style.width = `${Math.min(persona.quota, 100)}%`;
+                document.getElementById('sales-productKnowledge').textContent = `${persona.productKnowledge}%`;
+                document.getElementById('sales-leaderboard').textContent = `#${persona.leaderboard}`;
+                document.getElementById('sales-complianceStatus').textContent = persona.complianceStatus;
+                renderAIInsights('sales-ai-insights', persona.aiInsights);
             }
         }
-
-        function showSection(sectionId, navItem) {
-            document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
-            document.getElementById(`${sectionId}-section`).classList.add('active');
-            
-            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
-            navItem.classList.add('active');
+        
+        function updateRecommendations(persona){
+            renderList('learner-recommendations-list', personaData.learner.recommendations);
+            renderList('sales-recommendations-list', personaData.sales.recommendations);
         }
 
-        function showManagerTab(tabId) {
-            document.querySelectorAll('.unified-nav-item').forEach(item => item.classList.remove('active'));
-            event.currentTarget.classList.add('active');
-            
-            const managerContentArea = document.getElementById('manager-content-area');
-            // Inject content based on tab
-            if(tabId === 'team-overview'){
-                managerContentArea.innerHTML = `<h3>Team Performance</h3><p>Detailed team overview goes here...</p>`;
-            } else if (tabId === 'compliance') {
-                managerContentArea.innerHTML = `<h3>Compliance Status</h3><p>Compliance charts and data go here...</p>`;
-            } else if (tabId === 'nudging') {
-                managerContentArea.innerHTML = `<h3>AI Nudging Controls</h3><p>Interface for sending nudges goes here...</p>`;
+        function updateTrainingGaps(persona) {
+            if (currentPersona === 'learner') {
+                document.getElementById('learner-compliance-status').textContent = persona.complianceStatus;
+            } else if (currentPersona === 'sales') {
+                document.getElementById('sales-compliance-status-detail').textContent = persona.complianceStatus;
+                renderList('sales-missing-courses-list', persona.missingCourses);
             }
         }
+        
+        function updateStarRewards(persona){
+            const tierEl = document.getElementById('star-tier-level');
+            const pointsEl = document.getElementById('star-points-balance');
+            const coursesEl = document.getElementById('star-courses-list');
+            const insightsEl = document.getElementById('learner-star-ai-insights');
 
-        function openProfileModal() {
-            document.getElementById('profile-modal').style.display = 'flex';
+            if(tierEl) tierEl.textContent = persona.starTier || 'Bronze';
+            if(pointsEl) pointsEl.textContent = (persona.starPoints || 0).toLocaleString();
+            if(coursesEl) renderList('star-courses-list', persona.starCourses || []);
+
+            let insights = [];
+            if(persona.starRisk) {
+                insights.push("🚨 Your STAR Tier is at risk due to overdue compliance. Complete it to secure your rewards!");
+            } else {
+                insights.push("Keep up the great work! You are on track for your STAR rewards this quarter.");
+            }
+            if(insightsEl) renderAIInsights('learner-star-ai-insights', insights);
         }
 
-        function closeProfileModal() {
-            document.getElementById('profile-modal').style.display = 'none';
+        function updateTopPerformers(persona) { /* Logic for this section */ }
+        function updateReports(persona) { /* Logic for this section */ }
+
+        function updateProfile(persona) {
+            document.getElementById('profileName').textContent = persona.name;
+            document.getElementById('profileAvatar').textContent = persona.avatar;
+            document.getElementById('profileRoleAndDept').textContent = `${persona.role} • ${persona.department}`;
+        }
+        
+        // --- MODAL & FORM FUNCTIONS ---
+        
+        function openProfileModal() { document.getElementById('profile-modal').classList.add('active'); }
+        function closeProfileModal() { document.getElementById('profile-modal').classList.remove('active'); }
+        function saveProfile() {
+            closeProfileModal();
+            showNotification('✅ Profile preferences updated successfully!', 'success');
         }
 
-        // Function to inject content from other files
-        function loadContent() {
-            // Mock injection for Top Performer Analysis
-            const topPerformerSection = document.getElementById('top-performers-section');
-            topPerformerSection.innerHTML = `
-                <div class="unified-header">
-                    <h1>AI-Powered Top Performer Analysis</h1>
-                    <p>Identify Excellence • Extract Insights • Uplift Performance</p>
-                </div>
-                <div class="dashboard-grid">
-                    <div class="card"><h3>Sarah Chen</h3><p>Sales Consultant</p><p>Performance: 94</p></div>
-                    <div class="card"><h3>Marcus Johnson</h3><p>Sales Manager</p><p>Performance: 92</p></div>
-                    <div class="card"><h3>Lisa Rodriguez</h3><p>Service Advisor</p><p>Performance: 91</p></div>
-                </div>
-                <div class="ai-insights">
-                    <h3>Key Characteristics of Top Performers</h3>
-                    <div class="insight-item"><strong>Learning Behavior:</strong> Completes training 2x faster.</div>
-                    <div class="insight-item"><strong>Engagement:</strong> Daily LMS activity is 89% higher.</div>
-                </div>
-            `;
-            
-            // Mock injection for SSO/Profile Management
-            const profileMgmtSection = document.getElementById('profile-management-section');
-            profileMgmtSection.innerHTML = `
-                 <div class="sso-panel">
-                    <div class="sso-panel-header">My Profile - Sarah Chen</div>
-                    <div class="sso-panel-content">
-                        <h4>SSO Information</h4>
-                        <p>Name: Sarah Chen (from Azure AD)</p>
-                        <p>Email: sarah.chen@company.com</p>
-                        <h4>Connected Systems</h4>
-                        <p>LMS, Certification Portal, Performance Dashboard</p>
+        function updateProfileModal(personaId) {
+            const data = personaData[personaId];
+            if(!data) return;
+
+            const careerSelect = document.getElementById('career-goals-select');
+            careerSelect.innerHTML = '';
+            data.careerGoals.forEach(goal => {
+                const option = document.createElement('option');
+                option.value = goal; option.textContent = goal;
+                careerSelect.appendChild(option);
+            });
+
+            const focusContainer = document.getElementById('focus-areas-checkboxes');
+            focusContainer.innerHTML = '';
+            data.focusAreas.forEach(area => {
+                const div = document.createElement('div');
+                div.className = 'checkbox-item';
+                div.innerHTML = `<input type="checkbox" id="${area.id}" ${Math.random() > 0.5 ? 'checked' : ''}><label for="${area.id}">${area.label}</label>`;
+                focusContainer.appendChild(div);
+            });
+        }
+        
+        // --- UTILITY & RENDER FUNCTIONS ---
+        
+        /**
+         * Renders a list of items (e.g., recommendations, courses) into a container.
+         */
+        function renderList(containerId, items) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            container.innerHTML = '';
+            if (!items || items.length === 0) {
+                container.innerHTML = `<p style="padding: 1rem; color: #64748b;">No items to display.</p>`;
+                return;
+            }
+            items.forEach(item => {
+                const tagsHtml = (item.tags || []).map(tag => `<span class="tag ${tag}">${tag.replace(/-/g, ' ')}</span>`).join('');
+                const thumbnailContent = item.points ? item.points : (item.title ? item.title.substring(0, 4).toUpperCase() : 'N/A');
+                
+                const itemEl = document.createElement('div');
+                itemEl.className = 'list-item';
+                itemEl.innerHTML = `
+                    <div class="list-thumbnail">${thumbnailContent}</div>
+                    <div class="list-content">
+                        <div class="list-title">${item.title}</div>
+                        <div class="list-meta">${item.meta || ''}</div>
+                        <div class="list-tags">${tagsHtml}</div>
                     </div>
-                </div>
-            `;
-            
-            // Initial setup
-            switchPersona();
-            showManagerTab('team-overview'); // Set default manager tab
+                `;
+                container.appendChild(itemEl);
+            });
         }
 
-        document.addEventListener('DOMContentLoaded', loadContent);
+        /**
+         * Renders AI insight messages into a container.
+         */
+        function renderAIInsights(containerId, insights) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            container.innerHTML = `<h3>🤖 AI Learning Assistant</h3>`;
+            (insights || []).forEach(insight => {
+                const insightEl = document.createElement('div');
+                insightEl.className = 'insight-item';
+                insightEl.innerHTML = insight;
+                container.appendChild(insightEl);
+            });
+        }
+        
+        /**
+         * Shows a temporary notification message.
+         */
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed; top: 100px; right: 20px; z-index: 10000;
+                background: ${type === 'success' ? '#10b981' : '#3b82f6'};
+                color: white; padding: 12px 20px; border-radius: 8px; font-weight: 500;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); transform: translateX(120%);
+                transition: transform 0.4s ease-out;
+            `;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+
+            setTimeout(() => { notification.style.transform = 'translateX(0)'; }, 10);
+            setTimeout(() => {
+                notification.style.transform = 'translateX(120%)';
+                setTimeout(() => { if (document.body.contains(notification)) document.body.removeChild(notification); }, 400);
+            }, 3000);
+        }
+
+        // --- INITIALIZATION ---
+        document.addEventListener('DOMContentLoaded', () => {
+            // Set initial state based on the default persona
+            document.getElementById('personaSwitcher').value = 'learner';
+            showSection('dashboard', document.querySelector('.nav-item.active'));
+        });
 
     </script>
 </body>
