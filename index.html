@@ -1150,6 +1150,86 @@
             }
         }
 
+        function loadMorePerformers() {
+            const loadBtn = document.querySelector('[onclick="loadMorePerformers()"]');
+            if (loadBtn) {
+                const originalText = loadBtn.innerHTML;
+                loadBtn.innerHTML = '<span>⏳</span><span>Loading...</span>';
+                loadBtn.disabled = true;
+                
+                setTimeout(() => {
+                    loadBtn.innerHTML = originalText;
+                    loadBtn.disabled = false;
+                    showNotification('✅ Next 10 performers loaded!', 'success');
+                    
+                    // Update the counter
+                    const counter = document.querySelector('#topPerformersContainer p[style*="color: #64748b"]');
+                    if (counter) {
+                        counter.textContent = 'Showing 16 of 50 top performers';
+                    }
+                }, 1000);
+            }
+        }
+
+        // #################### TOP PERFORMER ANALYSIS TAB MANAGEMENT ####################
+        
+        function showTopPerformerTab(tabName) {
+            // Hide all top performer tab contents
+            const topPerformerContents = document.querySelectorAll('.top-performer-tab-content');
+            topPerformerContents.forEach(content => content.style.display = 'none');
+            
+            // Remove active class from all top performer tabs
+            const topPerformerTabs = document.querySelectorAll('.top-performer-tab');
+            topPerformerTabs.forEach(tab => {
+                tab.classList.remove('active');
+                tab.style.borderBottomColor = 'transparent';
+                tab.style.color = '#64748b';
+                tab.style.background = 'none';
+            });
+            
+            // Show selected top performer tab content
+            const targetContent = document.getElementById(`top-performer-${tabName}`);
+            if (targetContent) {
+                targetContent.style.display = 'block';
+                targetContent.classList.add('active');
+            }
+            
+            // Add active class to clicked top performer tab
+            const activeTab = document.querySelector(`[onclick="showTopPerformerTab('${tabName}')"]`);
+            if (activeTab) {
+                activeTab.classList.add('active');
+                activeTab.style.borderBottomColor = '#667eea';
+                activeTab.style.color = '#667eea';
+                activeTab.style.background = '#f8fafc';
+            }
+        }
+        
+        function analyzeTopPerformers() {
+            const region = document.getElementById('topPerformerRegion')?.value || 'All Regions';
+            const role = document.getElementById('topPerformerRole')?.value || 'All Roles';
+            const scope = document.getElementById('topPerformerScope')?.value || 'Top 50';
+            
+            // Update the analysis title
+            const analysisTitle = document.querySelector('#top-performer-analysis .card-title');
+            if (analysisTitle) {
+                analysisTitle.textContent = `${scope} Performers - ${region}`;
+            }
+            
+            // Show loading state briefly
+            const analyzeBtn = document.querySelector('[onclick="analyzeTopPerformers()"]');
+            if (analyzeBtn) {
+                const originalText = analyzeBtn.innerHTML;
+                analyzeBtn.innerHTML = '<span>⏳</span><span>Analyzing...</span>';
+                analyzeBtn.disabled = true;
+                
+                setTimeout(() => {
+                    analyzeBtn.innerHTML = originalText;
+                    analyzeBtn.disabled = false;
+                    showNotification(`✅ Analysis complete for ${scope} in ${region}!`, 'success');
+                }, 1500);
+            }
+        }
+
         // #################### SSO TAB MANAGEMENT ####################
         
         function showSSOTab(tabName) {
@@ -1760,7 +1840,919 @@
                 
                 'team_performance_section': (persona) => `<div class="content-header"><h1 class="content-title">👨‍👩‍👧‍👦 Team Performance</h1><p class="content-subtitle">Analytics for your direct reports.</p></div><div class="card card-full"><table class="styled-table"><thead><tr><th>Team Member</th><th>Progress</th><th>Compliance</th><th>Action</th></tr></thead><tbody><tr><td>Jordan Martinez</td><td>92%</td><td><span class="tag" style="background:#e6f4ea; color:#4caf50;">100%</span></td><td><button class="btn-secondary" style="padding: 5px 10px; font-size: 0.9rem;">View Path</button></td></tr><tr><td>Riley Thompson</td><td>85%</td><td><span class="tag overdue">1 Overdue</span></td><td><button class="btn" style="padding: 5px 10px; font-size: 0.9rem;">Send Nudge</button></td></tr></tbody></table></div>`,
                 
-                'top_performers_section': (persona) => `<div class="content-header"><h1 class="content-title">🏆 Top Performer Analysis</h1><p class="content-subtitle">Unlock the secrets of high achievement.</p></div><div class="card card-full"><h3 class="card-title">Top Performer DNA (Sales Dept)</h3><p class="metric-label">Comparing top 10% with team average.</p><div class="dashboard-grid"><div class="card"><h4>Key Differentiators</h4><p>- <strong>2x more</strong> time on 'Advanced Negotiation' courses.</p><p>- <strong>3.5x more</strong> likely to complete optional 'Competitor Analysis' modules.</p></div><div class="card"><h4>Behavioral Patterns</h4><p>- Predominantly learn between <strong>7-9 AM</strong>.</p><p>- Prefer <strong>interactive simulations</strong> over video content.</p></div></div></div>`,
+                'top_performers_section': (persona) => `<div class="content-header"><h1 class="content-title">🏆 AI-Powered Top Performer Analysis</h1><p class="content-subtitle">Identify Excellence • Extract Insights • Uplift Performance</p></div>
+                
+                <!-- Enhanced Filters Section -->
+                <div class="card card-full" style="margin-bottom: 2rem;">
+                    <div style="display: flex; items-center; gap: 0.5rem; margin-bottom: 1rem;">
+                        <span style="font-size: 1.2rem;">🔍</span>
+                        <h3 class="card-title">Top Performer Analysis Filters</h3>
+                        <div style="margin-left: auto; display: flex; align-items: center; gap: 0.5rem; background: #dbeafe; padding: 0.5rem 1rem; border-radius: 0.5rem;">
+                            <span style="font-size: 1rem;">⚡</span>
+                            <span style="font-size: 0.9rem; font-weight: 600; color: #1e40af;">87% Prediction Accuracy</span>
+                        </div>
+                    </div>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1rem;">
+                        <div class="form-group" style="margin: 0;">
+                            <label class="form-label">Region</label>
+                            <select class="form-control" id="topPerformerRegion">
+                                <option>All Regions</option>
+                                <option>S Central</option>
+                                <option>Southern</option>
+                                <option>Eastern</option>
+                                <option>Central</option>
+                                <option>Mountain States</option>
+                                <option>Western</option>
+                                <option>Mid-Atlantic</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="margin: 0;">
+                            <label class="form-label">Role Category</label>
+                            <select class="form-control" id="topPerformerRole">
+                                <option>All Roles</option>
+                                <option>Sales Consultant</option>
+                                <option>Sales Manager</option>
+                                <option>Service Advisor</option>
+                                <option>Technician</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="margin: 0;">
+                            <label class="form-label">Analysis Scope</label>
+                            <select class="form-control" id="topPerformerScope">
+                                <option>Top 50</option>
+                                <option>Top 25%</option>
+                                <option>Top 10%</option>
+                                <option>Top 100</option>
+                            </select>
+                        </div>
+                        <div style="display: flex; align-items: end;">
+                            <button class="btn btn-primary" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 0.5rem;" onclick="analyzeTopPerformers()">
+                                <span>👁️</span>
+                                <span>Analyze Top Performers</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Tab Navigation -->
+                    <div style="background: white; border-bottom: 1px solid #e1e5e9; padding: 0; display: flex; gap: 0; margin-top: 1.5rem; border-radius: 12px 12px 0 0; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                        <button class="top-performer-tab active" onclick="showTopPerformerTab('analysis')" style="padding: 1rem 2rem; background: none; border: none; cursor: pointer; border-bottom: 3px solid #667eea; font-weight: 500; color: #667eea; transition: all 0.3s ease;">🏆 Top 50 Analysis</button>
+                        <button class="top-performer-tab" onclick="showTopPerformerTab('characteristics')" style="padding: 1rem 2rem; background: none; border: none; cursor: pointer; border-bottom: 3px solid transparent; font-weight: 500; color: #64748b; transition: all 0.3s ease;">🧠 Key Characteristics</button>
+                        <button class="top-performer-tab" onclick="showTopPerformerTab('recommendations')" style="padding: 1rem 2rem; background: none; border: none; cursor: pointer; border-bottom: 3px solid transparent; font-weight: 500; color: #64748b; transition: all 0.3s ease;">🎯 Training Recommendations</button>
+                        <button class="top-performer-tab" onclick="showTopPerformerTab('predictions')" style="padding: 1rem 2rem; background: none; border: none; cursor: pointer; border-bottom: 3px solid transparent; font-weight: 500; color: #64748b; transition: all 0.3s ease;">📈 Predictive Factors</button>
+                        <button class="top-performer-tab" onclick="showTopPerformerTab('regional')" style="padding: 1rem 2rem; background: none; border: none; cursor: pointer; border-bottom: 3px solid transparent; font-weight: 500; color: #64748b; transition: all 0.3s ease;">🗺️ Regional Breakdown</button>
+                    </div>
+                </div>
+
+                <!-- Top 50 Analysis Tab -->
+                <div id="top-performer-analysis" class="top-performer-tab-content active">
+                    <div class="card card-full">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                            <div>
+                                <h3 class="card-title">Top 50 Performers - All Regions</h3>
+                                <p style="color: #64748b; font-size: 0.9rem;">Comprehensive analysis beyond performance scores</p>
+                            </div>
+                            <div style="display: flex; gap: 0.5rem;">
+                                <button class="btn" style="background: #8b5cf6; color: white;">Extract Characteristics</button>
+                                <button class="btn" style="background: #10b981; color: white;">Generate Recommendations</button>
+                                <button class="btn btn-secondary" style="display: flex; align-items: center; gap: 0.5rem;">
+                                    <span>📥</span>
+                                    <span>Export Analysis</span>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        
+                        <div id="topPerformersContainer" style="display: grid; gap: 1rem; max-height: 600px; overflow-y: auto; padding-right: 0.5rem;">
+                            <!-- Top Performer Cards -->
+                            <div style="border: 1px solid #e2e8f0; border-radius: 0.5rem; padding: 1rem; transition: all 0.3s ease;" onmouseover="this.style.boxShadow='0 4px 12px rgba(0,0,0,0.1)'" onmouseout="this.style.boxShadow='none'">
+                                <div style="display: flex; align-items: center; justify-content: space-between;">
+                                    <div style="display: flex; align-items: center; gap: 1rem;">
+                                        <div style="display: flex; align-items: center; justify-content: center; width: 2.5rem; height: 2.5rem; background: linear-gradient(135deg, #fbbf24, #f59e0b); color: white; font-weight: bold; border-radius: 50%;">1</div>
+                                        <div style="width: 3rem; height: 3rem; background: #3b82f6; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600;">SC</div>
+                                        <div>
+                                            <h4 style="font-weight: 600; color: #1e293b; margin: 0;">Sarah Chen</h4>
+                                            <p style="font-size: 0.9rem; color: #64748b; margin: 0;">Sales Consultant • Western</p>
+                                            <div style="display: flex; align-items: center; gap: 1rem; margin-top: 0.25rem;">
+                                                <span style="font-size: 0.75rem; background: #dcfce7; color: #15803d; padding: 0.25rem 0.5rem; border-radius: 0.25rem;">3.5 years exp</span>
+                                                <span style="font-size: 0.75rem; background: #dbeafe; color: #1e40af; padding: 0.25rem 0.5rem; border-radius: 0.25rem;">5 certs</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div style="display: flex; align-items: center; gap: 1.5rem;">
+                                        <div style="text-align: center;">
+                                            <p style="font-size: 1.25rem; font-weight: bold; color: #10b981; margin: 0;">94</p>
+                                            <p style="font-size: 0.75rem; color: #64748b; margin: 0;">Performance</p>
+                                        </div>
+                                        <div style="text-align: center;">
+                                            <p style="font-size: 1.125rem; font-weight: 600; color: #3b82f6; margin: 0;">92%</p>
+                                            <p style="font-size: 0.75rem; color: #64748b; margin: 0;">Engagement</p>
+                                        </div>
+                                        <div style="text-align: center;">
+                                            <p style="font-size: 1.125rem; font-weight: 600; color: #8b5cf6; margin: 0;">98%</p>
+                                            <p style="font-size: 0.75rem; color: #64748b; margin: 0;">Training Complete</p>
+                                        </div>
+                                        <div style="text-align: center;">
+                                            <p style="font-size: 1.125rem; font-weight: 600; color: #f59e0b; margin: 0;">4.8</p>
+                                            <p style="font-size: 0.75rem; color: #64748b; margin: 0;">Manager Rating</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #f1f5f9;">
+                                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                                        <div>
+                                            <p style="font-size: 0.9rem; font-weight: 500; color: #374151; margin-bottom: 0.25rem;">Key Strengths:</p>
+                                            <div style="display: flex; gap: 0.5rem;">
+                                                <span style="font-size: 0.75rem; background: #fef3c7; color: #d97706; padding: 0.25rem 0.5rem; border-radius: 0.25rem;">Customer Rapport</span>
+                                                <span style="font-size: 0.75rem; background: #fef3c7; color: #d97706; padding: 0.25rem 0.5rem; border-radius: 0.25rem;">Product Knowledge</span>
+                                                <span style="font-size: 0.75rem; background: #fef3c7; color: #d97706; padding: 0.25rem 0.5rem; border-radius: 0.25rem;">Follow-up Excellence</span>
+                                            </div>
+                                        </div>
+                                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                            <div style="text-align: center;">
+                                                <p style="font-size: 0.9rem; font-weight: 600; color: #6366f1; margin: 0;">87</p>
+                                                <p style="font-size: 0.75rem; color: #64748b; margin: 0;">Future Star Score</p>
+                                            </div>
+                                            <button class="btn btn-primary" style="font-size: 0.9rem;">View Full Profile</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Marcus Johnson -->
+                            <div style="border: 1px solid #e2e8f0; border-radius: 0.5rem; padding: 1rem; transition: all 0.3s ease;" onmouseover="this.style.boxShadow='0 4px 12px rgba(0,0,0,0.1)'" onmouseout="this.style.boxShadow='none'">
+                                <div style="display: flex; align-items: center; justify-content: space-between;">
+                                    <div style="display: flex; align-items: center; gap: 1rem;">
+                                        <div style="display: flex; align-items: center; justify-content: center; width: 2.5rem; height: 2.5rem; background: linear-gradient(135deg, #d1d5db, #9ca3af); color: white; font-weight: bold; border-radius: 50%;">2</div>
+                                        <div style="width: 3rem; height: 3rem; background: #10b981; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600;">MJ</div>
+                                        <div>
+                                            <h4 style="font-weight: 600; color: #1e293b; margin: 0;">Marcus Johnson</h4>
+                                            <p style="font-size: 0.9rem; color: #64748b; margin: 0;">Sales Manager • Eastern</p>
+                                            <div style="display: flex; align-items: center; gap: 1rem; margin-top: 0.25rem;">
+                                                <span style="font-size: 0.75rem; background: #dcfce7; color: #15803d; padding: 0.25rem 0.5rem; border-radius: 0.25rem;">5.2 years exp</span>
+                                                <span style="font-size: 0.75rem; background: #dbeafe; color: #1e40af; padding: 0.25rem 0.5rem; border-radius: 0.25rem;">7 certs</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div style="display: flex; align-items: center; gap: 1.5rem;">
+                                        <div style="text-align: center;">
+                                            <p style="font-size: 1.25rem; font-weight: bold; color: #10b981; margin: 0;">92</p>
+                                            <p style="font-size: 0.75rem; color: #64748b; margin: 0;">Performance</p>
+                                        </div>
+                                        <div style="text-align: center;">
+                                            <p style="font-size: 1.125rem; font-weight: 600; color: #3b82f6; margin: 0;">89%</p>
+                                            <p style="font-size: 0.75rem; color: #64748b; margin: 0;">Engagement</p>
+                                        </div>
+                                        <div style="text-align: center;">
+                                            <p style="font-size: 1.125rem; font-weight: 600; color: #8b5cf6; margin: 0;">95%</p>
+                                            <p style="font-size: 0.75rem; color: #64748b; margin: 0;">Training Complete</p>
+                                        </div>
+                                        <div style="text-align: center;">
+                                            <p style="font-size: 1.125rem; font-weight: 600; color: #f59e0b; margin: 0;">4.9</p>
+                                            <p style="font-size: 0.75rem; color: #64748b; margin: 0;">Manager Rating</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #f1f5f9;">
+                                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                                        <div>
+                                            <p style="font-size: 0.9rem; font-weight: 500; color: #374151; margin-bottom: 0.25rem;">Key Strengths:</p>
+                                            <div style="display: flex; gap: 0.5rem;">
+                                                <span style="font-size: 0.75rem; background: #fef3c7; color: #d97706; padding: 0.25rem 0.5rem; border-radius: 0.25rem;">Team Leadership</span>
+                                                <span style="font-size: 0.75rem; background: #fef3c7; color: #d97706; padding: 0.25rem 0.5rem; border-radius: 0.25rem;">Training Others</span>
+                                                <span style="font-size: 0.75rem; background: #fef3c7; color: #d97706; padding: 0.25rem 0.5rem; border-radius: 0.25rem;">Strategic Planning</span>
+                                            </div>
+                                        </div>
+                                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                            <div style="text-align: center;">
+                                                <p style="font-size: 0.9rem; font-weight: 600; color: #6366f1; margin: 0;">91</p>
+                                                <p style="font-size: 0.75rem; color: #64748b; margin: 0;">Future Star Score</p>
+                                            </div>
+                                            <button class="btn btn-primary" style="font-size: 0.9rem;">View Full Profile</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Lisa Rodriguez -->
+                            <div style="border: 1px solid #e2e8f0; border-radius: 0.5rem; padding: 1rem; transition: all 0.3s ease;" onmouseover="this.style.boxShadow='0 4px 12px rgba(0,0,0,0.1)'" onmouseout="this.style.boxShadow='none'">
+                                <div style="display: flex; align-items: center; justify-content: space-between;">
+                                    <div style="display: flex; align-items: center; gap: 1rem;">
+                                        <div style="display: flex; align-items: center; justify-content: center; width: 2.5rem; height: 2.5rem; background: linear-gradient(135deg, #cd7f32, #b8860b); color: white; font-weight: bold; border-radius: 50%;">3</div>
+                                        <div style="width: 3rem; height: 3rem; background: #f59e0b; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600;">LR</div>
+                                        <div>
+                                            <h4 style="font-weight: 600; color: #1e293b; margin: 0;">Lisa Rodriguez</h4>
+                                            <p style="font-size: 0.9rem; color: #64748b; margin: 0;">Service Advisor • S Central</p>
+                                            <div style="display: flex; align-items: center; gap: 1rem; margin-top: 0.25rem;">
+                                                <span style="font-size: 0.75rem; background: #dcfce7; color: #15803d; padding: 0.25rem 0.5rem; border-radius: 0.25rem;">2.8 years exp</span>
+                                                <span style="font-size: 0.75rem; background: #dbeafe; color: #1e40af; padding: 0.25rem 0.5rem; border-radius: 0.25rem;">4 certs</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div style="display: flex; align-items: center; gap: 1.5rem;">
+                                        <div style="text-align: center;">
+                                            <p style="font-size: 1.25rem; font-weight: bold; color: #10b981; margin: 0;">91</p>
+                                            <p style="font-size: 0.75rem; color: #64748b; margin: 0;">Performance</p>
+                                        </div>
+                                        <div style="text-align: center;">
+                                            <p style="font-size: 1.125rem; font-weight: 600; color: #3b82f6; margin: 0;">94%</p>
+                                            <p style="font-size: 0.75rem; color: #64748b; margin: 0;">Engagement</p>
+                                        </div>
+                                        <div style="text-align: center;">
+                                            <p style="font-size: 1.125rem; font-weight: 600; color: #8b5cf6; margin: 0;">96%</p>
+                                            <p style="font-size: 0.75rem; color: #64748b; margin: 0;">Training Complete</p>
+                                        </div>
+                                        <div style="text-align: center;">
+                                            <p style="font-size: 1.125rem; font-weight: 600; color: #f59e0b; margin: 0;">4.7</p>
+                                            <p style="font-size: 0.75rem; color: #64748b; margin: 0;">Manager Rating</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #f1f5f9;">
+                                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                                        <div>
+                                            <p style="font-size: 0.9rem; font-weight: 500; color: #374151; margin-bottom: 0.25rem;">Key Strengths:</p>
+                                            <div style="display: flex; gap: 0.5rem;">
+                                                <span style="font-size: 0.75rem; background: #fef3c7; color: #d97706; padding: 0.25rem 0.5rem; border-radius: 0.25rem;">Customer Service</span>
+                                                <span style="font-size: 0.75rem; background: #fef3c7; color: #d97706; padding: 0.25rem 0.5rem; border-radius: 0.25rem;">Technical Knowledge</span>
+                                                <span style="font-size: 0.75rem; background: #fef3c7; color: #d97706; padding: 0.25rem 0.5rem; border-radius: 0.25rem;">Problem Solving</span>
+                                            </div>
+                                        </div>
+                                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                            <div style="text-align: center;">
+                                                <p style="font-size: 0.9rem; font-weight: 600; color: #6366f1; margin: 0;">85</p>
+                                                <p style="font-size: 0.75rem; color: #64748b; margin: 0;">Future Star Score</p>
+                                            </div>
+                                            <button class="btn btn-primary" style="font-size: 0.9rem;">View Full Profile</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- David Kim -->
+                            <div style="border: 1px solid #e2e8f0; border-radius: 0.5rem; padding: 1rem; transition: all 0.3s ease;" onmouseover="this.style.boxShadow='0 4px 12px rgba(0,0,0,0.1)'" onmouseout="this.style.boxShadow='none'">
+                                <div style="display: flex; align-items: center; justify-content: space-between;">
+                                    <div style="display: flex; align-items: center; gap: 1rem;">
+                                        <div style="display: flex; align-items: center; justify-content: center; width: 2.5rem; height: 2.5rem; background: #6b7280; color: white; font-weight: bold; border-radius: 50%;">4</div>
+                                        <div style="width: 3rem; height: 3rem; background: #8b5cf6; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600;">DK</div>
+                                        <div>
+                                            <h4 style="font-weight: 600; color: #1e293b; margin: 0;">David Kim</h4>
+                                            <p style="font-size: 0.9rem; color: #64748b; margin: 0;">Technician • Mountain States</p>
+                                            <div style="display: flex; align-items: center; gap: 1rem; margin-top: 0.25rem;">
+                                                <span style="font-size: 0.75rem; background: #dcfce7; color: #15803d; padding: 0.25rem 0.5rem; border-radius: 0.25rem;">4.1 years exp</span>
+                                                <span style="font-size: 0.75rem; background: #dbeafe; color: #1e40af; padding: 0.25rem 0.5rem; border-radius: 0.25rem;">6 certs</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div style="display: flex; align-items: center; gap: 1.5rem;">
+                                        <div style="text-align: center;">
+                                            <p style="font-size: 1.25rem; font-weight: bold; color: #10b981; margin: 0;">89</p>
+                                            <p style="font-size: 0.75rem; color: #64748b; margin: 0;">Performance</p>
+                                        </div>
+                                        <div style="text-align: center;">
+                                            <p style="font-size: 1.125rem; font-weight: 600; color: #3b82f6; margin: 0;">88%</p>
+                                            <p style="font-size: 0.75rem; color: #64748b; margin: 0;">Engagement</p>
+                                        </div>
+                                        <div style="text-align: center;">
+                                            <p style="font-size: 1.125rem; font-weight: 600; color: #8b5cf6; margin: 0;">94%</p>
+                                            <p style="font-size: 0.75rem; color: #64748b; margin: 0;">Training Complete</p>
+                                        </div>
+                                        <div style="text-align: center;">
+                                            <p style="font-size: 1.125rem; font-weight: 600; color: #f59e0b; margin: 0;">4.6</p>
+                                            <p style="font-size: 0.75rem; color: #64748b; margin: 0;">Manager Rating</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #f1f5f9;">
+                                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                                        <div>
+                                            <p style="font-size: 0.9rem; font-weight: 500; color: #374151; margin-bottom: 0.25rem;">Key Strengths:</p>
+                                            <div style="display: flex; gap: 0.5rem;">
+                                                <span style="font-size: 0.75rem; background: #fef3c7; color: #d97706; padding: 0.25rem 0.5rem; border-radius: 0.25rem;">Diagnostic Skills</span>
+                                                <span style="font-size: 0.75rem; background: #fef3c7; color: #d97706; padding: 0.25rem 0.5rem; border-radius: 0.25rem;">Efficiency</span>
+                                                <span style="font-size: 0.75rem; background: #fef3c7; color: #d97706; padding: 0.25rem 0.5rem; border-radius: 0.25rem;">Quality Work</span>
+                                            </div>
+                                        </div>
+                                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                            <div style="text-align: center;">
+                                                <p style="font-size: 0.9rem; font-weight: 600; color: #6366f1; margin: 0;">82</p>
+                                                <p style="font-size: 0.75rem; color: #64748b; margin: 0;">Future Star Score</p>
+                                            </div>
+                                            <button class="btn btn-primary" style="font-size: 0.9rem;">View Full Profile</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Emily Foster -->
+                            <div style="border: 1px solid #e2e8f0; border-radius: 0.5rem; padding: 1rem; transition: all 0.3s ease;" onmouseover="this.style.boxShadow='0 4px 12px rgba(0,0,0,0.1)'" onmouseout="this.style.boxShadow='none'">
+                                <div style="display: flex; align-items: center; justify-content: space-between;">
+                                    <div style="display: flex; align-items: center; gap: 1rem;">
+                                        <div style="display: flex; align-items: center; justify-content: center; width: 2.5rem; height: 2.5rem; background: #6b7280; color: white; font-weight: bold; border-radius: 50%;">5</div>
+                                        <div style="width: 3rem; height: 3rem; background: #ec4899; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600;">EF</div>
+                                        <div>
+                                            <h4 style="font-weight: 600; color: #1e293b; margin: 0;">Emily Foster</h4>
+                                            <p style="font-size: 0.9rem; color: #64748b; margin: 0;">Sales Consultant • Mid-Atlantic</p>
+                                            <div style="display: flex; align-items: center; gap: 1rem; margin-top: 0.25rem;">
+                                                <span style="font-size: 0.75rem; background: #dcfce7; color: #15803d; padding: 0.25rem 0.5rem; border-radius: 0.25rem;">1.9 years exp</span>
+                                                <span style="font-size: 0.75rem; background: #dbeafe; color: #1e40af; padding: 0.25rem 0.5rem; border-radius: 0.25rem;">3 certs</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div style="display: flex; align-items: center; gap: 1.5rem;">
+                                        <div style="text-align: center;">
+                                            <p style="font-size: 1.25rem; font-weight: bold; color: #10b981; margin: 0;">88</p>
+                                            <p style="font-size: 0.75rem; color: #64748b; margin: 0;">Performance</p>
+                                        </div>
+                                        <div style="text-align: center;">
+                                            <p style="font-size: 1.125rem; font-weight: 600; color: #3b82f6; margin: 0;">91%</p>
+                                            <p style="font-size: 0.75rem; color: #64748b; margin: 0;">Engagement</p>
+                                        </div>
+                                        <div style="text-align: center;">
+                                            <p style="font-size: 1.125rem; font-weight: 600; color: #8b5cf6; margin: 0;">97%</p>
+                                            <p style="font-size: 0.75rem; color: #64748b; margin: 0;">Training Complete</p>
+                                        </div>
+                                        <div style="text-align: center;">
+                                            <p style="font-size: 1.125rem; font-weight: 600; color: #f59e0b; margin: 0;">4.8</p>
+                                            <p style="font-size: 0.75rem; color: #64748b; margin: 0;">Manager Rating</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #f1f5f9;">
+                                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                                        <div>
+                                            <p style="font-size: 0.9rem; font-weight: 500; color: #374151; margin-bottom: 0.25rem;">Key Strengths:</p>
+                                            <div style="display: flex; gap: 0.5rem;">
+                                                <span style="font-size: 0.75rem; background: #fef3c7; color: #d97706; padding: 0.25rem 0.5rem; border-radius: 0.25rem;">Fast Learner</span>
+                                                <span style="font-size: 0.75rem; background: #fef3c7; color: #d97706; padding: 0.25rem 0.5rem; border-radius: 0.25rem;">Digital Savvy</span>
+                                                <span style="font-size: 0.75rem; background: #fef3c7; color: #d97706; padding: 0.25rem 0.5rem; border-radius: 0.25rem;">Customer Focus</span>
+                                            </div>
+                                        </div>
+                                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                            <div style="text-align: center;">
+                                                <p style="font-size: 0.9rem; font-weight: 600; color: #6366f1; margin: 0;">89</p>
+                                                <p style="font-size: 0.75rem; color: #64748b; margin: 0;">Future Star Score</p>
+                                            </div>
+                                            <button class="btn btn-primary" style="font-size: 0.9rem;">View Full Profile</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- James Wilson -->
+                            <div style="border: 1px solid #e2e8f0; border-radius: 0.5rem; padding: 1rem; transition: all 0.3s ease;" onmouseover="this.style.boxShadow='0 4px 12px rgba(0,0,0,0.1)'" onmouseout="this.style.boxShadow='none'">
+                                <div style="display: flex; align-items: center; justify-content: space-between;">
+                                    <div style="display: flex; align-items: center; gap: 1rem;">
+                                        <div style="display: flex; align-items: center; justify-content: center; width: 2.5rem; height: 2.5rem; background: #6b7280; color: white; font-weight: bold; border-radius: 50%;">6</div>
+                                        <div style="width: 3rem; height: 3rem; background: #06b6d4; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600;">JW</div>
+                                        <div>
+                                            <h4 style="font-weight: 600; color: #1e293b; margin: 0;">James Wilson</h4>
+                                            <p style="font-size: 0.9rem; color: #64748b; margin: 0;">Service Manager • Southern</p>
+                                            <div style="display: flex; align-items: center; gap: 1rem; margin-top: 0.25rem;">
+                                                <span style="font-size: 0.75rem; background: #dcfce7; color: #15803d; padding: 0.25rem 0.5rem; border-radius: 0.25rem;">6.3 years exp</span>
+                                                <span style="font-size: 0.75rem; background: #dbeafe; color: #1e40af; padding: 0.25rem 0.5rem; border-radius: 0.25rem;">8 certs</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div style="display: flex; align-items: center; gap: 1.5rem;">
+                                        <div style="text-align: center;">
+                                            <p style="font-size: 1.25rem; font-weight: bold; color: #10b981; margin: 0;">87</p>
+                                            <p style="font-size: 0.75rem; color: #64748b; margin: 0;">Performance</p>
+                                        </div>
+                                        <div style="text-align: center;">
+                                            <p style="font-size: 1.125rem; font-weight: 600; color: #3b82f6; margin: 0;">86%</p>
+                                            <p style="font-size: 0.75rem; color: #64748b; margin: 0;">Engagement</p>
+                                        </div>
+                                        <div style="text-align: center;">
+                                            <p style="font-size: 1.125rem; font-weight: 600; color: #8b5cf6; margin: 0;">93%</p>
+                                            <p style="font-size: 0.75rem; color: #64748b; margin: 0;">Training Complete</p>
+                                        </div>
+                                        <div style="text-align: center;">
+                                            <p style="font-size: 1.125rem; font-weight: 600; color: #f59e0b; margin: 0;">4.5</p>
+                                            <p style="font-size: 0.75rem; color: #64748b; margin: 0;">Manager Rating</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #f1f5f9;">
+                                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                                        <div>
+                                            <p style="font-size: 0.9rem; font-weight: 500; color: #374151; margin-bottom: 0.25rem;">Key Strengths:</p>
+                                            <div style="display: flex; gap: 0.5rem;">
+                                                <span style="font-size: 0.75rem; background: #fef3c7; color: #d97706; padding: 0.25rem 0.5rem; border-radius: 0.25rem;">Process Improvement</span>
+                                                <span style="font-size: 0.75rem; background: #fef3c7; color: #d97706; padding: 0.25rem 0.5rem; border-radius: 0.25rem;">Staff Development</span>
+                                                <span style="font-size: 0.75rem; background: #fef3c7; color: #d97706; padding: 0.25rem 0.5rem; border-radius: 0.25rem;">Customer Relations</span>
+                                            </div>
+                                        </div>
+                                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                            <div style="text-align: center;">
+                                                <p style="font-size: 0.9rem; font-weight: 600; color: #6366f1; margin: 0;">84</p>
+                                                <p style="font-size: 0.75rem; color: #64748b; margin: 0;">Future Star Score</p>
+                                            </div>
+                                            <button class="btn btn-primary" style="font-size: 0.9rem;">View Full Profile</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Additional performers continue here... -->
+                            <div style="text-align: center; padding: 1rem; border-top: 1px solid #e2e8f0; margin-top: 1rem;">
+                                <p style="color: #64748b; font-size: 0.9rem; margin-bottom: 1rem;">Showing 6 of 50 top performers</p>
+                                <div style="display: flex; gap: 0.5rem; justify-content: center;">
+                                    <button class="btn btn-secondary" onclick="loadMorePerformers()" style="display: flex; align-items: center; gap: 0.5rem;">
+                                        <span>📈</span>
+                                        <span>Load Next 10</span>
+                                    </button>
+                                    <button class="btn" style="background: #10b981; color: white; display: flex; align-items: center; gap: 0.5rem;">
+                                        <span>👁️</span>
+                                        <span>View All 50</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Key Characteristics Tab -->
+                <div id="top-performer-characteristics" class="top-performer-tab-content" style="display: none;">
+                    <div class="card card-full">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                            <div>
+                                <h3 class="card-title">Extracted Key Characteristics & Behaviors</h3>
+                                <p style="color: #64748b; font-size: 0.9rem;">AI-identified traits that differentiate top performers from average performers</p>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 0.5rem; background: #dcfce7; padding: 0.5rem 1rem; border-radius: 0.5rem;">
+                                <span style="color: #10b981;">✅</span>
+                                <span style="font-size: 0.9rem; font-weight: 600; color: #15803d;">Analysis Complete</span>
+                            </div>
+                        </div>
+
+                        <!-- Learning Behavior Category -->
+                        <div style="margin-bottom: 2rem;">
+                            <h4 style="font-size: 1.125rem; font-weight: 600; color: #374151; margin-bottom: 1rem;">Learning Behavior</h4>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
+                                <div style="border: 1px solid #e2e8f0; border-radius: 0.5rem; padding: 1rem;">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+                                        <h5 style="font-weight: 500; color: #1e293b; margin: 0;">Training Completion Speed</h5>
+                                        <div style="text-align: right;">
+                                            <span style="font-size: 1.125rem; font-weight: bold; color: #10b981;">95%</span>
+                                            <span style="font-size: 0.9rem; color: #64748b; margin-left: 0.5rem;">vs 67%</span>
+                                        </div>
+                                    </div>
+                                    <div style="margin-bottom: 0.5rem;">
+                                        <div style="display: flex; align-items: center; justify-content: space-between; font-size: 0.9rem;">
+                                            <span style="color: #15803d;">Top Performers</span>
+                                            <span style="font-weight: 500;">95%</span>
+                                        </div>
+                                        <div style="width: 100%; background: #e5e7eb; border-radius: 9999px; height: 0.5rem; margin-top: 0.25rem;">
+                                            <div style="background: #10b981; height: 0.5rem; border-radius: 9999px; width: 95%;"></div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div style="display: flex; align-items: center; justify-content: space-between; font-size: 0.9rem;">
+                                            <span style="color: #64748b;">Average Performers</span>
+                                            <span style="font-weight: 500;">67%</span>
+                                        </div>
+                                        <div style="width: 100%; background: #e5e7eb; border-radius: 9999px; height: 0.5rem; margin-top: 0.25rem;">
+                                            <div style="background: #9ca3af; height: 0.5rem; border-radius: 9999px; width: 67%;"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div style="border: 1px solid #e2e8f0; border-radius: 0.5rem; padding: 1rem;">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+                                        <h5 style="font-weight: 500; color: #1e293b; margin: 0;">Optional Module Participation</h5>
+                                        <div style="text-align: right;">
+                                            <span style="font-size: 1.125rem; font-weight: bold; color: #10b981;">87%</span>
+                                            <span style="font-size: 0.9rem; color: #64748b; margin-left: 0.5rem;">vs 34%</span>
+                                        </div>
+                                    </div>
+                                    <div style="margin-bottom: 0.5rem;">
+                                        <div style="display: flex; align-items: center; justify-content: space-between; font-size: 0.9rem;">
+                                            <span style="color: #15803d;">Top Performers</span>
+                                            <span style="font-weight: 500;">87%</span>
+                                        </div>
+                                        <div style="width: 100%; background: #e5e7eb; border-radius: 9999px; height: 0.5rem; margin-top: 0.25rem;">
+                                            <div style="background: #10b981; height: 0.5rem; border-radius: 9999px; width: 87%;"></div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div style="display: flex; align-items: center; justify-content: space-between; font-size: 0.9rem;">
+                                            <span style="color: #64748b;">Average Performers</span>
+                                            <span style="font-weight: 500;">34%</span>
+                                        </div>
+                                        <div style="width: 100%; background: #e5e7eb; border-radius: 9999px; height: 0.5rem; margin-top: 0.25rem;">
+                                            <div style="background: #9ca3af; height: 0.5rem; border-radius: 9999px; width: 34%;"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Behavioral Impact Analysis -->
+                        <div class="card" style="margin-top: 2rem;">
+                            <h3 class="card-title">Behavioral Impact Analysis</h3>
+                            <div style="display: grid; gap: 1rem;">
+                                <div style="border: 1px solid #e2e8f0; border-radius: 0.5rem; padding: 1rem;">
+                                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.75rem;">
+                                        <div style="flex: 1;">
+                                            <h4 style="font-weight: 600; color: #1e293b; margin: 0;">Completes training within 48hrs</h4>
+                                            <p style="font-size: 0.9rem; color: #64748b; margin-top: 0.25rem;">Quick training completion strongly correlates with sales success</p>
+                                            <div style="display: flex; align-items: center; gap: 1rem; margin-top: 0.5rem;">
+                                                <span style="font-size: 0.75rem; background: #dbeafe; color: #1e40af; padding: 0.25rem 0.5rem; border-radius: 0.25rem;">Top Performers: 96%</span>
+                                                <span style="font-size: 0.75rem; background: #f3f4f6; color: #374151; padding: 0.25rem 0.5rem; border-radius: 0.25rem;">Average: 67%</span>
+                                            </div>
+                                        </div>
+                                        <div style="text-align: right; margin-left: 1rem;">
+                                            <div style="font-size: 2rem; font-weight: bold; color: #3b82f6;">92%</div>
+                                            <div style="font-size: 0.75rem; color: #64748b;">Impact Score</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div style="border: 1px solid #e2e8f0; border-radius: 0.5rem; padding: 1rem;">
+                                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.75rem;">
+                                        <div style="flex: 1;">
+                                            <h4 style="font-weight: 600; color: #1e293b; margin: 0;">Maintains 3+ active certifications</h4>
+                                            <p style="font-size: 0.9rem; color: #64748b; margin-top: 0.25rem;">Continuous certification maintenance indicates commitment to growth</p>
+                                            <div style="display: flex; align-items: center; gap: 1rem; margin-top: 0.5rem;">
+                                                <span style="font-size: 0.75rem; background: #dbeafe; color: #1e40af; padding: 0.25rem 0.5rem; border-radius: 0.25rem;">Top Performers: 94%</span>
+                                                <span style="font-size: 0.75rem; background: #f3f4f6; color: #374151; padding: 0.25rem 0.5rem; border-radius: 0.25rem;">Average: 52%</span>
+                                            </div>
+                                        </div>
+                                        <div style="text-align: right; margin-left: 1rem;">
+                                            <div style="font-size: 2rem; font-weight: bold; color: #3b82f6;">88%</div>
+                                            <div style="font-size: 0.75rem; color: #64748b;">Impact Score</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Training Recommendations Tab -->
+                <div id="top-performer-recommendations" class="top-performer-tab-content" style="display: none;">
+                    <div class="card card-full">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                            <div>
+                                <h3 class="card-title">AI-Curated Training Recommendations</h3>
+                                <p style="color: #64748b; font-size: 0.9rem;">Based on top performer characteristics and behavioral analysis</p>
+                            </div>
+                            <button class="btn" style="background: #8b5cf6; color: white;">Deploy All Recommendations</button>
+                        </div>
+
+                        <div style="display: grid; gap: 1.5rem;">
+                            <!-- Potentials Recommendation -->
+                            <div style="border: 1px solid #e2e8f0; border-radius: 0.5rem; padding: 1.5rem; background: linear-gradient(135deg, #eff6ff, #f3e8ff);">
+                                <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
+                                    <div style="display: flex; align-items: center; gap: 0.75rem;">
+                                        <span style="padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.9rem; font-weight: 500; background: #dbeafe; color: #1e40af;">Potentials</span>
+                                        <span style="padding: 0.25rem 0.5rem; border-radius: 0.25rem; font-size: 0.8rem; font-weight: 500; background: #fed7aa; color: #ea580c;">High Priority</span>
+                                    </div>
+                                    <button class="btn btn-primary">Deploy Training</button>
+                                </div>
+
+                                <h4 style="font-size: 1.25rem; font-weight: bold; color: #1e293b; margin-bottom: 0.5rem;">Advanced Negotiation & Closing Techniques</h4>
+                                <p style="font-size: 1.125rem; color: #10b981; font-weight: 600; margin-bottom: 1rem;">Estimated Impact: +15% close rate</p>
+
+                                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin-bottom: 1rem;">
+                                    <div>
+                                        <h5 style="font-weight: 600; color: #374151; margin-bottom: 0.5rem;">Target Audience</h5>
+                                        <p style="font-size: 0.9rem; color: #64748b;">Sales Consultants with 85+ performance scores</p>
+                                    </div>
+                                    <div>
+                                        <h5 style="font-weight: 600; color: #374151; margin-bottom: 0.5rem;">Duration & Delivery</h5>
+                                        <p style="font-size: 0.9rem; color: #64748b;">4 hours • Interactive workshop + shadowing top performers</p>
+                                    </div>
+                                </div>
+
+                                <div style="background: white; border-radius: 0.5rem; padding: 1rem;">
+                                    <h5 style="font-weight: 600; color: #374151; margin-bottom: 0.5rem;">Based on Analysis of:</h5>
+                                    <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+                                        <span style="font-size: 0.75rem; background: #f3e8ff; color: #7c3aed; padding: 0.25rem 0.5rem; border-radius: 0.25rem;">Sarah Chen behavior patterns</span>
+                                        <span style="font-size: 0.75rem; background: #f3e8ff; color: #7c3aed; padding: 0.25rem 0.5rem; border-radius: 0.25rem;">Marcus Johnson training path</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Absorbers Recommendation -->
+                            <div style="border: 1px solid #e2e8f0; border-radius: 0.5rem; padding: 1.5rem; background: linear-gradient(135deg, #fefce8, #fef3c7);">
+                                <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
+                                    <div style="display: flex; align-items: center; gap: 0.75rem;">
+                                        <span style="padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.9rem; font-weight: 500; background: #fef3c7; color: #d97706;">Absorbers</span>
+                                        <span style="padding: 0.25rem 0.5rem; border-radius: 0.25rem; font-size: 0.8rem; font-weight: 500; background: #fef3c7; color: #d97706;">Medium Priority</span>
+                                    </div>
+                                    <button class="btn btn-primary">Deploy Training</button>
+                                </div>
+
+                                <h4 style="font-size: 1.25rem; font-weight: bold; color: #1e293b; margin-bottom: 0.5rem;">Customer Engagement Mastery Program</h4>
+                                <p style="font-size: 1.125rem; color: #10b981; font-weight: 600; margin-bottom: 1rem;">Estimated Impact: +12% customer satisfaction</p>
+
+                                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin-bottom: 1rem;">
+                                    <div>
+                                        <h5 style="font-weight: 600; color: #374151; margin-bottom: 0.5rem;">Target Audience</h5>
+                                        <p style="font-size: 0.9rem; color: #64748b;">Service Advisors with moderate engagement</p>
+                                    </div>
+                                    <div>
+                                        <h5 style="font-weight: 600; color: #374151; margin-bottom: 0.5rem;">Duration & Delivery</h5>
+                                        <p style="font-size: 0.9rem; color: #64748b;">6 hours • Role-play scenarios + peer mentoring</p>
+                                    </div>
+                                </div>
+
+                                <div style="background: white; border-radius: 0.5rem; padding: 1rem;">
+                                    <h5 style="font-weight: 600; color: #374151; margin-bottom: 0.5rem;">Based on Analysis of:</h5>
+                                    <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+                                        <span style="font-size: 0.75rem; background: #f3e8ff; color: #7c3aed; padding: 0.25rem 0.5rem; border-radius: 0.25rem;">Lisa Rodriguez service approach</span>
+                                        <span style="font-size: 0.75rem; background: #f3e8ff; color: #7c3aed; padding: 0.25rem 0.5rem; border-radius: 0.25rem;">Top performer communication styles</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Predictive Factors Tab -->
+                <div id="top-performer-predictions" class="top-performer-tab-content" style="display: none;">
+                    <div class="card card-full">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                            <div>
+                                <h3 class="card-title">Early Performance Predictive Factors</h3>
+                                <p style="color: #64748b; font-size: 0.9rem;">AI model identifies who has potential to become top performers</p>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 0.5rem; background: #e0e7ff; padding: 0.5rem 1rem; border-radius: 0.5rem;">
+                                <span style="color: #6366f1;">⭐</span>
+                                <span style="font-size: 0.9rem; font-weight: 600; color: #6366f1;">87% Accuracy Rate</span>
+                            </div>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 1.5rem;">
+                            <div>
+                                <h4 style="font-size: 1.125rem; font-weight: 600; color: #374151; margin-bottom: 1rem;">Predictive Model Weights</h4>
+                                <div style="display: grid; gap: 1rem;">
+                                    <div style="border: 1px solid #e2e8f0; border-radius: 0.5rem; padding: 1rem;">
+                                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                                            <h5 style="font-weight: 600; color: #1e293b; margin: 0;">Early Training Velocity</h5>
+                                            <span style="font-size: 1.125rem; font-weight: bold; color: #3b82f6;">25%</span>
+                                        </div>
+                                        <p style="font-size: 0.9rem; color: #64748b; margin-bottom: 0.5rem;">Speed of initial skill acquisition</p>
+                                        <div style="width: 100%; background: #e5e7eb; border-radius: 9999px; height: 0.5rem;">
+                                            <div style="background: #3b82f6; height: 0.5rem; border-radius: 9999px; width: 100%;"></div>
+                                        </div>
+                                    </div>
+
+                                    <div style="border: 1px solid #e2e8f0; border-radius: 0.5rem; padding: 1rem;">
+                                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                                            <h5 style="font-weight: 600; color: #1e293b; margin: 0;">Feedback Responsiveness</h5>
+                                            <span style="font-size: 1.125rem; font-weight: bold; color: #3b82f6;">20%</span>
+                                        </div>
+                                        <p style="font-size: 0.9rem; color: #64748b; margin-bottom: 0.5rem;">How quickly they implement coaching</p>
+                                        <div style="width: 100%; background: #e5e7eb; border-radius: 9999px; height: 0.5rem;">
+                                            <div style="background: #3b82f6; height: 0.5rem; border-radius: 9999px; width: 80%;"></div>
+                                        </div>
+                                    </div>
+
+                                    <div style="border: 1px solid #e2e8f0; border-radius: 0.5rem; padding: 1rem;">
+                                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                                            <h5 style="font-weight: 600; color: #1e293b; margin: 0;">Voluntary Learning Engagement</h5>
+                                            <span style="font-size: 1.125rem; font-weight: bold; color: #3b82f6;">18%</span>
+                                        </div>
+                                        <p style="font-size: 0.9rem; color: #64748b; margin-bottom: 0.5rem;">Self-directed skill development</p>
+                                        <div style="width: 100%; background: #e5e7eb; border-radius: 9999px; height: 0.5rem;">
+                                            <div style="background: #3b82f6; height: 0.5rem; border-radius: 9999px; width: 72%;"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <h4 style="font-size: 1.125rem; font-weight: 600; color: #374151; margin-bottom: 1rem;">Future Star Predictions</h4>
+                                <div style="display: grid; gap: 1rem;">
+                                    <div style="border: 1px solid #fbbf24; background: #fef3c7; border-radius: 0.5rem; padding: 1rem;">
+                                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                                            <h5 style="font-weight: 600; color: #1e293b; margin: 0;">Alex Thompson</h5>
+                                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                                <span style="font-size: 0.9rem; background: #dcfce7; color: #15803d; padding: 0.25rem 0.5rem; border-radius: 0.25rem;">87% confidence</span>
+                                            </div>
+                                        </div>
+                                        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; font-size: 0.9rem;">
+                                            <div>
+                                                <p style="color: #64748b; margin: 0;">Current Score</p>
+                                                <p style="font-weight: 600; margin: 0;">74</p>
+                                            </div>
+                                            <div>
+                                                <p style="color: #64748b; margin: 0;">Predicted Score</p>
+                                                <p style="font-weight: 600; color: #10b981; margin: 0;">89</p>
+                                            </div>
+                                            <div>
+                                                <p style="color: #64748b; margin: 0;">Timeline</p>
+                                                <p style="font-weight: 600; margin: 0;">3-4 months</p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div style="border: 1px solid #fbbf24; background: #fef3c7; border-radius: 0.5rem; padding: 1rem;">
+                                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                                            <h5 style="font-weight: 600; color: #1e293b; margin: 0;">Riley Chang</h5>
+                                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                                <span style="font-size: 0.9rem; background: #dcfce7; color: #15803d; padding: 0.25rem 0.5rem; border-radius: 0.25rem;">91% confidence</span>
+                                            </div>
+                                        </div>
+                                        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; font-size: 0.9rem;">
+                                            <div>
+                                                <p style="color: #64748b; margin: 0;">Current Score</p>
+                                                <p style="font-weight: 600; margin: 0;">76</p>
+                                            </div>
+                                            <div>
+                                                <p style="color: #64748b; margin: 0;">Predicted Score</p>
+                                                <p style="font-weight: 600; color: #10b981; margin: 0;">91</p>
+                                            </div>
+                                            <div>
+                                                <p style="color: #64748b; margin: 0;">Timeline</p>
+                                                <p style="font-weight: 600; margin: 0;">2-3 months</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Regional Breakdown Tab -->
+                <div id="top-performer-regional" class="top-performer-tab-content" style="display: none;">
+                    <div class="card card-full">
+                        <h3 class="card-title" style="margin-bottom: 1.5rem;">Regional Performance Distribution</h3>
+                        
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 1.5rem;">
+                            <div>
+                                <h4 style="font-size: 1.125rem; font-weight: 600; color: #374151; margin-bottom: 1rem;">Regional Rankings by Top Performer %</h4>
+                                <div style="display: grid; gap: 0.5rem;">
+                                    <div style="display: flex; align-items: center; justify-content: space-between; padding: 0.75rem; background: #f8fafc; border-radius: 0.5rem;">
+                                        <div style="display: flex; align-items: center; gap: 0.75rem;">
+                                            <div style="width: 2rem; height: 2rem; background: #dbeafe; color: #1e40af; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; font-weight: 600;">1</div>
+                                            <span style="font-weight: 500; color: #1e293b;">S Central</span>
+                                        </div>
+                                        <div style="text-align: right;">
+                                            <div style="font-size: 1.125rem; font-weight: bold; color: #10b981;">24.3%</div>
+                                            <div style="font-size: 0.75rem; color: #64748b;">25 of 103</div>
+                                        </div>
+                                    </div>
+
+                                    <div style="display: flex; align-items: center; justify-content: space-between; padding: 0.75rem; background: #f8fafc; border-radius: 0.5rem;">
+                                        <div style="display: flex; align-items: center; gap: 0.75rem;">
+                                            <div style="width: 2rem; height: 2rem; background: #dbeafe; color: #1e40af; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; font-weight: 600;">2</div>
+                                            <span style="font-weight: 500; color: #1e293b;">Southern</span>
+                                        </div>
+                                        <div style="text-align: right;">
+                                            <div style="font-size: 1.125rem; font-weight: bold; color: #10b981;">24.1%</div>
+                                            <div style="font-size: 0.75rem; color: #64748b;">28 of 116</div>
+                                        </div>
+                                    </div>
+
+                                    <div style="display: flex; align-items: center; justify-content: space-between; padding: 0.75rem; background: #f8fafc; border-radius: 0.5rem;">
+                                        <div style="display: flex; align-items: center; gap: 0.75rem;">
+                                            <div style="width: 2rem; height: 2rem; background: #dbeafe; color: #1e40af; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; font-weight: 600;">3</div>
+                                            <span style="font-weight: 500; color: #1e293b;">Eastern</span>
+                                        </div>
+                                        <div style="text-align: right;">
+                                            <div style="font-size: 1.125rem; font-weight: bold; color: #10b981;">22.7%</div>
+                                            <div style="font-size: 0.75rem; color: #64748b;">22 of 97</div>
+                                        </div>
+                                    </div>
+
+                                    <div style="display: flex; align-items: center; justify-content: space-between; padding: 0.75rem; background: #f8fafc; border-radius: 0.5rem;">
+                                        <div style="display: flex; align-items: center; gap: 0.75rem;">
+                                            <div style="width: 2rem; height: 2rem; background: #dbeafe; color: #1e40af; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; font-weight: 600;">4</div>
+                                            <span style="font-weight: 500; color: #1e293b;">Central</span>
+                                        </div>
+                                        <div style="text-align: right;">
+                                            <div style="font-size: 1.125rem; font-weight: bold; color: #10b981;">22.2%</div>
+                                            <div style="font-size: 0.75rem; color: #64748b;">18 of 81</div>
+                                        </div>
+                                    </div>
+
+                                    <div style="display: flex; align-items: center; justify-content: space-between; padding: 0.75rem; background: #f8fafc; border-radius: 0.5rem;">
+                                        <div style="display: flex; align-items: center; gap: 0.75rem;">
+                                            <div style="width: 2rem; height: 2rem; background: #dbeafe; color: #1e40af; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; font-weight: 600;">5</div>
+                                            <span style="font-weight: 500; color: #1e293b;">Mountain States</span>
+                                        </div>
+                                        <div style="text-align: right;">
+                                            <div style="font-size: 1.125rem; font-weight: bold; color: #10b981;">20.7%</div>
+                                            <div style="font-size: 0.75rem; color: #64748b;">12 of 58</div>
+                                        </div>
+                                    </div>
+
+                                    <div style="display: flex; align-items: center; justify-content: space-between; padding: 0.75rem; background: #f8fafc; border-radius: 0.5rem;">
+                                        <div style="display: flex; align-items: center; gap: 0.75rem;">
+                                            <div style="width: 2rem; height: 2rem; background: #dbeafe; color: #1e40af; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; font-weight: 600;">6</div>
+                                            <span style="font-weight: 500; color: #1e293b;">Western</span>
+                                        </div>
+                                        <div style="text-align: right;">
+                                            <div style="font-size: 1.125rem; font-weight: bold; color: #10b981;">20.7%</div>
+                                            <div style="font-size: 0.75rem; color: #64748b;">17 of 82</div>
+                                        </div>
+                                    </div>
+
+                                    <div style="display: flex; align-items: center; justify-content: space-between; padding: 0.75rem; background: #f8fafc; border-radius: 0.5rem;">
+                                        <div style="display: flex; align-items: center; gap: 0.75rem;">
+                                            <div style="width: 2rem; height: 2rem; background: #dbeafe; color: #1e40af; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; font-weight: 600;">7</div>
+                                            <span style="font-weight: 500; color: #1e293b;">Mid-Atlantic</span>
+                                        </div>
+                                        <div style="text-align: right;">
+                                            <div style="font-size: 1.125rem; font-weight: bold; color: #10b981;">18.5%</div>
+                                            <div style="font-size: 0.75rem; color: #64748b;">15 of 81</div>
+                                        </div>
+                                    </div>
+
+                                    <div style="display: flex; align-items: center; justify-content: space-between; padding: 0.75rem; background: #f8fafc; border-radius: 0.5rem;">
+                                        <div style="display: flex; align-items: center; gap: 0.75rem;">
+                                            <div style="width: 2rem; height: 2rem; background: #dbeafe; color: #1e40af; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; font-weight: 600;">4</div>
+                                            <span style="font-weight: 500; color: #1e293b;">Central</span>
+                                        </div>
+                                        <div style="text-align: right;">
+                                            <div style="font-size: 1.125rem; font-weight: bold; color: #10b981;">22.2%</div>
+                                            <div style="font-size: 0.75rem; color: #64748b;">18 of 81</div>
+                                        </div>
+                                    </div>
+
+                                    <div style="display: flex; align-items: center; justify-content: space-between; padding: 0.75rem; background: #f8fafc; border-radius: 0.5rem;">
+                                        <div style="display: flex; align-items: center; gap: 0.75rem;">
+                                            <div style="width: 2rem; height: 2rem; background: #dbeafe; color: #1e40af; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; font-weight: 600;">5</div>
+                                            <span style="font-weight: 500; color: #1e293b;">Mountain States</span>
+                                        </div>
+                                        <div style="text-align: right;">
+                                            <div style="font-size: 1.125rem; font-weight: bold; color: #10b981;">20.7%</div>
+                                            <div style="font-size: 0.75rem; color: #64748b;">12 of 58</div>
+                                        </div>
+                                    </div>
+
+                                    <div style="display: flex; align-items: center; justify-content: space-between; padding: 0.75rem; background: #f8fafc; border-radius: 0.5rem;">
+                                        <div style="display: flex; align-items: center; gap: 0.75rem;">
+                                            <div style="width: 2rem; height: 2rem; background: #dbeafe; color: #1e40af; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; font-weight: 600;">6</div>
+                                            <span style="font-weight: 500; color: #1e293b;">Western</span>
+                                        </div>
+                                        <div style="text-align: right;">
+                                            <div style="font-size: 1.125rem; font-weight: bold; color: #10b981;">20.7%</div>
+                                            <div style="font-size: 0.75rem; color: #64748b;">17 of 82</div>
+                                        </div>
+                                    </div>
+
+                                    <div style="display: flex; align-items: center; justify-content: space-between; padding: 0.75rem; background: #f8fafc; border-radius: 0.5rem;">
+                                        <div style="display: flex; align-items: center; gap: 0.75rem;">
+                                            <div style="width: 2rem; height: 2rem; background: #dbeafe; color: #1e40af; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; font-weight: 600;">7</div>
+                                            <span style="font-weight: 500; color: #1e293b;">Mid-Atlantic</span>
+                                        </div>
+                                        <div style="text-align: right;">
+                                            <div style="font-size: 1.125rem; font-weight: bold; color: #10b981;">18.5%</div>
+                                            <div style="font-size: 0.75rem; color: #64748b;">15 of 81</div>
+                                        </div>
+                                    </div>; align-items: center; justify-content: center; font-size: 0.9rem; font-weight: 600;">3</div>
+                                            <span style="font-weight: 500; color: #1e293b;">Eastern</span>
+                                        </div>
+                                        <div style="text-align: right;">
+                                            <div style="font-size: 1.125rem; font-weight: bold; color: #10b981;">22.7%</div>
+                                            <div style="font-size: 0.75rem; color: #64748b;">22 of 97</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <h4 style="font-size: 1.125rem; font-weight: 600; color: #374151; margin-bottom: 1rem;">Regional Improvement Opportunities</h4>
+                                <div style="display: grid; gap: 1rem;">
+                                    <div style="border: 1px solid #fecaca; background: #fef2f2; border-radius: 0.5rem; padding: 1rem;">
+                                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                                            <h5 style="font-weight: 600; color: #1e293b; margin: 0;">Eastern</h5>
+                                            <span style="font-size: 0.9rem; background: #fecaca; color: #dc2626; padding: 0.25rem 0.5rem; border-radius: 0.25rem;">Priority 1</span>
+                                        </div>
+                                        <p style="font-size: 0.9rem; color: #64748b; margin-bottom: 0.5rem;">12 disengaged employees (12.4% of workforce)</p>
+                                        <button class="btn" style="background: #dc2626; color: white; font-size: 0.9rem;">Deploy Intervention Program</button>
+                                    </div>
+
+                                    <div style="border: 1px solid #fecaca; background: #fef2f2; border-radius: 0.5rem; padding: 1rem;">
+                                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                                            <h5 style="font-weight: 600; color: #1e293b; margin: 0;">Southern</h5>
+                                            <span style="font-size: 0.9rem; background: #fecaca; color: #dc2626; padding: 0.25rem 0.5rem; border-radius: 0.25rem;">Priority 2</span>
+                                        </div>
+                                        <p style="font-size: 0.9rem; color: #64748b; margin-bottom: 0.5rem;">11 disengaged employees (9.5% of workforce)</p>
+                                        <button class="btn" style="background: #dc2626; color: white; font-size: 0.9rem;">Deploy Intervention Program</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>`,
                 
                 'reports_section': (persona) => `<div class="content-header"><h1 class="content-title">📋 Generate Reports</h1><p class="content-subtitle">Create and download custom reports.</p></div><div class="card card-full"><h3 class="card-title">Report Generator</h3><form class="dashboard-grid" style="grid-template-columns: 1fr 1fr 1fr auto; align-items: end;"><div class="form-group" style="margin:0;"><label class="form-label">Report Type</label><select class="form-control"><option>Course Completion</option><option>Compliance Status</option></select></div><div class="form-group" style="margin:0;"><label class="form-label">Select Group</label><select class="form-control"><option>My Team</option><option>Sales Department</option></select></div><div class="form-group" style="margin:0;"><label class="form-label">Date Range</label><input type="date" class="form-control"></div><button class="btn">Generate</button></form></div>`,
                 
