@@ -267,7 +267,6 @@
         .progress-orange { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
         .progress-red { background: linear-gradient(90deg, #ef4444, #f87171); }
 
-
         /* AI Insights */
         .ai-insights {
             background: linear-gradient(135deg, #667eea, #764ba2);
@@ -460,6 +459,59 @@
         .path-number.current {
             background: #ff9800;
             color: white;
+        }
+
+        /* Buyer Personas Table */
+        .persona-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .persona-table th,
+        .persona-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .persona-table th {
+            background: #f8fafc;
+            font-weight: 600;
+            color: #475569;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .persona-table tr:hover {
+            background: #f8fafc;
+        }
+
+        .persona-table .persona-type {
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .persona-table .ideal-vehicles {
+            color: #4f46e5;
+            font-weight: 500;
+        }
+
+        .persona-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            margin-right: 8px;
+            margin-bottom: 4px;
         }
 
         /* Profile Settings Modal */
@@ -672,6 +724,15 @@
             .checkbox-group {
                 grid-template-columns: 1fr;
             }
+
+            .persona-table {
+                font-size: 0.9rem;
+            }
+
+            .persona-table th,
+            .persona-table td {
+                padding: 0.75rem;
+            }
         }
     </style>
 </head>
@@ -735,6 +796,10 @@
                  <a class="nav-item" id="certifications-nav-item" onclick="showSection('certifications', this)">
                     <span class="icon">📜</span>
                     Certifications
+                </a>
+                <a class="nav-item" id="buyer-personas-nav-item" onclick="showSection('buyer-personas', this)">
+                    <span class="icon">👥</span>
+                    Buyer Personas
                 </a>
             </div>
 
@@ -815,6 +880,7 @@
             <div id="training-gaps" class="content-section"></div>
             <div id="star-rewards" class="content-section"></div>
             <div id="certifications" class="content-section"></div>
+            <div id="buyer-personas" class="content-section"></div>
             <div id="analytics" class="content-section"></div>
             <div id="team-performance" class="content-section"></div>
             <div id="top-performers" class="content-section"></div>
@@ -890,6 +956,108 @@
             executive: { name: "Robert Davis", role: "Executive", avatar: "RD", email: "robert.davis@company.com", manager: "Board of Directors", department: "Executive Leadership", performance: "+15% YoY", careerGoals: ["Expand Market Share", "Drive Innovation", "Foster Leadership"], focusAreas: [{ id: "strategy", label: "Learning Strategy" }, { id: "roi", label: "ROI & Business Impact" }, { id: "innovation", label: "Learning Innovation" }, { id: "leadership", label: "Executive Leadership" }, { id: "transformation", label: "Digital Transformation" }, { id: "culture", label: "Learning Culture" }] }
         };
 
+        // Buyer Personas Data
+        const buyerPersonas = [
+            {
+                type: "Eco-Conscious Millennial",
+                profile: "Young professional or couple, environmentally aware, early EV adopter",
+                vehicles: "IONIQ 5, IONIQ 6",
+                needs: "Sustainability, energy savings, modern tech, government rebates",
+                tactics: "Emphasize carbon footprint reduction, Bluelink app, over-the-air updates, EV tax credits, charging infrastructure, total cost of ownership. Offer EV test drive to dispel range anxiety."
+            },
+            {
+                type: "Family-Focused Suburban Parent",
+                profile: "Middle-aged parent with 2–3 kids, seeks safety, space, and reliability",
+                vehicles: "Santa Fe, Palisade, Tucson HEV/PHEV",
+                needs: "Safety, third-row seating, AWD, cargo space, infotainment for kids",
+                tactics: "Walkthrough family safety features (lane keep, smart cruise), child seat compatibility, flexible seating demos. Show family-friendly apps (e.g. Bluelink Remote Start). Highlight IIHS Top Safety Pick awards."
+            },
+            {
+                type: "Young Urban Commuter",
+                profile: "First-time buyer, budget-conscious, city dweller",
+                vehicles: "Venue, Elantra, Kona",
+                needs: "Affordability, small footprint, fuel efficiency, smart features",
+                tactics: "Focus on MSRP, MPG, low insurance costs, maneuverability, warranty. Offer digital finance pre-qualification and online purchase options. Emphasize Apple CarPlay, wireless charging, etc."
+            },
+            {
+                type: "Tech-Savvy Enthusiast",
+                profile: "Detail-oriented, wants the latest gadgets, enjoys specs and comparisons",
+                vehicles: "IONIQ 6 N, Tucson Limited, Sonata N-Line",
+                needs: "Performance, infotainment, driver-assist tech, app integration",
+                tactics: "Dive into technical detail: ADAS, Bluelink voice commands, EV platform specs (E-GMP), software update schedules. Compare to Tesla/competitors. Invite extended test drive."
+            },
+            {
+                type: "Luxury Aspirer on a Budget",
+                profile: "Mid-career professional, values prestige, can't afford premium badge",
+                vehicles: "Palisade Calligraphy, Sonata Limited",
+                needs: "Upscale design, tech, comfort, status signaling",
+                tactics: "Show Nappa leather, dual 12.3\" displays, ambient lighting, quiet cabin. Compare against BMW/Audi features at lower TCO. Highlight valet mode, digital keys, wireless charging."
+            },
+            {
+                type: "Weekend Warrior / Adventurer",
+                profile: "Active lifestyle, enjoys camping, hiking, kayaking",
+                vehicles: "Santa Cruz, Tucson XRT, Santa Fe XRT",
+                needs: "Towing, bed/cargo space, AWD, roof rails, rugged looks",
+                tactics: "Customize for outdoor needs. Show bed extender, roof racks, underfloor cargo. Mention adventure packages (XRT). Use aspirational lifestyle language (\"built for your next escape\")."
+            },
+            {
+                type: "Retired Empty Nester",
+                profile: "Age 60+, conservative driver, fixed income, values comfort and simplicity",
+                vehicles: "Sonata, Santa Fe, Kona EV",
+                needs: "Safety, reliability, low maintenance, visibility, ease of use",
+                tactics: "Use calm, patient tone. Demo seat height, large display fonts, blind-spot view monitor. Emphasize Hyundai's warranty, J.D. Power reliability, and cost-saving ownership plans."
+            },
+            {
+                type: "Fleet Buyer / Commercial Use",
+                profile: "Business owner, buying for light-duty use or delivery",
+                vehicles: "Santa Cruz, Tucson, Elantra",
+                needs: "Resale value, durability, cargo volume, TCO",
+                tactics: "Discuss B2B incentives, fleet services, maintenance plans. Show TCO calculations. Emphasize low downtime, Bluelink fleet tracking. Offer bulk quote estimates."
+            },
+            {
+                type: "Environmentalist with Solar",
+                profile: "Tech-forward homeowner with solar energy",
+                vehicles: "IONIQ 5, IONIQ 6, IONIQ 9 (upcoming)",
+                needs: "Sustainability, V2L, net-zero lifestyle, green energy loop",
+                tactics: "Emphasize Vehicle-to-Load (V2L), home charging + solar integration, EV incentives. Talk grid independence. Mention Hyundai's carbon neutrality pledge. Offer EnergyStar comparisons."
+            },
+            {
+                type: "Car Enthusiast / Speed Seeker",
+                profile: "Enjoys spirited driving, manual mode, \"fun to drive\"",
+                vehicles: "IONIQ 5 N, Elantra N, Sonata N Line",
+                needs: "Acceleration, torque, cornering, dual-clutch transmission",
+                tactics: "Speak their language—0–60, HP, track testing, dual motor layout, N corner-carving differentials. Offer performance test drive. Highlight N sound + e-shift for EVs."
+            },
+            {
+                type: "Digital-Only Shopper",
+                profile: "Prefers to do everything online, avoids showrooms",
+                vehicles: "Any model via Hyundai Click to Buy",
+                needs: "Time savings, no pressure, transparency",
+                tactics: "Guide them through Hyundai's full e-commerce platform. Offer virtual walkthroughs, mobile app demos, delivery to door. Provide transparent pricing breakdowns."
+            },
+            {
+                type: "Crossover-Curious Truck Avoider",
+                profile: "Wants utility but dislikes truck size/image",
+                vehicles: "Santa Cruz, Tucson",
+                needs: "Practicality, maneuverability, car-like comfort",
+                tactics: "Position Santa Cruz as \"urban utility vehicle.\" Highlight unibody construction for smoother ride. Show lifestyle use cases: mountain bikes, golf clubs, DIY trips."
+            },
+            {
+                type: "Trade-Up / Loyalty Buyer",
+                profile: "Owns older Hyundai/Kia, happy with brand",
+                vehicles: "Any upgrade in same segment",
+                needs: "Familiarity, trust, updated tech",
+                tactics: "Focus on what's improved—interior comfort, infotainment, mileage, safety. Emphasize trade-in value and loyalty rebates. Show feature evolution from their current model."
+            },
+            {
+                type: "Short-Term Leaser / EV Tester",
+                profile: "Interested in trying an EV but hesitant about long-term commitment",
+                vehicles: "IONIQ 5/6 (36-month lease)",
+                needs: "Flexibility, low upfront costs",
+                tactics: "Push lease specials, explain residuals, offer 12-month trial through Hyundai partners. Address charging anxiety with clear network maps and Bluelink station locator demo."
+            }
+        ];
+
         // #################### GLOBAL STATE ####################
         let currentPersona = 'sales';
         let currentSection = 'dashboard';
@@ -919,6 +1087,7 @@
                 'ld-nav-section': ['sales', 'technician', 'manager', 'compliance', 'hr', 'trainer', 'executive'],
                 'star-rewards-nav-item': ['sales'],
                 'certifications-nav-item': ['technician'],
+                'buyer-personas-nav-item': ['sales'],
                 'analytics-nav-section': ['trainer', 'manager', 'compliance', 'hr', 'it', 'executive'],
                 'team-performance-nav-item': ['manager'],
                 'trainer-nav-section': ['trainer'],
@@ -932,6 +1101,7 @@
                 }
             }
             
+            // If current section is hidden, go back to dashboard
             const currentElement = document.querySelector(`.nav-item[onclick*="'${currentSection}'"]`);
             if (currentElement && currentElement.style.display === 'none') {
                  showSection('dashboard', document.querySelector('[onclick*="dashboard"]'));
@@ -1051,6 +1221,8 @@
                     trainer: { title: 'Instructional Expertise Path', levels: { 'Path': [{title: 'Training Needs Assessment', overview: 'Identify learning gaps in the organization.'}, {title: 'Designing Learner-Centric Content', overview: 'Create engaging and memorable materials.'}, {title: 'Live Session Facilitation', overview: 'Master the art of leading a training session.'}, {title: 'Feedback and Assessment Models', overview: 'Measure the impact of your training.'}, {title: 'Using Authoring Tools (Articulate, Rise)', overview: 'Develop professional e-learning modules.'}, {title: 'Evaluating Training Impact', overview: 'Connect learning outcomes to business results.'}]}},
                     compliance: { title: 'Compliance Operations Path', levels: { 'Path': [{title: 'Overview of Dealership Compliance', overview: 'Understand the key regulatory areas.'}, {title: 'Legal Frameworks (GDPR, CCPA, OSHA)', overview: 'Deep dive into major regulations.'}, {title: 'Incident Handling Procedures', overview: 'Learn the correct steps for responding to incidents.'}, {title: 'Internal Audit & Investigations', overview: 'Conduct fair and effective internal reviews.'}, {title: 'Policy Documentation Best Practices', overview: 'Write clear and enforceable policies.'}]}},
                     executive: { title: 'Strategic Leadership Path', levels: { 'Path': [{title: 'Business Model Innovation', overview: 'Explore new revenue streams and strategies.'}, {title: 'M&A Risk Management in Dealership Networks', overview: 'Evaluate risks in expansion.'}, {title: 'Market Expansion and OEM Strategy', overview: 'Align with Hyundai\'s global vision.'}, {title: 'Data-Driven Decision-Making', overview: 'Use analytics to guide strategy.'}, {title: 'ESG & Sustainability in Automotive', overview: 'Lead on environmental and social governance.'}]}},
+                    hr: { title: 'HR Excellence Path', levels: { 'Path': [{title: 'Workforce Planning & Analytics', overview: 'Strategic staffing and talent forecasting.'}, {title: 'Employee Engagement Strategies', overview: 'Build high-performance culture.'}, {title: 'Talent Development Programs', overview: 'Design career advancement pathways.'}, {title: 'Succession Planning', overview: 'Prepare for leadership transitions.'}, {title: 'Performance Management Systems', overview: 'Implement effective review processes.'}, {title: 'Compensation & Benefits Strategy', overview: 'Design competitive reward systems.'}]}},
+                    it: { title: 'IT Systems Management Path', levels: { 'Path': [{title: 'System Architecture & Integration', overview: 'Design scalable IT infrastructure.'}, {title: 'Security Management & Compliance', overview: 'Protect organizational data and systems.'}, {title: 'SSO & Identity Management', overview: 'Streamline user access and authentication.'}, {title: 'API Management & Development', overview: 'Enable system integrations and data flow.'}, {title: 'Performance Monitoring & Optimization', overview: 'Ensure system reliability and speed.'}, {title: 'Disaster Recovery Planning', overview: 'Prepare for system failures and data loss.'}]}}
                 },
                 compliance: {
                     technician: [ { title: 'Workshop Hazard Awareness', overview: 'Learn to identify and mitigate workplace hazards.', relevance: 'Promotes a safe working environment.' }, { title: 'Hyundai EV Safety Guidelines', overview: 'Handle high-voltage systems safely.', relevance: 'Essential for EV servicing.' }, { title: 'Personal Protective Equipment Training', overview: 'Correct PPE usage in service environments.', relevance: 'Reduces injury risks.' }, { title: 'Fire Safety and Emergency Protocols', overview: 'What to do during workplace emergencies.', relevance: 'Supports business continuity.' }, { title: 'Environmental Waste Management', overview: 'Proper disposal of oils, batteries, and parts.', relevance: 'Ensures eco-compliance.' } ],
@@ -1058,7 +1230,9 @@
                     manager: [ { title: 'Workplace Anti-Harassment Training', overview: 'Understand legal and ethical expectations.', relevance: 'Creates a safer culture.' }, { title: 'Fair Labor Standards Overview', overview: 'Avoid violations in pay, hours, and classification.', relevance: 'Mitigates HR risks.' }, { title: 'Service Quality Audits', overview: 'Review team compliance with Hyundai service standards.', relevance: 'Supports brand consistency.' }, { title: 'Privacy Law Compliance', overview: 'Protect customer and employee data.', relevance: 'Reduces legal exposure.' }, { title: 'Incident Investigation Basics', overview: 'Handle workplace complaints thoroughly.', relevance: 'Ensures procedural fairness.' } ],
                     trainer: [ { title: 'Instructor Code of Conduct', overview: 'Maintain professionalism and ethics.', relevance: 'Sets a standard for all training.' }, { title: 'Copyright in Training Content', overview: 'Avoid legal issues with training materials.', relevance: 'Protects the company from litigation.' }, { title: 'Inclusive Learning & Accessibility', overview: 'Ensure training is accessible to all employees.', relevance: 'Promotes a fair and equitable workplace.' }, { title: 'Training Records Compliance', overview: 'Maintain accurate and secure training records.', relevance: 'Essential for audits and legal defense.' }, { title: 'Diversity & Cultural Sensitivity', overview: 'Foster an inclusive learning environment.', relevance: 'Improves employee engagement and respect.' } ],
                     compliance: [ { title: 'Compliance Program Management', overview: 'Learn to build and manage an effective program.', relevance: 'The core function of the compliance role.' }, { title: 'Whistleblower Protection', overview: 'Understand the laws and procedures for protecting reporters.', relevance: 'Encourages ethical behavior and transparency.' }, { title: 'Anti-Corruption & Bribery', overview: 'Adhere to FCPA and other global standards.', relevance: 'Prevents severe legal and financial penalties.' }, { title: 'Legal Investigation Techniques', overview: 'Conduct legally sound internal investigations.', relevance: 'Ensures findings are defensible.' }, { title: 'Compliance Reporting Tools', overview: 'Master the software used for tracking and reporting.', relevance: 'Improves efficiency and accuracy.' } ],
-                    executive: [ { title: 'Corporate Governance & Ethics', overview: 'Understand the board\'s role in oversight.', relevance: 'Ensures the company is managed responsibly.' }, { title: 'Executive Accountability (SOX, FCPA)', overview: 'Know the legal responsibilities of leadership.', relevance: 'Mitigates personal and corporate liability.' }, { title: 'Insider Trading Awareness', overview: 'Prevent the illegal use of company information.', relevance: 'A critical component of securities law compliance.' }, { title: 'Strategic Legal Risk Management', overview: 'Integrate legal risk into strategic planning.', relevance: 'Protects the company from future threats.' }, { title: 'ESG Compliance in Auto Industry', overview: 'Meet evolving environmental and social standards.', relevance: 'Crucial for investors and regulators.' } ]
+                    executive: [ { title: 'Corporate Governance & Ethics', overview: 'Understand the board\'s role in oversight.', relevance: 'Ensures the company is managed responsibly.' }, { title: 'Executive Accountability (SOX, FCPA)', overview: 'Know the legal responsibilities of leadership.', relevance: 'Mitigates personal and corporate liability.' }, { title: 'Insider Trading Awareness', overview: 'Prevent the illegal use of company information.', relevance: 'A critical component of securities law compliance.' }, { title: 'Strategic Legal Risk Management', overview: 'Integrate legal risk into strategic planning.', relevance: 'Protects the company from future threats.' }, { title: 'ESG Compliance in Auto Industry', overview: 'Meet evolving environmental and social standards.', relevance: 'Crucial for investors and regulators.' } ],
+                    hr: [ { title: 'Employment Law Fundamentals', overview: 'Navigate hiring, firing, and workplace regulations.', relevance: 'Prevents costly legal violations.' }, { title: 'Diversity, Equity & Inclusion Compliance', overview: 'Build inclusive practices that meet legal requirements.', relevance: 'Creates better workplace culture and avoids discrimination claims.' }, { title: 'Benefits Administration Compliance', overview: 'Ensure benefit programs meet regulatory standards.', relevance: 'Protects employees and company from compliance issues.' }, { title: 'Workplace Safety & OSHA Requirements', overview: 'Maintain safe working conditions and proper documentation.', relevance: 'Prevents accidents and regulatory penalties.' }, { title: 'Data Privacy in HR Systems', overview: 'Protect employee personal information and records.', relevance: 'Maintains trust and avoids privacy violations.' } ],
+                    it: [ { title: 'Data Security & Privacy Regulations', overview: 'Implement systems that protect sensitive information.', relevance: 'Prevents data breaches and regulatory fines.' }, { title: 'System Access Controls & Audit Trails', overview: 'Maintain proper user permissions and activity logging.', relevance: 'Ensures accountability and prevents unauthorized access.' }, { title: 'Software Licensing Compliance', overview: 'Manage software usage to avoid copyright violations.', relevance: 'Prevents legal issues and financial penalties.' }, { title: 'Disaster Recovery & Business Continuity', overview: 'Plan for system failures and data protection.', relevance: 'Ensures business operations can continue during crises.' }, { title: 'Vendor Security Assessment', overview: 'Evaluate third-party security practices and compliance.', relevance: 'Protects against supply chain security risks.' } ]
                 }
             };
 
@@ -1073,22 +1247,36 @@
                 'technician-dashboard': () => `<div class="dashboard-grid">${templates.card('🔧', 'Service Efficiency', '94%', 'First-Time Fix Rate', {type: 'positive', text: '+3% this month'}, {bg: '#dcfce7', text: '#166534'})} ${templates.card('🛡️', 'Safety Score', '100%', 'No incidents reported', null, {bg: '#dbeafe', text: '#1e40af'})} ${templates.card('📜', 'Certifications', '3', 'Active Certs', {type: 'warning', text: '1 expires in 60 days'}, {bg: '#fef3c7', text: '#d97706'})} ${templates.card('⭐', 'Knowledge Base', 'Top 5%', 'Contributor', null, {bg: '#f3e5f5', text: '#9c27b0'})}</div> ${templates.aiInsights('AI Field Assistant', ['<strong>New Resource:</strong> Video for "Model X-400 Repair" is now available.', '<strong>Safety Alert:</strong> "Hazardous Materials Handling" cert is expiring soon.', '<strong>Efficiency Tip:</strong> Diagnostic tool users complete jobs 20% faster.'])}`,
                 'trainer-dashboard': () => `<div class="dashboard-grid">${templates.card('📚', 'Active Courses', '42', 'In Content Library', null, {bg: '#dbeafe', text: '#1e40af'})} ${templates.card('⭐', 'Avg. Learner Rating', '4.6/5', 'Across all courses', {type: 'positive', text: '+0.1 this quarter'}, {bg: '#dcfce7', text: '#166534'})} ${templates.card('⏱️', 'Avg. Time to Create', '12h', 'Per Course', {type: 'positive', text: '-2h with AI Tools'}, {bg: '#f3e8ff', text: '#7e22ce'})} ${templates.card('🤔', 'Most Requested Topic', 'AI in Sales', 'From learner feedback', null, {bg: '#fef3c7', text: '#d97706'})}</div> ${templates.aiInsights('AI Content Assistant', ['<strong>Content Gap:</strong> Lack of intermediate "Project Management" content.', '<strong>Popular Format:</strong> Interactive simulations have the highest engagement.', '<strong>AI Suggestion:</strong> Create a micro-learning on "Advanced Negotiation Tactics".'])}`,
                 'compliance-dashboard': () => `<div class="dashboard-grid">${templates.card('🛡️', 'Org. Compliance', '98%', 'Completion Rate', {type: 'positive', text: '+1% this month'}, {bg: '#dcfce7', text: '#166534'})} ${templates.card('🚨', 'High-Risk Gaps', '12', 'Overdue Trainings', {type: 'negative', text: 'Action Required'}, {bg: '#fee2e2', text: '#b91c1c'})} ${templates.card('✍️', 'Audit Trail', 'Ready', 'Last Audit: June 1st', null, {bg: '#dbeafe', text: '#1e40af'})} ${templates.card('🔄', 'Policy Updates', '3', 'Pending Acknowledgement', null, {bg: '#fef3c7', text: '#d97706'})}</div> ${templates.aiInsights('AI Compliance Monitor', ['<strong>Risk Detected:</strong> The new "Data Privacy Act" training has a low adoption rate in the Sales department.', '<strong>Audit Prep:</strong> Automatically flagged 5 courses with outdated regulatory information for review.', '<strong>Efficiency:</strong> AI-generated reports show a 30% reduction in time spent on manual compliance tracking.'])}`,
-                'hr-dashboard': () => `<div class="dashboard-grid">${templates.card('🚀', 'Onboarding', '95%', 'Completion Rate (90 days)', {type: 'positive', text: 'All new hires on track'}, {bg: '#dcfce7', text: '#166534'})} ${templates.card('🌱', 'Talent Mobility', '18%', 'Internal Promotions', null, {bg: '#dbeafe', text: '#1e40af'})} ${templates.card(' Gallup Q12', 'Employee Engagement', '4.2/5', 'Linked to Learning', {type: 'positive', text: '+0.3 vs last year'}, {bg: '#f3e8ff', text: '#7e22ce'})} ${templates.card('👋', 'Attrition Risk', 'Low', 'Among engaged learners', null, {bg: '#fef3c7', text: '#d97706'})}</div> ${templates.aiInsights('AI Talent Advisor', ['<strong>Career Pathing:</strong> AI has identified 15 high-potential employees in Operations ready for leadership training.', '<strong>Onboarding Impact:</strong> New hires who complete onboarding 1 week early are 25% more likely to stay past 1 year.', '<strong>Skill Gap Alert:</strong> Analysis of performance reviews indicates a company-wide need for "Project Management" skills.'])}`,
+                'hr-dashboard': () => `<div class="dashboard-grid">${templates.card('🚀', 'Onboarding', '95%', 'Completion Rate (90 days)', {type: 'positive', text: 'All new hires on track'}, {bg: '#dcfce7', text: '#166534'})} ${templates.card('🌱', 'Talent Mobility', '18%', 'Internal Promotions', null, {bg: '#dbeafe', text: '#1e40af'})} ${templates.card('💚', 'Employee Engagement', '4.2/5', 'Linked to Learning', {type: 'positive', text: '+0.3 vs last year'}, {bg: '#f3e8ff', text: '#7e22ce'})} ${templates.card('👋', 'Attrition Risk', 'Low', 'Among engaged learners', null, {bg: '#fef3c7', text: '#d97706'})}</div> ${templates.aiInsights('AI Talent Advisor', ['<strong>Career Pathing:</strong> AI has identified 15 high-potential employees in Operations ready for leadership training.', '<strong>Onboarding Impact:</strong> New hires who complete onboarding 1 week early are 25% more likely to stay past 1 year.', '<strong>Skill Gap Alert:</strong> Analysis of performance reviews indicates a company-wide need for "Project Management" skills.'])}`,
                 'it-dashboard': () => `<div class="dashboard-grid">${templates.card('🌐', 'System Uptime', '99.99%', 'Last 30 days', null, {bg: '#dcfce7', text: '#166534'})} ${templates.card('🔗', 'API Integrations', '12/12', 'All Systems Synced', null, {bg: '#dbeafe', text: '#1e40af'})} ${templates.card('👤', 'Active Users', '47,832', 'Today', {type: 'positive', text: '+1,247 this month'}, {bg: '#f3e8ff', text: '#7e22ce'})} ${templates.card('🔐', 'Security', 'A+', '0 Incidents', null, {bg: '#e0f2fe', text: '#0369a1'})}</div> ${templates.aiInsights('AI Systems Monitor', ['<strong>Performance Alert:</strong> Report generation API is experiencing high latency during peak hours (9-11 AM).', '<strong>Sync Status:</strong> The HRIS data sync completed successfully with 5 new user profiles created.', '<strong>Security Tip:</strong> Enable multi-factor authentication for all Admin-level personas to enhance security.'])}`,
                 
                 // --- SECTIONS ---
                 'user_profile_section': (persona) => `<div class="content-header"><h1 class="content-title">👤 User Profile & Personalization</h1><p class="content-subtitle">Customize experience • Track achievements • Manage preferences</p></div><div class="dashboard-grid"><div class="card" style="grid-column: 1 / -1;"><div style="display: flex; flex-wrap: wrap; gap: 2rem; align-items: start;"><div style="width: 120px; height: 120px; border-radius: 16px; background: linear-gradient(135deg, #667eea, #764ba2); display: flex; align-items: center; justify-content: center; color: white; font-size: 3rem; font-weight: bold; flex-shrink:0;">${persona.avatar}</div><div style="flex: 1; min-width: 300px;"><h2 style="font-size: 2rem; font-weight: bold; color: #1e293b; margin-bottom: 0.5rem;">${persona.name}</h2><p style="color: #64748b; font-size: 1.1rem; margin-bottom: 1rem;">${persona.role} • ${persona.department}</p><div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;"><div><div style="font-size: 0.85rem; color: #64748b; margin-bottom: 2px;">Email</div><div style="font-weight: 600;">${persona.email}</div></div><div><div style="font-size: 0.85rem; color: #64748b; margin-bottom: 2px;">Manager</div><div style="font-weight: 600;">${persona.manager}</div></div><div><div style="font-size: 0.85rem; color: #64748b; margin-bottom: 2px;">Performance</div><div style="font-weight: 600; color: #059669;">${persona.performance}</div></div></div><div style="display: flex; gap: 1rem; flex-wrap:wrap;"><button class="btn btn-primary" onclick="openProfileModal()">✏️ Edit Profile Settings</button></div></div></div></div></div><div class="dashboard-grid"><div class="card"><div class="card-header"><div class="card-icon" style="background: #dcfce7; color: #166534;">🎓</div><div class="card-title">Current Skills</div></div><div style="display: flex; flex-direction: column; gap: 12px;">${persona.focusAreas.slice(0, 3).map(skill => `<div><div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;"><span style="font-size: 0.9rem; font-weight: 500;">${skill.label}</span><span style="color: #059669; font-size: 0.85rem;">✅ Proficient</span></div><div class="progress-bar" style="height: 6px;"><div class="progress-fill progress-green" style="width: ${Math.floor(Math.random() * 20) + 80}%;"></div></div></div>`).join('')}</div></div><div class="card"><div class="card-header"><div class="card-icon" style="background: #fef3c7; color: #d97706;">🏅</div><div class="card-title">Achievements & Badges</div></div><div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); gap: 8px; text-align: center;"><div style="padding: 8px; background: #fef3c7; border-radius: 8px;"><div style="font-size: 1.5rem; margin-bottom: 4px;">🥇</div><div style="font-size: 0.75rem; font-weight: 600;">Top Learner</div></div><div style="padding: 8px; background: #dcfce7; border-radius: 8px;"><div style="font-size: 1.5rem; margin-bottom: 4px;">🎯</div><div style="font-size: 0.75rem; font-weight: 600;">Goal Crusher</div></div><div style="padding: 8px; background: #dbeafe; border-radius: 8px;"><div style="font-size: 1.5rem; margin-bottom: 4px;">⚡</div><div style="font-size: 0.75rem; font-weight: 600;">Fast Finisher</div></div></div></div></div>`,
+
+                'buyer_personas_section': (persona) => `<div class="content-header"><h1 class="content-title">👥 Buyer Personas & Tailored Sales Responses</h1><p class="content-subtitle">Master customer psychology and personalized sales approaches for maximum conversion</p></div><div class="ai-insights" style="margin-bottom: 2rem;"><h3>🎯 AI Sales Intelligence</h3><div class="insight-item"><strong>Smart Matching:</strong> AI analyzes customer behavior patterns to automatically suggest the best persona match during interactions.</div><div class="insight-item"><strong>Dynamic Scripting:</strong> Real-time conversation prompts based on detected persona type and buying stage.</div><div class="insight-item"><strong>Success Tracking:</strong> Monitor which personas convert best with your specific sales approach.</div></div><div class="card card-full"><table class="persona-table"><thead><tr><th>Persona Type</th><th>Profile Summary</th><th>Ideal Vehicles</th><th>Core Needs / Motivations</th><th>Recommended Sales Tactics</th></tr></thead><tbody>${buyerPersonas.map(persona => `<tr><td><div class="persona-type">${persona.type}</div></td><td>${persona.profile}</td><td><div class="ideal-vehicles">${persona.vehicles}</div></td><td>${persona.needs}</td><td style="font-size: 0.9rem;">${persona.tactics}</td></tr>`).join('')}</tbody></table></div><div class="dashboard-grid" style="margin-top: 2rem;"><div class="card"><div class="card-header"><div class="card-icon" style="background: #dcfce7; color: #166534;">🎯</div><div class="card-title">Persona Detection Tips</div></div><div style="font-size: 0.9rem;"><p><strong>Age Indicators:</strong> Language patterns, tech comfort, payment preferences</p><p><strong>Lifestyle Cues:</strong> Family references, activity mentions, time constraints</p><p><strong>Budget Signals:</strong> Financing questions, feature priorities, comparison shopping</p><p><strong>Values Alignment:</strong> Environmental concerns, safety priorities, status symbols</p></div></div><div class="card"><div class="card-header"><div class="card-icon" style="background: #dbeafe; color: #1e40af;">📊</div><div class="card-title">Your Persona Performance</div></div><div style="font-size: 0.9rem;"><p><strong>Top Converting Persona:</strong> Family-Focused (78% close rate)</p><p><strong>Growth Opportunity:</strong> Tech-Savvy Enthusiast (45% close rate)</p><p><strong>Most Frequent:</strong> Young Urban Commuter (32% of leads)</p><div style="margin-top: 1rem;"><span class="persona-badge">Eco-Conscious Expert</span><span class="persona-badge">Family Specialist</span></div></div></div><div class="card"><div class="card-header"><div class="card-icon" style="background: #f3e8ff; color: #7e22ce;">🤖</div><div class="card-title">AI Coaching Insights</div></div><div style="font-size: 0.9rem;"><p><strong>Pattern Alert:</strong> You excel with emotional buyers but miss logical decision-makers</p><p><strong>Improvement Tip:</strong> Add more data/specs when selling to Tech-Savvy personas</p><p><strong>Success Factor:</strong> Your empathy approach works great with Family-Focused buyers</p></div></div></div>`,
+
                 'star_rewards_section': (persona) => `<div class="content-header"><h1 class="content-title">⭐ STAR Rewards Program</h1><p class="content-subtitle">Complete overview of the Sales Training & Rewards program.</p></div><div class="card card-full" style="margin-bottom: 2rem;"><h3 class="card-title">🎯 Program Purpose & Design</h3><p class="metric-label">The STAR Rewards Program is an exclusive incentive system for Sales Consultants that directly ties learning achievements to financial rewards, creating a powerful motivation loop between professional development and compensation.</p><p><strong>Core Philosophy:</strong> Learning drives performance, Performance drives rewards, Rewards drive continued learning.</p></div><div class="dashboard-grid"><div class="card"><h3 class="card-title">💰 Financial Structure</h3><p><strong>Current Example:</strong> ${persona.name} has <strong>1,285 STAR points</strong> this month.</p><p><strong>Estimated Payout:</strong> <span style="color: #166534; font-weight: bold;">$1,425</span> based on current performance.</p><h4 style="margin-top: 1rem;">Tier System with Escalating Rewards:</h4><ul style="list-style: none; padding: 0;"><li style="background: #fef9c3; padding: 8px; border-radius: 8px; margin-top: 8px;"><strong>🥇 Gold (Current Tier):</strong> 1,000-1,499 pts - $75/achievement</li><li style="background: #f1f5f9; padding: 8px; border-radius: 8px; margin-top: 8px;"><strong>🥈 Platinum (Next Goal):</strong> 1,500-1,999 pts - $125/achievement (215 pts away)</li><li style="background: #f1f5f9; padding: 8px; border-radius: 8px; margin-top: 8px;"><strong>💎 Diamond (Ultimate Target):</strong> 2,000+ pts - $175/achievement</li></ul></div><div class="card"><h3 class="card-title">📊 Point Accumulation Model</h3><p><strong>Performance Split (70/30 Rule):</strong></p><p><strong>70% Learning-Based:</strong> 899 points from training</p><p><strong>30% Performance-Based:</strong> 386 points from sales results</p><h4 style="margin-top: 1rem;">Sources:</h4><p class="metric-label">Course completion, certifications, quota achievement, deal closure rates, peer mentoring, and more.</p></div></div><div class="card card-full" style="margin-top: 2rem;"><h3 class="card-title">🎓 STAR-Eligible Training Courses</h3><div class="recommendation-item"><div class="recommendation-content"><div class="recommendation-title">Advanced Objection Handling Mastery</div><div class="recommendation-meta"><strong>Points:</strong> +50 STAR Points | <strong>Impact:</strong> 28% win rate improvement</div><div class="recommendation-tags"><span class="tag priority">Available to enroll</span></div></div></div><div class="recommendation-item"><div class="recommendation-content"><div class="recommendation-title">CRM Pipeline Optimization</div><div class="recommendation-meta"><strong>Points:</strong> +35 STAR Points | <strong>Impact:</strong> 15% accuracy improvement</div><div class="recommendation-tags"><span class="tag">In Progress (60%)</span></div></div></div><div class="recommendation-item"><div class="recommendation-content"><div class="recommendation-title">Digital Sales Tools Fundamentals</div><div class="recommendation-meta"><strong>Points:</strong> +25 STAR Points | <strong>Score:</strong> 94%</div><div class="recommendation-tags"><span class="tag" style="background:#e6f4ea; color:#4caf50;">✅ Completed</span></div></div></div></div>${templates.aiInsights('AI-Powered Optimization', ['<strong>Smart Recommendation:</strong> Complete 2 more STAR-eligible courses this month to maximize your points multiplier. Estimated additional earnings: <strong>$275</strong>'])}`,
+                
                 'sso_management_section': (persona) => `<div class="content-header"><h1 class="content-title">🔐 SSO Management</h1><p class="content-subtitle">Learner Identity Management System Overview</p></div><div class="card card-full" style="margin-bottom: 2rem;"><h3 class="card-title">📥 Learner Directory & Identity Context Switching</h3><p class="metric-label">As an administrator, you can view and manage learner profiles. Clicking 'View Profile' will switch your context to that user's profile page.</p><table class="styled-table"><thead><tr><th>Name</th><th>Email</th><th>Department</th><th>Action</th></tr></thead><tbody><tr><td>Sarah Chen</td><td>sarah.chen@company.com</td><td>Sales</td><td><button class="btn" style="padding: 5px 10px; font-size: 0.9rem;">View Profile</button></td></tr><tr><td>Mike Rodriguez</td><td>mike.rodriguez@company.com</td><td>Field Service</td><td><button class="btn" style="padding: 5px 10px; font-size: 0.9rem;">View Profile</button></td></tr></tbody></table></div><div class="dashboard-grid"><div class="card"><h3 class="card-title">📋 Unified SSO Profile Information</h3><p class="metric-label">User data is auto-synced from Azure AD, ensuring consistency across all connected platforms.</p><div class="form-group" style="margin-top: 1rem;"><label class="form-label">Example: Sarah Chen</label><input type="text" class="form-control" value="Role: Senior Sales Representative" readonly></div></div><div class="card"><h3 class="card-title">🔄 Connected Systems with SSO Access</h3><p class="metric-label">Federated identity tokens provide seamless access across all learning platforms without repeated logins.</p><ul style="list-style: '✅ '; padding-left: 20px; margin-top: 1rem;"><li>Learning Management System</li><li>GenAI Learning Chat</li><li>Certification Portal</li><li>Performance Dashboard</li></ul></div></div><div class="card card-full" style="margin-top: 2rem;"><h3 class="card-title">📡 Centralized Analytics Based on SSO Data</h3><p class="metric-label">All learner data flows into a central data lake, enabling comprehensive analytics across systems.</p><p><strong>Data Sources:</strong> LMS Progress (47K records), GenAI Chat Interactions (1.2M logs), Certification Completions (8.7K certs), HRIS Performance Data (15K reviews), CRM Activity Sync (89K).</p></div>`,
+                
                 'recommendations_section': (persona) => { const recs = ldContent.recommendations[currentPersona] || []; return `<div class="content-header"><h1 class="content-title">🎯 AI Recommendations</h1><p class="content-subtitle">Dynamically suggested by AI for your role, behavior, and goals.</p></div>${recs.map(rec => `<div class="recommendation-item"><div class="recommendation-thumbnail">💡</div><div class="recommendation-content"><div class="recommendation-title">${rec.title}</div><p class="recommendation-meta">${rec.overview}</p><p style="font-size: 0.85rem; color: #4f46e5;"><strong>Why It's Relevant:</strong> ${rec.relevance}</p></div></div>`).join('') || '<div class="card">No specific recommendations for this role.</div>'}`; },
+                
                 'learning_path_section': (persona) => { const pathData = ldContent.learningPath[currentPersona]; if (!pathData) return 'No learning path defined.'; let html = `<div class="content-header"><h1 class="content-title">🛤️ ${pathData.title}</h1><p class="content-subtitle">Structured learning sequences based on your role, job level, and milestones.</p></div>`; Object.keys(pathData.levels).forEach(level => { html += `<h3 class="path-level-title">${level}</h3><div class="learning-path">${pathData.levels[level].map((item, index) => `<div class="path-item ${index === 0 ? 'current' : ''}"><div class="path-number ${index === 0 ? 'current' : ''}">${index + 1}</div><div style="flex: 1;"><div style="font-weight: 600;">${item.title}</div><p class="recommendation-meta">${item.overview}</p></div></div>`).join('')}</div>`; }); return html; },
+                
                 'training_gaps_section': (persona) => { const courses = ldContent.compliance[currentPersona] || []; return `<div class="content-header"><h1 class="content-title">📈 Training & Compliance</h1><p class="content-subtitle">Required, regulatory, and dealership-specific compliance training.</p></div><div class="card card-full"><h3 class="card-title">Required Training Courses</h3><table class="styled-table"><thead><tr><th>Course Title</th><th>Why It's Relevant</th><th>Status</th></tr></thead><tbody>${courses.map(course => `<tr><td>${course.title}</td><td>${course.relevance}</td><td><span class="tag required">Required</span></td></tr>`).join('')}</tbody></table></div>`; },
+                
                 'certifications_section': (persona) => `<div class="content-header"><h1 class="content-title">📜 My Certifications</h1><p class="content-subtitle">Manage your active and expired certifications.</p></div><div class="card card-full"><table class="styled-table"><thead><tr><th>Certification</th><th>Status</th><th>Expiration Date</th><th>Action</th></tr></thead><tbody><tr><td>Model X-400 Repair</td><td><span class="tag" style="background:#e6f4ea; color:#4caf50;">Active</span></td><td>Jan 15, 2027</td><td><button class="btn-secondary" style="padding: 5px 10px; font-size: 0.9rem;">View</button></td></tr><tr><td>Hazardous Materials Handling</td><td><span class="tag warning">Expires Soon</span></td><td>Sep 25, 2025</td><td><button class="btn" style="padding: 5px 10px; font-size: 0.9rem;">Recertify</button></td></tr></tbody></table></div>`,
+                
                 'analytics_section': (persona) => `<div class="content-header"><h1 class="content-title">📊 Learning Analytics</h1><p class="content-subtitle">Insights for ${persona.role}</p></div><div class="card"><h3 style="margin-bottom: 1rem;">Learning Habits Analysis</h3><div style="margin-bottom: 1rem;"><strong>Peak Learning Times:</strong><div style="margin-top: 0.5rem; display: flex; gap: 1rem; flex-wrap: wrap;"><span class="tag">9:00 AM - 11:00 AM</span></div></div></div>`,
+                
                 'team_performance_section': (persona) => `<div class="content-header"><h1 class="content-title">👨‍👩‍👧‍👦 Team Performance</h1><p class="content-subtitle">Analytics for your direct reports.</p></div><div class="card card-full"><table class="styled-table"><thead><tr><th>Team Member</th><th>Progress</th><th>Compliance</th><th>Action</th></tr></thead><tbody><tr><td>Jordan Martinez</td><td>92%</td><td><span class="tag" style="background:#e6f4ea; color:#4caf50;">100%</span></td><td><button class="btn-secondary" style="padding: 5px 10px; font-size: 0.9rem;">View Path</button></td></tr><tr><td>Riley Thompson</td><td>85%</td><td><span class="tag overdue">1 Overdue</span></td><td><button class="btn" style="padding: 5px 10px; font-size: 0.9rem;">Send Nudge</button></td></tr></tbody></table></div>`,
+                
                 'top_performers_section': (persona) => `<div class="content-header"><h1 class="content-title">🏆 Top Performer Analysis</h1><p class="content-subtitle">Unlock the secrets of high achievement.</p></div><div class="card card-full"><h3 class="card-title">Top Performer DNA (Sales Dept)</h3><p class="metric-label">Comparing top 10% with team average.</p><div class="dashboard-grid"><div class="card"><h4>Key Differentiators</h4><p>- <strong>2x more</strong> time on 'Advanced Negotiation' courses.</p><p>- <strong>3.5x more</strong> likely to complete optional 'Competitor Analysis' modules.</p></div><div class="card"><h4>Behavioral Patterns</h4><p>- Predominantly learn between <strong>7-9 AM</strong>.</p><p>- Prefer <strong>interactive simulations</strong> over video content.</p></div></div></div>`,
+                
                 'reports_section': (persona) => `<div class="content-header"><h1 class="content-title">📋 Generate Reports</h1><p class="content-subtitle">Create and download custom reports.</p></div><div class="card card-full"><h3 class="card-title">Report Generator</h3><form class="dashboard-grid" style="grid-template-columns: 1fr 1fr 1fr auto; align-items: end;"><div class="form-group" style="margin:0;"><label class="form-label">Report Type</label><select class="form-control"><option>Course Completion</option><option>Compliance Status</option></select></div><div class="form-group" style="margin:0;"><label class="form-label">Select Group</label><select class="form-control"><option>My Team</option><option>Sales Department</option></select></div><div class="form-group" style="margin:0;"><label class="form-label">Date Range</label><input type="date" class="form-control"></div><button class="btn">Generate</button></form></div>`,
+                
                 'course_builder_section': (persona) => `<div class="content-header"><h1 class="content-title">🛠️ Course Builder</h1><p class="content-subtitle">Create engaging learning experiences.</p></div><div class="card card-full"><h3 class="card-title">Create New Course</h3><div class="form-group"><label class="form-label">Course Title</label><input type="text" class="form-control" placeholder="e.g., Advanced Negotiation Tactics"></div><button class="btn btn-primary">Start Building</button></div>`,
+                
                 'content_library_section': (persona) => `<div class="content-header"><h1 class="content-title">📚 Content Library</h1><p class="content-subtitle">Manage all learning resources.</p></div><div class="card card-full"><table class="styled-table"><thead><tr><th>Title</th><th>Type</th><th>Rating</th></tr></thead><tbody><tr><td>Advanced Negotiation</td><td>Course</td><td>4.8 ⭐</td></tr><tr><td>Objection Handling</td><td>Video</td><td>4.9 ⭐</td></tr></tbody></table></div>`,
             });
             
