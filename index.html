@@ -98,6 +98,7 @@
             padding: 2rem 0;
             overflow-y: auto;
             box-shadow: 4px 0 20px rgba(0, 0, 0, 0.1);
+            flex-shrink: 0;
         }
 
         .nav-section {
@@ -192,6 +193,10 @@
             transform: translateY(-4px);
             box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
         }
+        
+        .card-full {
+             grid-column: 1 / -1;
+        }
 
         .card-header {
             display: flex;
@@ -208,6 +213,7 @@
             align-items: center;
             justify-content: center;
             font-size: 1.5rem;
+            flex-shrink: 0;
         }
 
         .card-title {
@@ -259,6 +265,8 @@
         .progress-blue { background: linear-gradient(90deg, #3b82f6, #60a5fa); }
         .progress-purple { background: linear-gradient(90deg, #8b5cf6, #a78bfa); }
         .progress-orange { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
+        .progress-red { background: linear-gradient(90deg, #ef4444, #f87171); }
+
 
         /* AI Insights */
         .ai-insights {
@@ -340,6 +348,7 @@
             font-weight: bold;
             line-height: 1.2;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            flex-shrink: 0;
         }
 
         .recommendation-content {
@@ -382,12 +391,30 @@
             background: #ffebee;
             color: #d32f2f;
         }
+        
+        .tag.required {
+            background: #fce7f3;
+            color: #be185d;
+        }
+        
+        .tag.overdue {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
 
         /* Learning Path */
         .learning-path {
             display: flex;
             flex-direction: column;
             gap: 1rem;
+        }
+        .path-level-title {
+            font-weight: bold;
+            color: #4f46e5;
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e2e8f0;
         }
 
         .path-item {
@@ -518,6 +545,11 @@
             font-size: 1rem;
             transition: border-color 0.2s ease, box-shadow 0.2s ease;
         }
+        
+        .form-control[readonly] {
+            background-color: #f3f4f6;
+            cursor: not-allowed;
+        }
 
         .form-control:focus {
             outline: none;
@@ -555,27 +587,40 @@
         }
 
         .btn-secondary {
-            background: #6c757d;
+            background: #e2e8f0;
+            color: #475569;
+        }
+        
+         .btn-secondary:hover {
+            background: #dbeafe;
         }
 
         .btn-primary {
             background: linear-gradient(135deg, #4f46e5, #7c3aed);
             color: white;
         }
-
-        .btn-success {
-            background: linear-gradient(135deg, #10b981, #34d399);
-            color: white;
+        
+        /* Table styles */
+        .styled-table {
+            width: 100%;
+            border-collapse: collapse;
         }
 
-        .btn-warning {
-            background: linear-gradient(135deg, #f59e0b, #fbbf24);
-            color: white;
+        .styled-table th, .styled-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #e9ecef;
         }
 
-        .btn-danger {
-            background: linear-gradient(135deg, #ef4444, #f87171);
-            color: white;
+        .styled-table th {
+            background-color: #f8f9fa;
+            color: #495057;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+        }
+
+        .styled-table tbody tr:hover {
+            background-color: #f1f3f5;
         }
 
         /* Animations */
@@ -599,6 +644,11 @@
 
         /* Responsive */
         @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem;
+            }
             .main-layout {
                 flex-direction: column;
             }
@@ -606,6 +656,9 @@
             .sidebar {
                 width: 100%;
                 padding: 1rem 0;
+                box-shadow: none;
+                border-right: none;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.2);
             }
 
             .dashboard-grid {
@@ -632,15 +685,14 @@
         
         <div class="user-info">
             <select class="persona-switcher" id="personaSwitcher" onchange="switchPersona()">
-                <option value="learner">👤 Frontline Learner</option>
-                <option value="sales">💼 Sales Representative</option>
-                <option value="technician">🔧 Technician / Service Professional</option>
-                <option value="trainer">🎓 Trainer / L&D Specialist</option>
-                <option value="manager">👔 Manager / Team Lead</option>
+                <option value="sales">💼 Sales Consultant</option>
+                <option value="technician">🔧 Technician</option>
+                <option value="trainer">🎓 Trainer</option>
+                <option value="manager">👔 Manager</option>
                 <option value="compliance">⚖️ Compliance Officer</option>
                 <option value="hr">👥 HR Business Partner</option>
-                <option value="it">💻 IT / Systems Administrator</option>
-                <option value="executive">🎯 Executive / VP of L&D</option>
+                <option value="it">💻 IT Administrator</option>
+                <option value="executive">🎯 Executive</option>
             </select>
             <div class="user-avatar" id="userAvatar">AC</div>
             <div>
@@ -656,51 +708,71 @@
         <div class="sidebar">
             <div class="nav-section">
                 <h3>Core Dashboard</h3>
-                <a class="nav-item active" onclick="showSection('dashboard')">
+                <a class="nav-item active" onclick="showSection('dashboard', this)">
                     <span class="icon">📊</span>
                     Dashboard Overview
                 </a>
             </div>
 
-            <div class="nav-section">
+            <div class="nav-section" id="ld-nav-section">
                 <h3>Learning & Development</h3>
-                <a class="nav-item" onclick="showSection('recommendations')">
+                <a class="nav-item" onclick="showSection('recommendations', this)">
                     <span class="icon">🎯</span>
                     AI Recommendations
                 </a>
-                <a class="nav-item" onclick="showSection('learning-path')">
+                <a class="nav-item" onclick="showSection('learning-path', this)">
                     <span class="icon">🛤️</span>
                     My Learning Path
                 </a>
-                <a class="nav-item" onclick="showSection('training-gaps')">
+                <a class="nav-item" onclick="showSection('training-gaps', this)">
                     <span class="icon">📈</span>
                     Training & Compliance
                 </a>
-                <a class="nav-item" onclick="showSection('star-rewards')">
+                <a class="nav-item" id="star-rewards-nav-item" onclick="showSection('star-rewards', this)">
                     <span class="icon">⭐</span>
                     STAR Rewards
                 </a>
+                 <a class="nav-item" id="certifications-nav-item" onclick="showSection('certifications', this)">
+                    <span class="icon">📜</span>
+                    Certifications
+                </a>
             </div>
 
-            <div class="nav-section">
+            <div class="nav-section" id="analytics-nav-section">
                 <h3>Analytics & Insights</h3>
-                <a class="nav-item" onclick="showSection('top-performers')">
+                <a class="nav-item" onclick="showSection('top-performers', this)">
                     <span class="icon">🏆</span>
                     Top Performer Analysis
                 </a>
-                <a class="nav-item" onclick="showSection('analytics')">
+                <a class="nav-item" onclick="showSection('analytics', this)">
                     <span class="icon">📊</span>
                     Learning Analytics
                 </a>
-                <a class="nav-item" onclick="showSection('reports')">
+                 <a class="nav-item" id="team-performance-nav-item" onclick="showSection('team-performance', this)">
+                    <span class="icon">👨‍👩‍👧‍👦</span>
+                    Team Performance
+                </a>
+                <a class="nav-item" onclick="showSection('reports', this)">
                     <span class="icon">📋</span>
                     Generate Reports
+                </a>
+            </div>
+            
+             <div class="nav-section" id="trainer-nav-section">
+                <h3>Trainer Tools</h3>
+                <a class="nav-item" onclick="showSection('course-builder', this)">
+                    <span class="icon">🛠️</span>
+                    Course Builder
+                </a>
+                <a class="nav-item" onclick="showSection('content-library', this)">
+                    <span class="icon">📚</span>
+                    Content Library
                 </a>
             </div>
 
             <div class="nav-section">
                 <h3>Profile & Settings</h3>
-                <a class="nav-item" onclick="showSection('user-profile')">
+                <a class="nav-item" onclick="showSection('user-profile', this)">
                     <span class="icon">👤</span>
                     User Profile
                 </a>
@@ -708,965 +780,53 @@
                     <span class="icon">⚙️</span>
                     Profile Settings
                 </a>
-                <a class="nav-item" onclick="showSection('sso-management')">
+                <a class="nav-item" id="sso-nav-item" onclick="showSection('sso-management', this)">
                     <span class="icon">🔐</span>
                     SSO Management
                 </a>
             </div>
         </div>
 
-        <!-- Content Area -->
+        <!-- #################### CONTENT AREA #################### -->
         <div class="content">
-            <!-- Dashboard Overview -->
+        
+            <!-- ########## DASHBOARD SECTION ########## -->
             <div id="dashboard" class="content-section active">
                 <div class="content-header">
                     <h1 class="content-title">Welcome back, <span id="dashboardUserName">Alex</span>! 👋</h1>
-                    <p class="content-subtitle">Your personalized learning dashboard powered by AI insights</p>
+                    <p class="content-subtitle">Your personalized dashboard powered by AI insights</p>
                 </div>
 
-                <!-- Learner Dashboard -->
-                <div id="learner-dashboard" class="persona-content active">
-                    <div class="dashboard-grid">
-                        <div class="card">
-                            <div class="card-header">
-                                <div class="card-icon" style="background: #dcfce7; color: #166534;">📚</div>
-                                <div class="card-title">Learning Progress</div>
-                            </div>
-                            <div class="metric-value" style="color: #059669;" id="learningProgress">78%</div>
-                            <div class="metric-label">Monthly Goals</div>
-                            <div class="progress-bar">
-                                <div class="progress-fill progress-green" style="width: 78%;"></div>
-                            </div>
-                            <div class="metric-change positive">+12% this month</div>
-                        </div>
+                <!-- Persona-specific Dashboards -->
+                <div id="sales-dashboard" class="persona-content active"></div>
+                <div id="manager-dashboard" class="persona-content"></div>
+                <div id="executive-dashboard" class="persona-content"></div>
+                <div id="technician-dashboard" class="persona-content"></div>
+                <div id="trainer-dashboard" class="persona-content"></div>
+                <div id="compliance-dashboard" class="persona-content"></div>
+                <div id="hr-dashboard" class="persona-content"></div>
+                <div id="it-dashboard" class="persona-content"></div>
 
-                        <div class="card">
-                            <div class="card-header">
-                                <div class="card-icon" style="background: #fef3c7; color: #d97706;">🎯</div>
-                                <div class="card-title">Skills Gaps</div>
-                            </div>
-                            <div class="metric-value" style="color: #d97706;" id="skillsGaps">2</div>
-                            <div class="metric-label">Priority Areas</div>
-                            <div style="font-size: 0.9rem;">
-                                <div>• Digital Tools Proficiency</div>
-                                <div>• Advanced Problem Solving</div>
-                            </div>
-                        </div>
-
-                        <div class="card">
-                            <div class="card-header">
-                                <div class="card-icon" style="background: #dbeafe; color: #1e40af;">🏆</div>
-                                <div class="card-title">Badges Earned</div>
-                            </div>
-                            <div class="metric-value" style="color: #2563eb;" id="badgesEarned">5</div>
-                            <div class="metric-label">This Quarter</div>
-                            <div style="font-size: 0.9rem; color: #059669;">Latest: Customer Service Pro</div>
-                        </div>
-
-                        <div class="card">
-                            <div class="card-header">
-                                <div class="card-icon" style="background: #f3e5f5; color: #9c27b0;">📱</div>
-                                <div class="card-title">Mobile Learning</div>
-                            </div>
-                            <div class="metric-value" style="color: #9c27b0;" id="mobileUsage">65%</div>
-                            <div class="metric-label">On Mobile Device</div>
-                            <div style="font-size: 0.9rem;">Perfect for microlearning!</div>
-                        </div>
-                    </div>
-
-                    <div class="ai-insights">
-                        <h3>🤖 AI Learning Assistant</h3>
-                        <div class="insight-item">
-                            <strong>Personalized Pace:</strong> Your learning improves 35% with 15-minute sessions. We've adjusted recommendations accordingly.
-                        </div>
-                        <div class="insight-item">
-                            <strong>Mobile Preference:</strong> You complete 80% more content on mobile. Consider downloading modules for offline access.
-                        </div>
-                        <div class="insight-item">
-                            <strong>Skills Alert:</strong> Digital tools training now available - critical for your role advancement.
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Sales Representative Dashboard -->
-                <div id="sales-dashboard" class="persona-content">
-                    <div class="dashboard-grid">
-                        <div class="card">
-                            <div class="card-header">
-                                <div class="card-icon" style="background: #dcfce7; color: #166534;">💰</div>
-                                <div class="card-title">Sales Performance</div>
-                            </div>
-                            <div class="metric-value" style="color: #059669;">124%</div>
-                            <div class="metric-label">Quota Achievement</div>
-                            <div style="font-size: 0.9rem; color: #059669;">🎯 Above target!</div>
-                        </div>
-
-                        <div class="card">
-                            <div class="card-header">
-                                <div class="card-icon" style="background: #fef3c7; color: #d97706;">📚</div>
-                                <div class="card-title">Product Knowledge</div>
-                            </div>
-                            <div class="metric-value" style="color: #d97706;">89%</div>
-                            <div class="metric-label">Certification Level</div>
-                            <div style="font-size: 0.9rem;">2 new products to learn</div>
-                        </div>
-
-                        <div class="card">
-                            <div class="card-header">
-                                <div class="card-icon" style="background: #dbeafe; color: #1e40af;">🎮</div>
-                                <div class="card-title">Leaderboard</div>
-                            </div>
-                            <div class="metric-value" style="color: #2563eb;">#3</div>
-                            <div class="metric-label">Team Ranking</div>
-                            <div style="font-size: 0.9rem;">🔥 Moving up!</div>
-                        </div>
-
-                        <div class="card">
-                            <div class="card-header">
-                                <div class="card-icon" style="background: #f3e5f5; color: #9c27b0;">🎯</div>
-                                <div class="card-title">Micro-Certifications</div>
-                            </div>
-                            <div class="metric-value" style="color: #9c27b0;">8</div>
-                            <div class="metric-label">Completed</div>
-                            <div style="font-size: 0.9rem;">Latest: New Model Launch</div>
-                        </div>
-                    </div>
-
-                    <div class="ai-insights">
-                        <h3>🤖 Sales AI Coach</h3>
-                        <div class="insight-item">
-                            <strong>Win Rate Correlation:</strong> Your closing rate improves 28% after objection handling refreshers. Schedule one before big deals.
-                        </div>
-                        <div class="insight-item">
-                            <strong>CRM Usage:</strong> Your pipeline accuracy increased 15% this month. Keep leveraging those new CRM skills!
-                        </div>
-                        <div class="insight-item">
-                            <strong>Product Alert:</strong> New model launching next week. Complete certification to access early demo units.
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Add other persona dashboards here -->
             </div>
-
-            <!-- Recommendations Section -->
-            <div id="recommendations" class="content-section">
-                <div class="content-header">
-                    <h1 class="content-title">🎯 AI-Powered Recommendations</h1>
-                    <p class="content-subtitle">Personalized insights • Smart suggestions • Optimized learning paths</p>
-                </div>
-
-                <!-- Learner Recommendations -->
-                <div id="learner-recommendations" class="persona-content active">
-                    <h2 style="margin-bottom: 1.5rem; color: white;">Learning Recommendations for You</h2>
-                    
-                    <div style="margin-bottom: 2rem;">
-                        <h3 style="color: white; margin-bottom: 1rem;">🎯 Priority Training for You</h3>
-                        
-                        <div class="recommendation-item">
-                            <div class="recommendation-thumbnail">🤝<br>COMM</div>
-                            <div class="recommendation-content">
-                                <div class="recommendation-title">Advanced Customer Communication</div>
-                                <div class="recommendation-meta">4.9 ⭐ • 45 min • Intermediate</div>
-                                <div class="recommendation-tags">
-                                    <span class="tag skill-gap">Skill Gap Identified</span>
-                                    <span class="tag priority">High Impact</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="recommendation-item">
-                            <div class="recommendation-thumbnail">🛠️<br>TOOL</div>
-                            <div class="recommendation-content">
-                                <div class="recommendation-title">Digital Tools Proficiency</div>
-                                <div class="recommendation-meta">4.7 ⭐ • 1.2 hours • Beginner</div>
-                                <div class="recommendation-tags">
-                                    <span class="tag skill-gap">Skill Gap Identified</span>
-                                    <span class="tag">Efficiency Boost</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="recommendation-item">
-                            <div class="recommendation-thumbnail">🧠<br>PROB</div>
-                            <div class="recommendation-content">
-                                <div class="recommendation-title">Advanced Problem Solving</div>
-                                <div class="recommendation-meta">4.8 ⭐ • 30 min • Intermediate</div>
-                                <div class="recommendation-tags">
-                                    <span class="tag">Trending</span>
-                                    <span class="tag">Popular in Your Role</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Sales Recommendations -->
-                <div id="sales-recommendations" class="persona-content">
-                    <h2 style="margin-bottom: 1.5rem; color: white;">Sales Training Recommendations</h2>
-                    
-                    <div style="margin-bottom: 2rem;">
-                        <h3 style="color: white; margin-bottom: 1rem;">🎯 Performance Boosters</h3>
-                        
-                        <div class="recommendation-item">
-                            <div class="recommendation-thumbnail">🤝<br>OBJ</div>
-                            <div class="recommendation-content">
-                                <div class="recommendation-title">Advanced Objection Handling Mastery</div>
-                                <div class="recommendation-meta">28% win rate improvement after completion</div>
-                                <div class="recommendation-tags">
-                                    <span class="tag priority">High Impact</span>
-                                    <span class="tag">Performance Boost</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="recommendation-item">
-                            <div class="recommendation-thumbnail">📱<br>CRM</div>
-                            <div class="recommendation-content">
-                                <div class="recommendation-title">CRM Pipeline Optimization</div>
-                                <div class="recommendation-meta">15% accuracy improvement • Better forecasting</div>
-                                <div class="recommendation-tags">
-                                    <span class="tag">Tools Mastery</span>
-                                    <span class="tag">Efficiency</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Learning Path Section -->
-            <div id="learning-path" class="content-section">
-                <div class="content-header">
-                    <h1 class="content-title">🛤️ My Learning Path</h1>
-                    <p class="content-subtitle">Structured progression • Personalized journey • Clear milestones</p>
-                </div>
-
-                <!-- Learner Learning Path -->
-                <div id="learner-learning-path" class="persona-content active">
-                    <h2 style="margin-bottom: 1.5rem; color: white;">Customer Service Excellence Track</h2>
-                    
-                    <div class="learning-path">
-                        <div class="path-item completed">
-                            <div class="path-number completed">✓</div>
-                            <div style="flex: 1;">
-                                <div style="font-weight: 600; margin-bottom: 0.5rem;">Communication Fundamentals</div>
-                                <div style="font-size: 0.9rem; color: #6c757d;">Completed • 92% score</div>
-                            </div>
-                        </div>
-
-                        <div class="path-item completed">
-                            <div class="path-number completed">✓</div>
-                            <div style="flex: 1;">
-                                <div style="font-weight: 600; margin-bottom: 0.5rem;">Product Knowledge Basics</div>
-                                <div style="font-size: 0.9rem; color: #6c757d;">Completed • 88% score</div>
-                            </div>
-                        </div>
-
-                        <div class="path-item current">
-                            <div class="path-number current">3</div>
-                            <div style="flex: 1;">
-                                <div style="font-weight: 600; margin-bottom: 0.5rem;">Advanced Problem Solving</div>
-                                <div style="font-size: 0.9rem; color: #6c757d;">In Progress • 65% complete</div>
-                                <div class="progress-bar" style="margin-top: 0.5rem;">
-                                    <div class="progress-fill progress-orange" style="width: 65%;"></div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="path-item">
-                            <div class="path-number">4</div>
-                            <div style="flex: 1;">
-                                <div style="font-weight: 600; margin-bottom: 0.5rem;">Digital Tools Mastery</div>
-                                <div style="font-size: 0.9rem; color: #6c757d;">Next • Unlocks after current course</div>
-                            </div>
-                        </div>
-
-                        <div class="path-item">
-                            <div class="path-number">5</div>
-                            <div style="flex: 1;">
-                                <div style="font-weight: 600; margin-bottom: 0.5rem;">Customer Service Excellence Certification</div>
-                                <div style="font-size: 0.9rem; color: #6c757d;">Final Assessment</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Analytics Section -->
-            <div id="analytics" class="content-section">
-                <div class="content-header">
-                    <h1 class="content-title">📊 Learning Analytics</h1>
-                    <p class="content-subtitle">Performance insights • Learning patterns • Progress tracking</p>
-                </div>
-                
-                <div class="dashboard-grid" style="margin-bottom: 2rem;">
-                    <div class="card">
-                        <div class="card-header">
-                            <div class="card-icon" style="background: #dcfce7; color: #166534;">📚</div>
-                            <div class="card-title">Courses Completed</div>
-                        </div>
-                        <div class="metric-value" style="color: #059669;">24</div>
-                        <div class="metric-label">This quarter</div>
-                    </div>
-
-                    <div class="card">
-                        <div class="card-header">
-                            <div class="card-icon" style="background: #dbeafe; color: #1e40af;">⏱️</div>
-                            <div class="card-title">Learning Time</div>
-                        </div>
-                        <div class="metric-value" style="color: #2563eb;">47h</div>
-                        <div class="metric-label">This month</div>
-                    </div>
-
-                    <div class="card">
-                        <div class="card-header">
-                            <div class="card-icon" style="background: #fef3c7; color: #d97706;">📊</div>
-                            <div class="card-title">Avg. Score</div>
-                        </div>
-                        <div class="metric-value" style="color: #d97706;">91%</div>
-                        <div class="metric-label">Quiz average</div>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <h3 style="margin-bottom: 1rem;">Learning Habits Analysis</h3>
-                    <div style="margin-bottom: 1rem;">
-                        <strong>Peak Learning Times:</strong>
-                        <div style="margin-top: 0.5rem; display: flex; gap: 1rem; flex-wrap: wrap;">
-                            <span class="tag">9:00 AM - 11:00 AM</span>
-                            <span class="tag">2:00 PM - 4:00 PM</span>
-                        </div>
-                    </div>
-                    <div style="margin-bottom: 1rem;">
-                        <strong>Preferred Content Types:</strong>
-                        <div style="margin-top: 0.5rem; display: flex; gap: 1rem; flex-wrap: wrap;">
-                            <span class="tag">Interactive (45%)</span>
-                            <span class="tag">Video (35%)</span>
-                            <span class="tag">Text (20%)</span>
-                        </div>
-                    </div>
-                    <div>
-                        <strong>Learning Streak:</strong> 12 days (Personal best: 28 days)
-                    </div>
-                </div>
-            </div>
-
-            <!-- User Profile Section -->
-            <div id="user-profile" class="content-section">
-                <div class="content-header">
-                    <h1 class="content-title">👤 User Profile & Personalization</h1>
-                    <p class="content-subtitle">Customize experience • Track achievements • Manage preferences</p>
-                </div>
-
-                <!-- Profile Overview -->
-                <div class="dashboard-grid">
-                    <div class="card" style="grid-column: 1 / -1;">
-                        <div style="display: flex; gap: 2rem; align-items: start;">
-                            <div style="width: 120px; height: 120px; border-radius: 16px; background: linear-gradient(135deg, #667eea, #764ba2); display: flex; align-items: center; justify-content: center; color: white; font-size: 3rem; font-weight: bold;" id="profileAvatar">
-                                AC
-                            </div>
-                            <div style="flex: 1;">
-                                <h2 style="font-size: 2rem; font-weight: bold; color: #1e293b; margin-bottom: 0.5rem;" id="profileName">Alex Chen</h2>
-                                <p style="color: #64748b; font-size: 1.1rem; margin-bottom: 1rem;" id="profileRole">Customer Service Representative • Central Region • 2.1 years experience</p>
-                                
-                                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">
-                                    <div>
-                                        <div style="font-size: 0.85rem; color: #64748b; margin-bottom: 2px;">Email</div>
-                                        <div style="font-weight: 600;" id="profileEmail">alex.chen@company.com</div>
-                                    </div>
-                                    <div>
-                                        <div style="font-size: 0.85rem; color: #64748b; margin-bottom: 2px;">Manager</div>
-                                        <div style="font-weight: 600;" id="profileManager">Sarah Martinez</div>
-                                    </div>
-                                    <div>
-                                        <div style="font-size: 0.85rem; color: #64748b; margin-bottom: 2px;">Department</div>
-                                        <div style="font-weight: 600;" id="profileDepartment">Customer Service</div>
-                                    </div>
-                                    <div>
-                                        <div style="font-size: 0.85rem; color: #64748b; margin-bottom: 2px;">Performance Score</div>
-                                        <div style="font-weight: 600; color: #059669;" id="profilePerformance">87/100</div>
-                                    </div>
-                                </div>
-                                
-                                <div style="display: flex; gap: 1rem;">
-                                    <button class="btn btn-primary" onclick="openProfileModal()">✏️ Edit Profile</button>
-                                    <button class="btn btn-secondary">📊 View Analytics</button>
-                                    <button class="btn btn-secondary">🎯 Set Goals</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Skills & Achievements -->
-                <div class="dashboard-grid">
-                    <div class="card">
-                        <div class="card-header">
-                            <div class="card-icon" style="background: #dcfce7; color: #166534;">🎓</div>
-                            <div class="card-title">Current Skills</div>
-                        </div>
-                        <div style="display: flex; flex-direction: column; gap: 12px;">
-                            <div>
-                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
-                                    <span style="font-size: 0.9rem; font-weight: 500;">Customer Communication</span>
-                                    <span style="color: #059669; font-size: 0.85rem;">✅ Proficient</span>
-                                </div>
-                                <div class="progress-bar" style="height: 6px;">
-                                    <div class="progress-fill progress-green" style="width: 92%;"></div>
-                                </div>
-                            </div>
-                            <div>
-                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
-                                    <span style="font-size: 0.9rem; font-weight: 500;">Digital Tools</span>
-                                    <span style="color: #d97706; font-size: 0.85rem;">⚠️ Developing</span>
-                                </div>
-                                <div class="progress-bar" style="height: 6px;">
-                                    <div class="progress-fill progress-orange" style="width: 45%;"></div>
-                                </div>
-                            </div>
-                            <div>
-                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
-                                    <span style="font-size: 0.9rem; font-weight: 500;">Problem Solving</span>
-                                    <span style="color: #d97706; font-size: 0.85rem;">⚠️ Developing</span>
-                                </div>
-                                <div class="progress-bar" style="height: 6px;">
-                                    <div class="progress-fill progress-orange" style="width: 70%;"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="card">
-                        <div class="card-header">
-                            <div class="card-icon" style="background: #fef3c7; color: #d97706;">🏅</div>
-                            <div class="card-title">Achievements & Badges</div>
-                        </div>
-                        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; text-align: center;">
-                            <div style="padding: 8px; background: #fef3c7; border-radius: 8px;">
-                                <div style="font-size: 1.5rem; margin-bottom: 4px;">🥇</div>
-                                <div style="font-size: 0.75rem; font-weight: 600;">Top Learner</div>
-                            </div>
-                            <div style="padding: 8px; background: #dcfce7; border-radius: 8px;">
-                                <div style="font-size: 1.5rem; margin-bottom: 4px;">🎯</div>
-                                <div style="font-size: 0.75rem; font-weight: 600;">Goal Crusher</div>
-                            </div>
-                            <div style="padding: 8px; background: #dbeafe; border-radius: 8px;">
-                                <div style="font-size: 1.5rem; margin-bottom: 4px;">⚡</div>
-                                <div style="font-size: 0.75rem; font-weight: 600;">Fast Finisher</div>
-                            </div>
-                            <div style="padding: 8px; background: #fce7f3; border-radius: 8px;">
-                                <div style="font-size: 1.5rem; margin-bottom: 4px;">🤝</div>
-                                <div style="font-size: 0.75rem; font-weight: 600;">Team Player</div>
-                            </div>
-                            <div style="padding: 8px; background: #ddd6fe; border-radius: 8px;">
-                                <div style="font-size: 1.5rem; margin-bottom: 4px;">💎</div>
-                                <div style="font-size: 0.75rem; font-weight: 600;">Quality Focus</div>
-                            </div>
-                            <div style="padding: 8px; background: #f3f4f6; border-radius: 8px; opacity: 0.5;">
-                                <div style="font-size: 1.5rem; margin-bottom: 4px;">🔒</div>
-                                <div style="font-size: 0.75rem; font-weight: 600;">Locked</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="ai-insights">
-                    <h3>🤖 AI-Powered Personal Insights</h3>
-                    <div class="insight-item">
-                        <strong>Next Course:</strong> "Advanced Problem Solving" - Based on your skill gap analysis and learning style preference for interactive content.
-                    </div>
-                    <div class="insight-item">
-                        <strong>Career Path:</strong> You're on track for Team Lead role. Focus on leadership and communication courses next quarter.
-                    </div>
-                    <div class="insight-item">
-                        <strong>Learning Tip:</strong> Your completion rate is highest during morning sessions. Schedule important training between 9-11 AM.
-                    </div>
-                </div>
-            </div>
-
-            <!-- SSO Management Section -->
-            <div id="sso-management" class="content-section">
-                <div class="content-header">
-                    <h1 class="content-title">🔐 SSO Management & Identity Systems</h1>
-                    <p class="content-subtitle">Unified identity • Profile synchronization • System integration</p>
-                </div>
-
-                <!-- SSO Dashboard Stats -->
-                <div class="dashboard-grid">
-                    <div class="card">
-                        <div class="card-header">
-                            <div class="card-icon" style="background: #dcfce7; color: #166534;">👥</div>
-                            <div class="card-title">Active Learners</div>
-                        </div>
-                        <div class="metric-value" style="color: #059669;">47,832</div>
-                        <div class="metric-label">Across all systems</div>
-                        <div class="metric-change positive">+1,247 this month</div>
-                    </div>
-
-                    <div class="card">
-                        <div class="card-header">
-                            <div class="card-icon" style="background: #dbeafe; color: #1e40af;">🔗</div>
-                            <div class="card-title">Connected Systems</div>
-                        </div>
-                        <div class="metric-value" style="color: #1e40af;">12</div>
-                        <div class="metric-label">Integrated platforms</div>
-                        <div style="font-size: 0.85rem; color: #374151; margin-top: 0.5rem;">LMS, HRIS, CRM, Knowledge Base</div>
-                    </div>
-
-                    <div class="card">
-                        <div class="card-header">
-                            <div class="card-icon" style="background: #fef3c7; color: #d97706;">⚡</div>
-                            <div class="card-title">Profile Sync Rate</div>
-                        </div>
-                        <div class="metric-value" style="color: #d97706;">99.7%</div>
-                        <div class="metric-label">Successful syncs</div>
-                        <div class="progress-bar">
-                            <div class="progress-fill progress-orange" style="width: 99.7%;"></div>
-                        </div>
-                    </div>
-
-                    <div class="card">
-                        <div class="card-header">
-                            <div class="card-icon" style="background: #dcfce7; color: #166534;">🛡️</div>
-                            <div class="card-title">Security Status</div>
-                        </div>
-                        <div class="metric-value" style="color: #059669;">A+</div>
-                        <div class="metric-label">Security Rating</div>
-                        <div style="font-size: 0.85rem; color: #059669; margin-top: 0.5rem;">✅ 0 security incidents</div>
-                    </div>
-                </div>
-
-                <!-- Main SSO Content -->
-                <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem; margin-bottom: 2rem;">
-                    <!-- Learner Directory -->
-                    <div class="card">
-                        <div style="background: #f8fafc; padding: 1.5rem 2rem; border-bottom: 1px solid #e2e8f0; border-radius: 16px 16px 0 0;">
-                            <h3 style="font-weight: 600; color: #334155; margin-bottom: 0.5rem;">Learner Directory</h3>
-                            <div style="position: relative; margin-top: 1rem;">
-                                <span style="position: absolute; left: 0.75rem; top: 50%; transform: translateY(-50%); color: #9ca3af;">🔍</span>
-                                <input type="text" style="width: 100%; padding: 0.75rem 1rem 0.75rem 2.5rem; border: 1px solid #d1d5db; border-radius: 8px; font-size: 1rem;" placeholder="Search learners by name, email, department, or region...">
-                            </div>
-                        </div>
-                        <div style="padding: 2rem;">
-                            <table style="width: 100%; border-collapse: collapse;">
-                                <thead>
-                                    <tr style="border-bottom: 1px solid #e2e8f0;">
-                                        <th style="text-align: left; padding: 1rem; font-weight: 600; color: #475569;">Learner</th>
-                                        <th style="text-align: left; padding: 1rem; font-weight: 600; color: #475569;">Department</th>
-                                        <th style="text-align: left; padding: 1rem; font-weight: 600; color: #475569;">Region</th>
-                                        <th style="text-align: left; padding: 1rem; font-weight: 600; color: #475569;">Last Active</th>
-                                        <th style="text-align: left; padding: 1rem; font-weight: 600; color: #475569;">Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr style="border-bottom: 1px solid #f1f5f9;">
-                                        <td style="padding: 1rem;">
-                                            <div>
-                                                <strong>Sarah Chen</strong><br>
-                                                <small style="color: #64748b;">sarah.chen@company.com</small>
-                                            </div>
-                                        </td>
-                                        <td style="padding: 1rem;">Sales</td>
-                                        <td style="padding: 1rem;">APAC</td>
-                                        <td style="padding: 1rem;">2 minutes ago</td>
-                                        <td style="padding: 1rem;"><button class="btn btn-secondary" onclick="viewLearnerProfile('sarah')">View Profile</button></td>
-                                    </tr>
-                                    <tr style="border-bottom: 1px solid #f1f5f9;">
-                                        <td style="padding: 1rem;">
-                                            <div>
-                                                <strong>Mike Rodriguez</strong><br>
-                                                <small style="color: #64748b;">mike.rodriguez@company.com</small>
-                                            </div>
-                                        </td>
-                                        <td style="padding: 1rem;">Field Service</td>
-                                        <td style="padding: 1rem;">Americas</td>
-                                        <td style="padding: 1rem;">15 minutes ago</td>
-                                        <td style="padding: 1rem;"><button class="btn btn-secondary" onclick="viewLearnerProfile('mike')">View Profile</button></td>
-                                    </tr>
-                                    <tr style="border-bottom: 1px solid #f1f5f9;">
-                                        <td style="padding: 1rem;">
-                                            <div>
-                                                <strong>Emily Johnson</strong><br>
-                                                <small style="color: #64748b;">emily.johnson@company.com</small>
-                                            </div>
-                                        </td>
-                                        <td style="padding: 1rem;">Technical</td>
-                                        <td style="padding: 1rem;">EMEA</td>
-                                        <td style="padding: 1rem;">1 hour ago</td>
-                                        <td style="padding: 1rem;"><button class="btn btn-secondary" onclick="viewLearnerProfile('emily')">View Profile</button></td>
-                                    </tr>
-                                    <tr style="border-bottom: 1px solid #f1f5f9;">
-                                        <td style="padding: 1rem;">
-                                            <div>
-                                                <strong>David Park</strong><br>
-                                                <small style="color: #64748b;">david.park@company.com</small>
-                                            </div>
-                                        </td>
-                                        <td style="padding: 1rem;">Training</td>
-                                        <td style="padding: 1rem;">APAC</td>
-                                        <td style="padding: 1rem;">3 hours ago</td>
-                                        <td style="padding: 1rem;"><button class="btn btn-secondary" onclick="viewLearnerProfile('david')">View Profile</button></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="padding: 1rem;">
-                                            <div>
-                                                <strong>Maria Silva</strong><br>
-                                                <small style="color: #64748b;">maria.silva@company.com</small>
-                                            </div>
-                                        </td>
-                                        <td style="padding: 1rem;">Customer Success</td>
-                                        <td style="padding: 1rem;">Americas</td>
-                                        <td style="padding: 1rem;">5 hours ago</td>
-                                        <td style="padding: 1rem;"><button class="btn btn-secondary" onclick="viewLearnerProfile('maria')">View Profile</button></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-
-                    <!-- GenAI Profile Auto-Tagging -->
-                    <div class="card">
-                        <div style="background: #f8fafc; padding: 1.5rem 2rem; border-bottom: 1px solid #e2e8f0; border-radius: 16px 16px 0 0;">
-                            <h3 style="font-weight: 600; color: #334155; margin-bottom: 0.5rem;">GenAI Profile Auto-Tagging</h3>
-                            <p style="color: #64748b; font-size: 0.9rem;">Organization-defined rules for automatic profile categorization</p>
-                        </div>
-                        <div style="padding: 2rem;">
-                            <div style="display: flex; flex-direction: column; gap: 1rem;">
-                                <div style="display: flex; align-items: center; justify-content: space-between; padding: 1rem; border: 1px solid #e2e8f0; border-radius: 8px; transition: all 0.3s ease;">
-                                    <div style="display: flex; align-items: center; gap: 1rem;">
-                                        <div style="width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: bold; color: white; background: #10b981;">🌏</div>
-                                        <div>
-                                            <div style="font-weight: 600;">APAC Region → Training Path A</div>
-                                            <small style="color: #64748b;">Auto-assigns localized sales training for Asia-Pacific learners</small>
-                                        </div>
-                                    </div>
-                                    <span style="padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.8rem; font-weight: 500; background: #dcfce7; color: #15803d;">234 applied</span>
-                                </div>
-
-                                <div style="display: flex; align-items: center; justify-content: space-between; padding: 1rem; border: 1px solid #e2e8f0; border-radius: 8px; transition: all 0.3s ease;">
-                                    <div style="display: flex; align-items: center; gap: 1rem;">
-                                        <div style="width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: bold; color: white; background: #3b82f6;">🔧</div>
-                                        <div>
-                                            <div style="font-weight: 600;">Field Service → Technical Certification</div>
-                                            <small style="color: #64748b;">Triggers technical skills assessment and certification path</small>
-                                        </div>
-                                    </div>
-                                    <span style="padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.8rem; font-weight: 500; background: #dcfce7; color: #15803d;">89 applied</span>
-                                </div>
-
-                                <div style="display: flex; align-items: center; justify-content: space-between; padding: 1rem; border: 1px solid #e2e8f0; border-radius: 8px; transition: all 0.3s ease;">
-                                    <div style="display: flex; align-items: center; gap: 1rem;">
-                                        <div style="width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: bold; color: white; background: #f59e0b;">👥</div>
-                                        <div>
-                                            <div style="font-weight: 600;">Manager Role → Leadership Track</div>
-                                            <small style="color: #64748b;">Enrolls in management and leadership development programs</small>
-                                        </div>
-                                    </div>
-                                    <span style="padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.8rem; font-weight: 500; background: #dcfce7; color: #15803d;">45 applied</span>
-                                </div>
-
-                                <div style="display: flex; align-items: center; justify-content: space-between; padding: 1rem; border: 1px solid #e2e8f0; border-radius: 8px; transition: all 0.3s ease;">
-                                    <div style="display: flex; align-items: center; gap: 1rem;">
-                                        <div style="width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: bold; color: white; background: #8b5cf6;">🎯</div>
-                                        <div>
-                                            <div style="font-weight: 600;">New Hire → Onboarding Journey</div>
-                                            <small style="color: #64748b;">Automatically assigns foundational training and compliance courses</small>
-                                        </div>
-                                    </div>
-                                    <span style="padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.8rem; font-weight: 500; background: #dcfce7; color: #15803d;">67 applied</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Enhanced Profile Management -->
-                <div class="card" style="margin-bottom: 2rem;">
-                    <div style="background: #f8fafc; padding: 1.5rem 2rem; border-bottom: 1px solid #e2e8f0; border-radius: 16px 16px 0 0;">
-                        <h3 style="font-weight: 600; color: #334155; margin-bottom: 0.5rem;">Enhanced Profile Management</h3>
-                        <p style="color: #64748b; font-size: 0.9rem;">Unified SSO profile with synchronized learning preferences</p>
-                    </div>
-                    <div style="padding: 2rem;">
-                        <!-- SSO Connection Status -->
-                        <div style="margin-bottom: 2rem; padding: 1rem; background: #f0f9ff; border-radius: 8px; border-left: 4px solid #0284c7;">
-                            <h4 style="margin-bottom: 0.5rem; color: #0c4a6e; display: flex; align-items: center; gap: 0.5rem;">
-                                🔗 Unified SSO Access
-                            </h4>
-                            <p style="margin: 0; color: #075985; font-size: 0.9rem;">Your profile automatically syncs across all connected learning systems. Changes made here will personalize your experience in LMS, chatbots, and certification platforms.</p>
-                        </div>
-
-                        <!-- Profile Form Grid -->
-                        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem;">
-                            <!-- Main Profile Information -->
-                            <div>
-                                <div style="background: #f8fafc; padding: 1.5rem; border-radius: 8px; margin-bottom: 2rem;">
-                                    <h4 style="margin-bottom: 1rem; color: #374151; display: flex; align-items: center; gap: 0.5rem;">
-                                        📋 SSO Profile Information
-                                    </h4>
-                                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                                        <div>
-                                            <label style="display: block; margin-bottom: 0.5rem; font-weight: 500; color: #374151;">Full Name</label>
-                                            <input type="text" style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 6px; font-size: 1rem; background: #f3f4f6;" value="Alex Chen" readonly>
-                                        </div>
-                                        <div>
-                                            <label style="display: block; margin-bottom: 0.5rem; font-weight: 500; color: #374151;">Email Address</label>
-                                            <input type="email" style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 6px; font-size: 1rem; background: #f3f4f6;" value="alex.chen@company.com" readonly>
-                                        </div>
-                                        <div>
-                                            <label style="display: block; margin-bottom: 0.5rem; font-weight: 500; color: #374151;">Department</label>
-                                            <input type="text" style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 6px; font-size: 1rem; background: #f3f4f6;" value="Customer Service" readonly>
-                                        </div>
-                                        <div>
-                                            <label style="display: block; margin-bottom: 0.5rem; font-weight: 500; color: #374151;">Region</label>
-                                            <input type="text" style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 6px; font-size: 1rem; background: #f3f4f6;" value="Central" readonly>
-                                        </div>
-                                        <div>
-                                            <label style="display: block; margin-bottom: 0.5rem; font-weight: 500; color: #374151;">Role</label>
-                                            <input type="text" style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 6px; font-size: 1rem; background: #f3f4f6;" value="Customer Service Representative" readonly>
-                                        </div>
-                                        <div>
-                                            <label style="display: block; margin-bottom: 0.5rem; font-weight: 500; color: #374151;">Team</label>
-                                            <input type="text" style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 6px; font-size: 1rem; background: #f3f4f6;" value="Customer Success - Central" readonly>
-                                        </div>
-                                    </div>
-                                    <small style="color: #6b7280; font-style: italic; margin-top: 1rem; display: block;">✨ Auto-populated from Azure AD • Last synced: 2 minutes ago</small>
-                                </div>
-
-                                <!-- Personalization Preferences -->
-                                <h4 style="margin-bottom: 1rem; color: #374151; display: flex; align-items: center; gap: 0.5rem;">
-                                    🎯 Personalization Preferences
-                                </h4>
-                                
-                                <div style="margin-bottom: 1.5rem;">
-                                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 500; color: #374151;">Preferred Learning Formats</label>
-                                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 0.5rem; margin-top: 0.5rem;">
-                                        <label style="display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem; border: 1px solid #d1d5db; border-radius: 6px; cursor: pointer; background: white;">
-                                            <input type="checkbox" checked> Video-based
-                                        </label>
-                                        <label style="display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem; border: 1px solid #d1d5db; border-radius: 6px; cursor: pointer; background: white;">
-                                            <input type="checkbox"> Reading/Text
-                                        </label>
-                                        <label style="display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem; border: 1px solid #d1d5db; border-radius: 6px; cursor: pointer; background: white;">
-                                            <input type="checkbox" checked> Practice-based
-                                        </label>
-                                        <label style="display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem; border: 1px solid #d1d5db; border-radius: 6px; cursor: pointer; background: white;">
-                                            <input type="checkbox"> Interactive
-                                        </label>
-                                    </div>
-                                </div>
-
-                                <div style="margin-bottom: 1.5rem;">
-                                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 500; color: #374151;">Notification Preferences</label>
-                                    <div style="display: grid; gap: 0.5rem; margin-top: 0.5rem;">
-                                        <label style="display: flex; align-items: center; gap: 0.5rem;">
-                                            <input type="checkbox" checked> Email notifications for new courses
-                                        </label>
-                                        <label style="display: flex; align-items: center; gap: 0.5rem;">
-                                            <input type="checkbox" checked> GenAI chat reminders
-                                        </label>
-                                        <label style="display: flex; align-items: center; gap: 0.5rem;">
-                                            <input type="checkbox"> SMS for certification deadlines
-                                        </label>
-                                        <label style="display: flex; align-items: center; gap: 0.5rem;">
-                                            <input type="checkbox" checked> Weekly progress summaries
-                                        </label>
-                                    </div>
-                                </div>
-
-                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;">
-                                    <div>
-                                        <label style="display: block; margin-bottom: 0.5rem; font-weight: 500; color: #374151;">Language Preference</label>
-                                        <select style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 6px; font-size: 1rem;">
-                                            <option value="en" selected>English</option>
-                                            <option value="zh">中文 (Chinese)</option>
-                                            <option value="ja">日本語 (Japanese)</option>
-                                            <option value="ko">한국어 (Korean)</option>
-                                        </select>
-                                    </div>
-                                    <div>
-                                        <label style="display: block; margin-bottom: 0.5rem; font-weight: 500; color: #374151;">Timezone</label>
-                                        <select style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 6px; font-size: 1rem;">
-                                            <option value="cst" selected>Central Standard Time (CST)</option>
-                                            <option value="est">Eastern Standard Time (EST)</option>
-                                            <option value="pst">Pacific Standard Time (PST)</option>
-                                            <option value="utc">Coordinated Universal Time (UTC)</option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div style="margin-bottom: 1.5rem;">
-                                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 500; color: #374151;">Professional Interests & Career Goals</label>
-                                    <textarea style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 6px; font-size: 1rem;" rows="3" placeholder="Describe your areas of interest, career goals, or skills you'd like to develop...">Customer service excellence, digital communication tools, problem-solving techniques, team leadership development</textarea>
-                                </div>
-
-                                <div style="background: #f0fdf4; padding: 1rem; border-radius: 8px; margin: 1.5rem 0; border-left: 4px solid #22c55e;">
-                                    <h4 style="margin-bottom: 0.5rem; color: #15803d; display: flex; align-items: center; gap: 0.5rem;">
-                                        🤖 How GenAI Uses Your Profile
-                                    </h4>
-                                    <ul style="margin: 0; padding-left: 1.5rem; color: #166534; font-size: 0.9rem;">
-                                        <li>Tailors course recommendations based on your role and interests</li>
-                                        <li>Adjusts AI chat responses to your learning preferences</li>
-                                        <li>Triggers relevant certifications and learning nudges</li>
-                                        <li>Personalizes content delivery format and timing</li>
-                                    </ul>
-                                </div>
-
-                                <div style="display: flex; gap: 1rem;">
-                                    <button class="btn btn-primary" onclick="saveSSProfile()">Save Profile Changes</button>
-                                    <button class="btn btn-secondary">Reset to Defaults</button>
-                                </div>
-                            </div>
-
-                            <!-- Connected Learning Systems -->
-                            <div>
-                                <h4 style="margin-bottom: 1rem; color: #374151; display: flex; align-items: center; gap: 0.5rem;">
-                                    🔄 Connected Learning Systems
-                                </h4>
-                                <p style="color: #64748b; font-size: 0.9rem; margin-bottom: 1rem;">Your unified profile provides seamless access across all learning platforms</p>
-                                
-                                <div style="display: flex; flex-direction: column; gap: 1rem;">
-                                    <div style="display: flex; align-items: center; justify-content: space-between; padding: 1rem; border: 1px solid #e2e8f0; border-radius: 8px; transition: all 0.3s ease;">
-                                        <div style="display: flex; align-items: center; gap: 1rem;">
-                                            <div style="width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: bold; color: white; background: #e74c3c;">📚</div>
-                                            <div>
-                                                <div style="font-weight: 600;">Learning Management System</div>
-                                                <small style="color: #64748b;">Access courses and track progress</small>
-                                            </div>
-                                        </div>
-                                        <button class="btn btn-primary" style="font-size: 0.8rem;">Launch LMS</button>
-                                    </div>
-
-                                    <div style="display: flex; align-items: center; justify-content: space-between; padding: 1rem; border: 1px solid #e2e8f0; border-radius: 8px; transition: all 0.3s ease;">
-                                        <div style="display: flex; align-items: center; gap: 1rem;">
-                                            <div style="width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: bold; color: white; background: #22c55e;">🤖</div>
-                                            <div>
-                                                <div style="font-weight: 600;">GenAI Learning Chat</div>
-                                                <small style="color: #64748b;">Personalized AI assistance and guidance</small>
-                                            </div>
-                                        </div>
-                                        <button class="btn btn-primary" style="font-size: 0.8rem;">Open Chat</button>
-                                    </div>
-
-                                    <div style="display: flex; align-items: center; justify-content: space-between; padding: 1rem; border: 1px solid #e2e8f0; border-radius: 8px; transition: all 0.3s ease;">
-                                        <div style="display: flex; align-items: center; gap: 1rem;">
-                                            <div style="width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: bold; color: white; background: #3b82f6;">🏆</div>
-                                            <div>
-                                                <div style="font-weight: 600;">Certification Portal</div>
-                                                <small style="color: #64748b;">Track certifications and achievements</small>
-                                            </div>
-                                        </div>
-                                        <button class="btn btn-primary" style="font-size: 0.8rem;">View Certs</button>
-                                    </div>
-
-                                    <div style="display: flex; align-items: center; justify-content: space-between; padding: 1rem; border: 1px solid #e2e8f0; border-radius: 8px; transition: all 0.3s ease;">
-                                        <div style="display: flex; align-items: center; gap: 1rem;">
-                                            <div style="width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: bold; color: white; background: #8b5cf6;">📊</div>
-                                            <div>
-                                                <div style="font-weight: 600;">Performance Dashboard</div>
-                                                <small style="color: #64748b;">Review learning analytics and progress</small>
-                                            </div>
-                                        </div>
-                                        <button class="btn btn-primary" style="font-size: 0.8rem;">View Stats</button>
-                                    </div>
-                                </div>
-
-                                <div style="margin-top: 1.5rem; padding: 1rem; background: #fef3c7; border-radius: 8px; border-left: 4px solid #f59e0b;">
-                                    <h4 style="margin-bottom: 0.5rem; color: #92400e; display: flex; align-items: center; gap: 0.5rem;">
-                                        🔐 Session Persistence
-                                    </h4>
-                                    <p style="margin: 0; color: #a16207; font-size: 0.9rem;">Federated identity tokens allow you to switch between learning tools without repeated login. Your session remains active across all connected systems.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Central Data Lake Analytics -->
-                <div class="card">
-                    <div style="background: #f8fafc; padding: 1.5rem 2rem; border-bottom: 1px solid #e2e8f0; border-radius: 16px 16px 0 0;">
-                        <h3 style="font-weight: 600; color: #334155; margin-bottom: 0.5rem;">📊 Central Data Lake Analytics</h3>
-                        <p style="color: #64748b; font-size: 0.9rem;">All learner profile and behavior data flows into a central data lake, creating comprehensive analytics across systems</p>
-                    </div>
-                    <div style="padding: 2rem;">
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2rem;">
-                            <!-- Data Sources -->
-                            <div class="card" style="margin: 0; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
-                                <div style="background: #f8fafc; padding: 1rem 1.5rem; border-bottom: 1px solid #e2e8f0; border-radius: 12px 12px 0 0;">
-                                    <h4 style="font-weight: 600; color: #334155;">Data Sources</h4>
-                                </div>
-                                <div style="padding: 1.5rem;">
-                                    <div style="display: grid; gap: 0.75rem;">
-                                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem; background: #f8fafc; border-radius: 6px;">
-                                            <span style="font-weight: 500;">LMS Course Progress</span>
-                                            <span style="color: #10b981; font-size: 0.8rem;">47K records</span>
-                                        </div>
-                                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem; background: #f8fafc; border-radius: 6px;">
-                                            <span style="font-weight: 500;">GenAI Chat Interactions</span>
-                                            <span style="color: #10b981; font-size: 0.8rem;">1.2M logs</span>
-                                        </div>
-                                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem; background: #f8fafc; border-radius: 6px;">
-                                            <span style="font-weight: 500;">Certification Completions</span>
-                                            <span style="color: #10b981; font-size: 0.8rem;">8.7K certs</span>
-                                        </div>
-                                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem; background: #f8fafc; border-radius: 6px;">
-                                            <span style="font-weight: 500;">HRIS Performance Data</span>
-                                            <span style="color: #10b981; font-size: 0.8rem;">15K reviews</span>
-                                        </div>
-                                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem; background: #f8fafc; border-radius: 6px;">
-                                            <span style="font-weight: 500;">CRM Activity Sync</span>
-                                            <span style="color: #10b981; font-size: 0.8rem;">89K activities</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Analytics Dashboards -->
-                            <div class="card" style="margin: 0; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
-                                <div style="background: #f8fafc; padding: 1rem 1.5rem; border-bottom: 1px solid #e2e8f0; border-radius: 12px 12px 0 0;">
-                                    <h4 style="font-weight: 600; color: #334155;">Analytics Dashboards</h4>
-                                </div>
-                                <div style="padding: 1.5rem;">
-                                    <div style="display: grid; gap: 0.75rem;">
-                                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem; background: #f0f9ff; border-radius: 6px;">
-                                            <span style="font-weight: 500;">By Role</span>
-                                            <span style="color: #0284c7; font-size: 0.8rem;">12 segments</span>
-                                        </div>
-                                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem; background: #f0f9ff; border-radius: 6px;">
-                                            <span style="font-weight: 500;">By Department</span>
-                                            <span style="color: #0284c7; font-size: 0.8rem;">8 departments</span>
-                                        </div>
-                                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem; background: #f0f9ff; border-radius: 6px;">
-                                            <span style="font-weight: 500;">By Region</span>
-                                            <span style="color: #0284c7; font-size: 0.8rem;">3 regions</span>
-                                        </div>
-                                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem; background: #f0f9ff; border-radius: 6px;">
-                                            <span style="font-weight: 500;">Learning Paths</span>
-                                            <span style="color: #0284c7; font-size: 0.8rem;">45 paths</span>
-                                        </div>
-                                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem; background: #f0f9ff; border-radius: 6px;">
-                                            <span style="font-weight: 500;">GenAI Effectiveness</span>
-                                            <span style="color: #0284c7; font-size: 0.8rem;">Real-time</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div style="display: flex; gap: 1rem;">
-                            <button class="btn btn-primary">View Full Analytics</button>
-                            <button class="btn btn-secondary">Export Data</button>
-                            <button class="btn btn-secondary">API Documentation</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Additional sections would go here -->
+            
+            <!-- ########## OTHER SECTIONS ########## -->
+            <div id="recommendations" class="content-section"></div>
+            <div id="learning-path" class="content-section"></div>
+            <div id="training-gaps" class="content-section"></div>
+            <div id="star-rewards" class="content-section"></div>
+            <div id="certifications" class="content-section"></div>
+            <div id="analytics" class="content-section"></div>
+            <div id="team-performance" class="content-section"></div>
+            <div id="top-performers" class="content-section"></div>
+            <div id="reports" class="content-section"></div>
+            <div id="course-builder" class="content-section"></div>
+            <div id="content-library" class="content-section"></div>
+            <div id="user-profile" class="content-section"></div>
+            <div id="sso-management" class="content-section"></div>
         </div>
     </div>
 
-    <!-- Profile Settings Modal -->
+    <!-- #################### MODAL #################### -->
     <div id="profile-modal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -1677,33 +837,17 @@
             <form onsubmit="event.preventDefault(); saveProfile();">
                 <div class="form-group">
                     <label class="form-label">Career Goals</label>
-                    <select class="form-control" id="career-goals-select">
-                        <!-- Options will be populated by JavaScript based on persona -->
-                    </select>
+                    <select class="form-control" id="career-goals-select"></select>
                 </div>
-
                 <div class="form-group">
                     <label class="form-label">Preferred Content Formats</label>
                     <div class="checkbox-group">
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="video" checked>
-                            <label for="video">Video Tutorials</label>
-                        </div>
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="interactive" checked>
-                            <label for="interactive">Interactive Simulations</label>
-                        </div>
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="roleplay">
-                            <label for="roleplay">Role-play Scenarios</label>
-                        </div>
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="text">
-                            <label for="text">Quick Reference Guides</label>
-                        </div>
+                        <div class="checkbox-item"><input type="checkbox" id="video" checked><label for="video">Video Tutorials</label></div>
+                        <div class="checkbox-item"><input type="checkbox" id="interactive" checked><label for="interactive">Interactive Simulations</label></div>
+                        <div class="checkbox-item"><input type="checkbox" id="roleplay"><label for="roleplay">Role-play Scenarios</label></div>
+                        <div class="checkbox-item"><input type="checkbox" id="text"><label for="text">Quick Reference Guides</label></div>
                     </div>
                 </div>
-
                 <div class="form-group">
                     <label class="form-label">Learning Pace</label>
                     <select class="form-control">
@@ -1713,32 +857,18 @@
                         <option>Flexible (as available)</option>
                     </select>
                 </div>
-
                 <div class="form-group">
                     <label class="form-label">Focus Areas</label>
-                    <div class="checkbox-group" id="focus-areas-checkboxes">
-                        <!-- Options will be populated by JavaScript based on persona -->
-                    </div>
+                    <div class="checkbox-group" id="focus-areas-checkboxes"></div>
                 </div>
-
                 <div class="form-group">
                     <label class="form-label">Notification Preferences</label>
                     <div class="checkbox-group">
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="daily-reminders" checked>
-                            <label for="daily-reminders">Daily Learning Reminders</label>
-                        </div>
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="new-recommendations" checked>
-                            <label for="new-recommendations">New Recommendations</label>
-                        </div>
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="achievement-alerts" checked>
-                            <label for="achievement-alerts">Achievement Alerts</label>
-                        </div>
+                        <div class="checkbox-item"><input type="checkbox" id="daily-reminders" checked><label for="daily-reminders">Daily Learning Reminders</label></div>
+                        <div class="checkbox-item"><input type="checkbox" id="new-recommendations" checked><label for="new-recommendations">New Recommendations</label></div>
+                        <div class="checkbox-item"><input type="checkbox" id="achievement-alerts" checked><label for="achievement-alerts">Achievement Alerts</label></div>
                     </div>
                 </div>
-
                 <div style="display: flex; gap: 1rem; justify-content: flex-end; margin-top: 2rem;">
                     <button type="button" class="btn btn-secondary" onclick="closeProfileModal()">Cancel</button>
                     <button type="submit" class="btn">Save Preferences</button>
@@ -1748,278 +878,122 @@
     </div>
 
     <script>
-        // Define persona data with names, roles, avatars, career goals, and focus areas
+        // #################### DATA ####################
         const personaData = {
-            learner: {
-                name: "Alex Chen",
-                role: "Customer Service Rep",
-                avatar: "AC",
-                email: "alex.chen@company.com",
-                manager: "Sarah Martinez",
-                department: "Customer Service",
-                performance: "87/100",
-                careerGoals: [
-                    "Senior Customer Service Specialist",
-                    "Team Lead", 
-                    "Customer Success Manager",
-                    "Training Coordinator"
-                ],
-                focusAreas: [
-                    { id: "communication", label: "Customer Communication" },
-                    { id: "product", label: "Product Knowledge" },
-                    { id: "problem", label: "Problem Solving" },
-                    { id: "compliance", label: "Compliance & Safety" },
-                    { id: "digital", label: "Digital Tools" },
-                    { id: "soft", label: "Soft Skills" }
-                ]
-            },
-            sales: {
-                name: "Jordan Martinez",
-                role: "Sales Representative",
-                avatar: "JM",
-                email: "jordan.martinez@company.com",
-                manager: "Mike Rodriguez",
-                department: "Sales",
-                performance: "124/100",
-                careerGoals: [
-                    "Senior Sales Rep",
-                    "Sales Team Lead",
-                    "Key Account Manager",
-                    "Sales Manager"
-                ],
-                focusAreas: [
-                    { id: "product", label: "Product Knowledge" },
-                    { id: "objection", label: "Objection Handling" },
-                    { id: "closing", label: "Closing Techniques" },
-                    { id: "crm", label: "CRM Skills" },
-                    { id: "negotiation", label: "Negotiation" },
-                    { id: "prospecting", label: "Lead Generation" }
-                ]
-            },
-            technician: {
-                name: "Riley Thompson",
-                role: "Field Service Technician",
-                avatar: "RT",
-                email: "riley.thompson@company.com",
-                manager: "David Kim",
-                department: "Field Service",
-                performance: "92/100",
-                careerGoals: [
-                    "Senior Technician",
-                    "Field Service Supervisor",
-                    "Technical Trainer",
-                    "Service Manager"
-                ],
-                focusAreas: [
-                    { id: "troubleshooting", label: "Troubleshooting" },
-                    { id: "safety", label: "Safety Protocols" },
-                    { id: "equipment", label: "Equipment Certification" },
-                    { id: "diagnostic", label: "Diagnostic Tools" },
-                    { id: "mobile", label: "Mobile Technology" },
-                    { id: "compliance", label: "Regulatory Compliance" }
-                ]
-            },
-            trainer: {
-                name: "David Kim",
-                role: "L&D Specialist",
-                avatar: "DK",
-                email: "david.kim@company.com",
-                manager: "Lisa Rodriguez",
-                department: "Learning & Development",
-                performance: "96/100",
-                careerGoals: [
-                    "Senior Learning Designer",
-                    "Training Manager",
-                    "Learning Technology Specialist",
-                    "Chief Learning Officer"
-                ],
-                focusAreas: [
-                    { id: "design", label: "Instructional Design" },
-                    { id: "tech", label: "Learning Technology" },
-                    { id: "assessment", label: "Assessment Design" },
-                    { id: "analytics", label: "Learning Analytics" },
-                    { id: "content", label: "Content Development" },
-                    { id: "ai", label: "AI in Learning" }
-                ]
-            },
-            manager: {
-                name: "Sarah Johnson",
-                role: "Team Manager",
-                avatar: "SJ",
-                email: "sarah.johnson@company.com",
-                manager: "Marcus Williams",
-                department: "Operations",
-                performance: "91/100",
-                careerGoals: [
-                    "Senior Manager",
-                    "Department Director",
-                    "Regional Manager",
-                    "VP of Operations"
-                ],
-                focusAreas: [
-                    { id: "team", label: "Team Development" },
-                    { id: "performance", label: "Performance Management" },
-                    { id: "coaching", label: "Coaching & Mentoring" },
-                    { id: "leadership", label: "Leadership Skills" },
-                    { id: "analytics", label: "People Analytics" },
-                    { id: "succession", label: "Succession Planning" }
-                ]
-            },
-            compliance: {
-                name: "Marcus Williams",
-                role: "Compliance Officer",
-                avatar: "MW",
-                email: "marcus.williams@company.com",
-                manager: "Jennifer Chen",
-                department: "Risk & Compliance",
-                performance: "94/100",
-                careerGoals: [
-                    "Senior Compliance Officer",
-                    "Compliance Manager",
-                    "Risk Management Director",
-                    "Chief Compliance Officer"
-                ],
-                focusAreas: [
-                    { id: "regulatory", label: "Regulatory Management" },
-                    { id: "audit", label: "Audit & Controls" },
-                    { id: "risk", label: "Risk Assessment" },
-                    { id: "policy", label: "Policy Development" },
-                    { id: "training", label: "Compliance Training" },
-                    { id: "reporting", label: "Compliance Reporting" }
-                ]
-            },
-            hr: {
-                name: "Lisa Rodriguez",
-                role: "HR Business Partner",
-                avatar: "LR",
-                email: "lisa.rodriguez@company.com",
-                manager: "Robert Davis",
-                department: "Human Resources",
-                performance: "88/100",
-                careerGoals: [
-                    "Senior HR Business Partner",
-                    "HR Manager",
-                    "Talent Development Director",
-                    "Chief People Officer"
-                ],
-                focusAreas: [
-                    { id: "workforce", label: "Workforce Planning" },
-                    { id: "talent", label: "Talent Development" },
-                    { id: "analytics", label: "People Analytics" },
-                    { id: "onboarding", label: "Onboarding & Integration" },
-                    { id: "career", label: "Career Pathing" },
-                    { id: "succession", label: "Succession Planning" }
-                ]
-            },
-            it: {
-                name: "Jennifer Chen",
-                role: "IT Administrator",
-                avatar: "JC",
-                email: "jennifer.chen@company.com",
-                manager: "Robert Davis",
-                department: "Information Technology",
-                performance: "99/100",
-                careerGoals: [
-                    "Senior IT Administrator",
-                    "IT Manager",
-                    "Solutions Architect",
-                    "Technology Director"
-                ],
-                focusAreas: [
-                    { id: "security", label: "System Security" },
-                    { id: "integration", label: "System Integration" },
-                    { id: "performance", label: "Performance Optimization" },
-                    { id: "sso", label: "SSO & Identity Management" },
-                    { id: "api", label: "API Management" },
-                    { id: "monitoring", label: "System Monitoring" }
-                ]
-            },
-            executive: {
-                name: "Robert Davis",
-                role: "VP of Learning & Development",
-                avatar: "RD",
-                email: "robert.davis@company.com",
-                manager: "CEO",
-                department: "Executive Leadership",
-                performance: "97/100",
-                careerGoals: [
-                    "Senior VP of L&D",
-                    "Chief Learning Officer",
-                    "Chief Human Resources Officer",
-                    "Chief Executive Officer"
-                ],
-                focusAreas: [
-                    { id: "strategy", label: "Learning Strategy" },
-                    { id: "roi", label: "ROI & Business Impact" },
-                    { id: "innovation", label: "Learning Innovation" },
-                    { id: "leadership", label: "Executive Leadership" },
-                    { id: "transformation", label: "Digital Transformation" },
-                    { id: "culture", label: "Learning Culture" }
-                ]
-            }
+            sales: { name: "Jordan Martinez", role: "Sales Consultant", avatar: "JM", email: "jordan.martinez@company.com", manager: "Sarah Johnson", department: "Sales", performance: "124%", careerGoals: ["Senior Sales Rep", "Sales Team Lead", "Key Account Manager", "Sales Manager"], focusAreas: [{ id: "product", label: "Product Knowledge" }, { id: "objection", label: "Objection Handling" }, { id: "closing", label: "Closing Techniques" }, { id: "crm", label: "CRM Skills" }, { id: "negotiation", label: "Negotiation" }, { id: "prospecting", label: "Lead Generation" }] },
+            technician: { name: "Riley Thompson", role: "Technician", avatar: "RT", email: "riley.thompson@company.com", manager: "Sarah Johnson", department: "Field Service", performance: "92%", careerGoals: ["Senior Technician", "Field Service Supervisor", "Technical Trainer", "Service Manager"], focusAreas: [{ id: "troubleshooting", label: "Troubleshooting" }, { id: "safety", label: "Safety Protocols" }, { id: "equipment", label: "Equipment Certification" }, { id: "diagnostic", label: "Diagnostic Tools" }, { id: "mobile", label: "Mobile Technology" }, { id: "compliance", label: "Regulatory Compliance" }] },
+            trainer: { name: "David Kim", role: "Trainer", avatar: "DK", email: "david.kim@company.com", manager: "Robert Davis", department: "Learning & Development", performance: "4.8/5", careerGoals: ["Senior Learning Designer", "Training Manager", "Learning Technology Specialist", "Chief Learning Officer"], focusAreas: [{ id: "design", label: "Instructional Design" }, { id: "tech", label: "Learning Technology" }, { id: "assessment", label: "Assessment Design" }, { id: "analytics", label: "Learning Analytics" }, { id: "content", label: "Content Development" }, { id: "ai", label: "AI in Learning" }] },
+            manager: { name: "Sarah Johnson", role: "Manager", avatar: "SJ", email: "sarah.johnson@company.com", manager: "Robert Davis", department: "Operations", performance: "91%", careerGoals: ["Senior Manager", "Department Director", "Regional Manager", "VP of Operations"], focusAreas: [{ id: "team", label: "Team Development" }, { id: "performance", label: "Performance Management" }, { id: "coaching", label: "Coaching & Mentoring" }, { id: "leadership", label: "Leadership Skills" }, { id: "analytics", label: "People Analytics" }, { id: "succession", label: "Succession Planning" }] },
+            compliance: { name: "Marcus Williams", role: "Compliance Officer", avatar: "MW", email: "marcus.williams@company.com", manager: "Robert Davis", department: "Risk & Compliance", performance: "98%", careerGoals: ["Senior Compliance Officer", "Compliance Manager", "Risk Management Director", "Chief Compliance Officer"], focusAreas: [{ id: "regulatory", label: "Regulatory Management" }, { id: "audit", label: "Audit & Controls" }, { id: "risk", label: "Risk Assessment" }, { id: "policy", label: "Policy Development" }, { id: "training", label: "Compliance Training" }, { id: "reporting", label: "Compliance Reporting" }] },
+            hr: { name: "Lisa Rodriguez", role: "HR Business Partner", avatar: "LR", email: "lisa.rodriguez@company.com", manager: "Robert Davis", department: "Human Resources", performance: "A+", careerGoals: ["Senior HR Business Partner", "HR Manager", "Talent Development Director", "Chief People Officer"], focusAreas: [{ id: "workforce", label: "Workforce Planning" }, { id: "talent", label: "Talent Development" }, { id: "analytics", label: "People Analytics" }, { id: "onboarding", label: "Onboarding & Integration" }, { id: "career", label: "Career Pathing" }, { id: "succession", label: "Succession Planning" }] },
+            it: { name: "Jennifer Chen", role: "IT Administrator", avatar: "JC", email: "jennifer.chen@company.com", manager: "Robert Davis", department: "Information Technology", performance: "99.9%", careerGoals: ["Senior IT Administrator", "IT Manager", "Solutions Architect", "Technology Director"], focusAreas: [{ id: "security", label: "System Security" }, { id: "integration", label: "System Integration" }, { id: "performance", label: "Performance Optimization" }, { id: "sso", label: "SSO & Identity Management" }, { id: "api", label: "API Management" }, { id: "monitoring", label: "System Monitoring" }] },
+            executive: { name: "Robert Davis", role: "Executive", avatar: "RD", email: "robert.davis@company.com", manager: "Board of Directors", department: "Executive Leadership", performance: "+15% YoY", careerGoals: ["Expand Market Share", "Drive Innovation", "Foster Leadership"], focusAreas: [{ id: "strategy", label: "Learning Strategy" }, { id: "roi", label: "ROI & Business Impact" }, { id: "innovation", label: "Learning Innovation" }, { id: "leadership", label: "Executive Leadership" }, { id: "transformation", label: "Digital Transformation" }, { id: "culture", label: "Learning Culture" }] }
         };
 
-        // Global state
-        let currentPersona = 'learner';
+        // #################### GLOBAL STATE ####################
+        let currentPersona = 'sales';
         let currentSection = 'dashboard';
+        
+        // #################### HTML TEMPLATE GENERATORS ####################
+        
+        const templates = {}; // Will be populated on DOMContentLoaded
 
-        /**
-         * Switches the displayed persona based on the selector's value.
-         * Updates user info, shows/hides persona-specific content.
-         */
+        // #################### CORE LOGIC ####################
+        
         function switchPersona() {
             const selector = document.getElementById('personaSwitcher');
             currentPersona = selector.value;
             const persona = personaData[currentPersona];
             
-            // Update header user information
             document.getElementById('userName').textContent = persona.name;
             document.getElementById('userRole').textContent = persona.role;
             document.getElementById('userAvatar').textContent = persona.avatar;
             document.getElementById('dashboardUserName').textContent = persona.name.split(' ')[0];
             
-            // Update profile information
-            document.getElementById('profileName').textContent = persona.name;
-            document.getElementById('profileRole').textContent = `${persona.role} • ${persona.department} • 2.1 years experience`;
-            document.getElementById('profileAvatar').textContent = persona.avatar;
-            document.getElementById('profileEmail').textContent = persona.email;
-            document.getElementById('profileManager').textContent = persona.manager;
-            document.getElementById('profileDepartment').textContent = persona.department;
-            document.getElementById('profilePerformance').textContent = persona.performance;
-            
-            // Hide all persona-specific content
-            document.querySelectorAll('.persona-content').forEach(content => {
-                content.classList.remove('active');
-            });
-            
-            // Show the relevant content for the selected persona and active section
-            const personaContentId = `${currentPersona}-${currentSection}`;
-            const personaContentElement = document.getElementById(personaContentId);
-            if (personaContentElement) {
-                personaContentElement.classList.add('active');
-            }
-            
-            // Update profile modal options based on the new persona
-            updateProfileModal(currentPersona);
-            
-            // Add visual feedback
-            document.querySelector('.header').style.transform = 'scale(0.98)';
-            setTimeout(() => {
-                document.querySelector('.header').style.transform = 'scale(1)';
-            }, 150);
+            updateSidebarVisibility(currentPersona);
+            showSection(currentSection, document.querySelector(`.nav-item[onclick*="'${currentSection}'"]`));
         }
 
-        /**
-         * Populates the Career Goals dropdown and Focus Areas checkboxes in the profile modal
-         * based on the currently active persona.
-         * @param {string} persona The ID of the currently selected persona (e.g., 'learner', 'sales').
-         */
+        function updateSidebarVisibility(persona) {
+            const visibilityMap = {
+                'ld-nav-section': ['sales', 'technician', 'manager', 'compliance', 'hr', 'trainer', 'executive'],
+                'star-rewards-nav-item': ['sales'],
+                'certifications-nav-item': ['technician'],
+                'analytics-nav-section': ['trainer', 'manager', 'compliance', 'hr', 'it', 'executive'],
+                'team-performance-nav-item': ['manager'],
+                'trainer-nav-section': ['trainer'],
+                'sso-nav-item': ['it', 'executive', 'compliance'],
+            };
+
+            for (const id in visibilityMap) {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.style.display = visibilityMap[id].includes(persona) ? (id.includes('section') ? 'block' : 'flex') : 'none';
+                }
+            }
+            
+            const currentElement = document.querySelector(`.nav-item[onclick*="'${currentSection}'"]`);
+            if (currentElement && currentElement.style.display === 'none') {
+                 showSection('dashboard', document.querySelector('[onclick*="dashboard"]'));
+            }
+        }
+
+        function showSection(sectionName, element) {
+            currentSection = sectionName;
+            
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            if (element) element.classList.add('active');
+
+            document.querySelectorAll('.content-section').forEach(section => section.classList.remove('active'));
+            
+            const sectionContainer = document.getElementById(sectionName);
+            if (!sectionContainer) return;
+
+            injectContent(sectionName, currentPersona);
+            sectionContainer.classList.add('active');
+        }
+        
+        function injectContent(sectionName, persona) {
+            const container = document.getElementById(sectionName);
+            if (!container) return;
+
+            let templateKey;
+            if (sectionName === 'dashboard') {
+                templateKey = `${persona}-dashboard`;
+            } else {
+                templateKey = `${sectionName.replace(/-/g, '_')}_section`;
+            }
+            
+            if (templates[templateKey]) {
+                if (sectionName === 'dashboard') {
+                    const dashboardContainer = document.getElementById(`${persona}-dashboard`);
+                    if(dashboardContainer) {
+                        dashboardContainer.innerHTML = templates[templateKey](personaData[persona]);
+                        document.querySelectorAll('.persona-content').forEach(pc => pc.classList.remove('active'));
+                        dashboardContainer.classList.add('active');
+                    }
+                } else {
+                    container.innerHTML = templates[templateKey](personaData[persona]);
+                }
+            } else {
+                 container.innerHTML = `<div class="content-header"><h1 class="content-title">${sectionName.replace(/-/g, ' ')}</h1></div><div class="card"><p>This section is not applicable for the ${personaData[persona].role} persona.</p></div>`;
+            }
+        }
+
+        // #################### MODAL & NOTIFICATION LOGIC ####################
+        function openProfileModal() {
+            updateProfileModal(currentPersona);
+            document.getElementById('profile-modal').classList.add('active');
+        }
+
+        function closeProfileModal() {
+            document.getElementById('profile-modal').classList.remove('active');
+        }
+        
         function updateProfileModal(persona) {
             const data = personaData[persona];
-            
-            // Update career goals dropdown
             const careerSelect = document.getElementById('career-goals-select');
-            careerSelect.innerHTML = ''; // Clear existing options
+            careerSelect.innerHTML = '';
             data.careerGoals.forEach(goal => {
                 const option = document.createElement('option');
                 option.value = goal;
@@ -2027,334 +1001,107 @@
                 careerSelect.appendChild(option);
             });
             
-            // Update focus areas checkboxes
             const focusContainer = document.getElementById('focus-areas-checkboxes');
-            focusContainer.innerHTML = ''; // Clear existing checkboxes
+            focusContainer.innerHTML = '';
             data.focusAreas.forEach(area => {
                 const div = document.createElement('div');
                 div.className = 'checkbox-item';
-                // Randomly check some checkboxes to simulate saved preferences
-                div.innerHTML = `
-                    <input type="checkbox" id="${area.id}" ${Math.random() > 0.5 ? 'checked' : ''}>
-                    <label for="${area.id}">${area.label}</label>
-                `;
+                div.innerHTML = `<input type="checkbox" id="${area.id}" ${Math.random() > 0.5 ? 'checked' : ''}><label for="${area.id}">${area.label}</label>`;
                 focusContainer.appendChild(div);
             });
         }
 
-        /**
-         * Shows the selected main content section and updates the active navigation item.
-         * @param {string} sectionName The ID of the section to show (e.g., 'dashboard', 'recommendations').
-         */
-        function showSection(sectionName) {
-            // Hide all main sections
-            document.querySelectorAll('.content-section').forEach(section => {
-                section.classList.remove('active');
-            });
-            
-            // Show the selected main section
-            document.getElementById(sectionName).classList.add('active');
-            
-            // Update active class for navigation items
-            document.querySelectorAll('.nav-item').forEach(item => {
-                item.classList.remove('active');
-            });
-            event.target.classList.add('active');
-
-            // Update current section
-            currentSection = sectionName;
-
-            // Re-apply persona-specific content visibility for the newly active section
-            document.querySelectorAll('.persona-content').forEach(content => {
-                content.classList.remove('active');
-            });
-            
-            const specificPersonaContentId = `${currentPersona}-${sectionName}`;
-            const specificPersonaContentElement = document.getElementById(specificPersonaContentId);
-            if (specificPersonaContentElement) {
-                specificPersonaContentElement.classList.add('active');
-            }
-        }
-
-        /**
-         * Opens the profile settings modal.
-         */
-        function openProfileModal() {
-            document.getElementById('profile-modal').classList.add('active');
-        }
-
-        /**
-         * Closes the profile settings modal.
-         */
-        function closeProfileModal() {
-            document.getElementById('profile-modal').classList.remove('active');
-        }
-
-        /**
-         * Simulates saving profile preferences and displays a success message.
-         */
         function saveProfile() {
-            // In a real application, this would send data to a backend.
-            console.log('Profile preferences saved!');
             closeProfileModal();
-            
-            // Display a temporary success message
             showNotification('✅ Profile preferences updated successfully!', 'success');
         }
 
-        // Notification system
         function showNotification(message, type = 'info') {
             const notification = document.createElement('div');
             notification.style.cssText = `
-                position: fixed;
-                top: 100px;
-                right: 20px;
-                background: ${type === 'success' ? '#10b981' : type === 'warning' ? '#f59e0b' : type === 'error' ? '#ef4444' : '#3b82f6'};
-                color: white;
-                padding: 12px 20px;
-                border-radius: 8px;
-                font-weight: 500;
-                z-index: 10000;
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-                transform: translateX(100%);
-                transition: transform 0.3s ease-out;
-            `;
+                position: fixed; top: 80px; right: 20px;
+                background: ${type === 'success' ? '#10b981' : '#3b82f6'};
+                color: white; padding: 12px 20px; border-radius: 8px; font-weight: 500;
+                z-index: 10000; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+                transform: translateX(120%); transition: transform 0.4s ease-out;`;
             notification.textContent = message;
-            
             document.body.appendChild(notification);
-            
-            // Animate in
+            setTimeout(() => { notification.style.transform = 'translateX(0)'; }, 10);
             setTimeout(() => {
-                notification.style.transform = 'translateX(0)';
-            }, 100);
-            
-            // Remove after delay
-            setTimeout(() => {
-                notification.style.transform = 'translateX(100%)';
-                setTimeout(() => {
-                    if (document.body.contains(notification)) {
-                        document.body.removeChild(notification);
-                    }
-                }, 300);
+                notification.style.transform = 'translateX(120%)';
+                setTimeout(() => { if (document.body.contains(notification)) document.body.removeChild(notification); }, 400);
             }, 3000);
         }
-
-        // Initialize on page load
-        document.addEventListener('DOMContentLoaded', function() {
-            // Set initial persona (default to 'learner')
-            document.getElementById('personaSwitcher').value = 'learner';
-            switchPersona(); // Call once to set initial state
-
-            // Simulate real-time updates for progress bars
-            setInterval(() => {
-                const progressBars = document.querySelectorAll('.progress-fill');
-                progressBars.forEach(bar => {
-                    const currentWidth = parseInt(bar.style.width);
-                    // Randomly increase progress for bars that are not yet 100%
-                    if (Math.random() > 0.7 && currentWidth < 100) {
-                        bar.style.width = (currentWidth + 1) + '%';
-                    }
-                });
-            }, 5000); // Update every 5 seconds
-
-            // Add click event listeners to recommendation items
-            document.body.addEventListener('click', function(event) {
-                const recommendationItem = event.target.closest('.recommendation-item');
-                if (recommendationItem) {
-                    // Prevent default link behavior if it were a real link
-                    event.preventDefault(); 
-                    // Show notification instead of alert
-                    showNotification('Opening course: ' + recommendationItem.querySelector('.recommendation-title').textContent, 'info');
-                }
-            });
-
-            // Add hover effects to cards
-            document.querySelectorAll('.card').forEach(card => {
-                card.addEventListener('mouseenter', function() {
-                    this.style.transform = 'translateY(-4px)';
-                });
-                
-                card.addEventListener('mouseleave', function() {
-                    this.style.transform = 'translateY(0)';
-                });
-            });
-
-            // Animate progress bars on load
-            setTimeout(() => {
-                document.querySelectorAll('.progress-fill').forEach(bar => {
-                    const width = bar.style.width;
-                    bar.style.width = '0%';
-                    setTimeout(() => {
-                        bar.style.width = width;
-                    }, 100);
-                });
-            }, 500);
-
-            // Add pulse animation to metrics periodically
-            setInterval(() => {
-                document.querySelectorAll('.metric-value').forEach(metric => {
-                    metric.classList.add('pulse');
-                    setTimeout(() => {
-                        metric.classList.remove('pulse');
-                    }, 1000);
-                });
-            }, 10000);
-        });
-
-        // View learner profile from SSO management
-        function viewLearnerProfile(userKey) {
-            // Mock data for different users
-            const profiles = {
-                'sarah': {
-                    name: 'Sarah Chen',
-                    email: 'sarah.chen@company.com',
-                    department: 'Sales',
-                    region: 'APAC',
-                    role: 'Senior Sales Representative',
-                    team: 'Enterprise Sales - Asia'
+        
+        // #################### INITIALIZATION ####################
+        document.addEventListener('DOMContentLoaded', () => {
+            const ldContent = {
+                recommendations: {
+                    technician: [ { title: 'AI-Powered Vehicle Diagnostics', overview: 'Learn how AI tools assist in identifying common and complex vehicle issues.', relevance: 'Stay ahead of diagnostic trends and improve accuracy in servicing Hyundai vehicles.' }, { title: 'Telematics Data Interpretation', overview: 'Understand how real-time vehicle data is used to detect potential service needs.', relevance: 'Helps you service vehicles before problems escalate.' }, { title: 'Smart Inventory Suggestions', overview: 'Use AI to determine optimal parts stocking for repair efficiency.', relevance: 'Avoid delays and improve first-time fix rates.' }, { title: 'Predictive Maintenance Planning', overview: 'Anticipate and schedule maintenance using machine learning models.', relevance: 'Provides proactive service to your customers.' }, { title: 'Visual Recognition for Damage Assessment', overview: 'Utilize image AI tools to identify external vehicle damage quickly.', relevance: 'Speed up the damage inspection process.' }, { title: 'Voice-Controlled Repair Guidance', overview: 'Hands-free AI support during complex repairs.', relevance: 'Work efficiently without needing to refer back to manuals.' }, { title: 'Service Time Estimation Models', overview: 'Learn how AI predicts labor time based on vehicle type and task.', relevance: 'Helps manage service appointments and load effectively.' }, { title: 'AI Alert Systems for Recalls', overview: 'Automatically flag vehicles affected by recent recalls.', relevance: 'Ensure critical safety updates are handled promptly.' }, { title: 'Machine Learning for Fault Detection', overview: 'Detect hidden vehicle faults through pattern recognition.', relevance: 'Reduces chances of customer return visits.' }, { title: 'AI Chat Integration in Service Bays', overview: 'Use AI chatbots for live service support.', relevance: 'Boosts your productivity during peak service hours.' } ],
+                    manager: [ { title: 'AI-Driven Workforce Optimization', overview: 'Use AI to match staff availability with dealership traffic patterns.', relevance: 'Ensure efficient scheduling and high service quality.' }, { title: 'Forecasting Service Volume with AI', overview: 'Predict peak service times using historical and real-time data.', relevance: 'Allows you to plan resources ahead.' }, { title: 'Dealer Network Performance Analytics', overview: 'Use AI to compare and enhance dealership performance.', relevance: 'Make data-driven decisions for operational improvement.' }, { title: 'GenAI for Staff Coaching', overview: 'Use AI-generated insights to guide employee development.', relevance: 'Elevate team capabilities and morale.' }, { title: 'Smart Inventory & Procurement Planning', overview: 'AI to plan inventory purchases based on trends.', relevance: 'Avoid overstocking and stockouts.' }, { title: 'AI for CSI (Customer Satisfaction Index) Monitoring', overview: 'Track and improve CSI scores using predictive AI.', relevance: 'Strengthen customer loyalty.' }, { title: 'Sentiment Analysis of Customer Feedback', overview: 'Extract insights from reviews and surveys using AI.', relevance: 'Better understand service issues and praise.' }, { title: 'AI-Powered Compliance Oversight', overview: 'Monitor regulatory compliance through automation.', relevance: 'Protects the dealership from legal risks.' }, { title: 'AI-Generated Team Performance Reports', overview: 'Auto-generate insights from KPIs and HRIS data.', relevance: 'Makes performance reviews easier and more objective.' }, { title: 'Predictive Service Campaign Planning', overview: 'Plan marketing around forecasted service needs.', relevance: 'Increases traffic and revenue.' } ],
+                    sales: [ { title: 'AI-Personalized Sales Pitches', overview: 'Create tailored sales pitches based on customer data.', relevance: 'Increases close rates with minimal effort.' }, { title: 'Smart Lead Scoring', overview: 'Automatically prioritize leads most likely to convert.', relevance: 'Save time and focus on high-value prospects.' }, { title: 'Chatbot-Led Customer Interaction', overview: 'Use AI chat to handle queries while you\'re selling.', relevance: 'Never miss a touchpoint, even when busy.' }, { title: 'AI for Cross-Selling Recommendations', overview: 'Smart suggestions for add-ons based on customer history.', relevance: 'Boosts average deal size.' }, { title: 'Real-Time Sentiment Reading', overview: 'Gauge emotional cues during sales interactions.', relevance: 'Helps you respond more effectively.' }, { title: 'Behavior-Driven Email Automation', overview: 'Let AI send follow-up messages based on customer actions.', relevance: 'Increases engagement.' }, { title: 'Voice Recognition for CRM Notes', overview: 'Dictate and save notes directly into Hyundai CRM.', relevance: 'Saves time, improves data accuracy.' }, { title: 'AI-Powered Competitor Analysis', overview: 'Stay updated on offers from other OEMs.', relevance: 'Give customers reasons to choose Hyundai.' }, { title: 'Personalized Deal Bundling', overview: 'Use AI to generate optimal bundles per client need.', relevance: 'Delivers more value and conversion.' }, { title: 'Demand Prediction for High-Selling Models', overview: 'Forecast trends and adjust pitch focus.', relevance: 'Stay aligned with customer demand.' } ],
+                    trainer: [ { title: 'Creating AI-Augmented Curriculum', overview: 'Design training that evolves with learner data.', relevance: 'Keeps Hyundai learning relevant and engaging.' }, { title: 'GenAI for Learner Analytics', overview: 'Use AI to assess training impact in real time.', relevance: 'Improve your delivery and outcomes.' }, { title: 'Smart Content Curation', overview: 'Let AI find and recommend the most effective resources.', relevance: 'Saves you time on manual search.' }, { title: 'Adaptive Quiz Design', overview: 'AI-created assessments that adjust to learner performance.', relevance: 'Boosts retention and satisfaction.' }, { title: 'AI for Virtual Training Co-Facilitation', overview: 'Partner with bots during live sessions.', relevance: 'Support hybrid and asynchronous learning.' }, { title: 'Training Personalization Engines', overview: 'Build customized training paths based on employee data.', relevance: 'Addresses individual needs effectively.' }, { title: 'Content Gaps Auto Detection', overview: 'AI flags underdeveloped training areas.', relevance: 'Strengthens curriculum coverage.' }, { title: 'Speech Analysis for Trainer Feedback', overview: 'Gain insights from session recordings.', relevance: 'Improve clarity, tone, and engagement.' }, { title: 'Real-Time Sentiment Tracking in Learners', overview: 'Understand trainee engagement via AI tools.', relevance: 'Keeps sessions energetic and focused.' }, { title: 'Course Performance Forecasting', overview: 'AI predicts which courses will succeed or fail.', relevance: 'Prioritize high-impact initiatives.' } ],
+                    compliance: [ { title: 'Automated Compliance Violation Detection', overview: 'Use AI to spot policy breaches in real time.', relevance: 'Protects Hyundai from reputational risk.' }, { title: 'AI for Policy Gap Analysis', overview: 'Identify missing or outdated procedures using AI.', relevance: 'Keeps your documentation audit-ready.' }, { title: 'GDPR/CCPA Alert Systems', overview: 'Real-time alerts for data privacy violations.', relevance: 'Supports global compliance.' }, { title: 'AI Audit Trail Generators', overview: 'Automatically log compliance-related actions.', relevance: 'Simplifies reporting to regulators.' }, { title: 'Sanctions and Trade Screening AI', overview: 'Check interactions against global watchlists.', relevance: 'Avoids regulatory penalties.' }, { title: 'Policy Enforcement Insights', overview: 'Know where policies are misunderstood or ignored.', relevance: 'Drive targeted training.' }, { title: 'Automated Compliance Reporting', overview: 'Generate reports from operational data.', relevance: 'Reduces manual workload.' }, { title: 'Ethics Trend Monitoring', overview: 'Detect emerging risk behaviors across teams.', relevance: 'Proactive risk prevention.' }, { title: 'Contract Clause Review with AI', overview: 'Use NLP to flag risky language in vendor contracts.', relevance: 'Adds another layer of diligence.' }, { title: 'Whistleblower Pattern Analysis', overview: 'Spot recurring concerns across reports.', relevance: 'Facilitates cultural transparency.' } ],
+                    executive: [ { title: 'Strategic AI for OEM Leadership', overview: 'Explore how AI drives modern auto strategy.', relevance: 'Stay ahead in a competitive global market.' }, { title: 'GenAI for Hyundai Decision-Making', overview: 'Leverage AI in board-level choices.', relevance: 'Ensures data-informed leadership.' }, { title: 'Market Intelligence Aggregators', overview: 'Use AI to monitor macro trends and competitors.', relevance: 'Enables long-range planning.' }, { title: 'Hyundai Dealer Network Optimization', overview: 'AI models to refine global dealer locations.', relevance: 'Improves coverage and efficiency.' }, { title: 'AI for Profitability Forecasting', overview: 'Predicts margins by region, model, and time.', relevance: 'Supports P&L ownership.' }, { title: 'Voice-of-Customer Trend AI', overview: 'Automatically summarize customer sentiment globally.', relevance: 'Keep leadership in touch with the ground.' }, { title: 'AI-Supported Risk Dashboards', overview: 'Single-view of legal, market, and ops risks.', relevance: 'Fosters better governance.' }, { title: 'AI in Sustainability Strategy', overview: 'Model environmental impacts of business changes.', relevance: 'Supports ESG leadership.' }, { title: 'Innovation Pipeline via AI', overview: 'Forecast future demand for tech initiatives.', relevance: 'Strengthens competitive edge.' }, { title: 'Boardroom Simulations with AI', overview: 'Practice responding to crises and opportunities using AI models.', relevance: 'Supports executive preparedness.' } ]
                 },
-                'mike': {
-                    name: 'Mike Rodriguez', 
-                    email: 'mike.rodriguez@company.com',
-                    department: 'Field Service',
-                    region: 'Americas',
-                    role: 'Field Service Technician',
-                    team: 'Technical Support - West'
+                learningPath: {
+                    technician: { title: 'Technician Certification Path', levels: { 'Level 1: Foundations': [{title: 'Introduction to Hyundai Vehicle Systems', overview: 'Familiarize yourself with core systems used in Hyundai models.'}, {title: 'Hyundai Maintenance Protocols', overview: 'Standard procedures for scheduled servicing.'}, {title: 'EV System Diagnostics', overview: 'Work with electric and hybrid vehicle platforms.'}], 'Level 2: Specialization': [{title: 'Electrical Troubleshooting', overview: 'Diagnose wiring and component faults.'}, {title: 'Brake & Suspension Systems', overview: 'Understand component function and repair.'}, {title: 'Powertrain Technologies', overview: 'Learn about engine and transmission systems.'}], 'Level 3: Advanced Skills': [{title: 'Tool and Equipment Calibration', overview: 'Proper usage and maintenance of tools.'}, {title: 'Hyundai Technical Certification Prep', overview: 'Prepare for official technician certifications.'}, {title: 'Customer-Facing Communication', overview: 'Improve your interactions with customers.'}, {title: 'Workplace Safety Essentials', overview: 'Best practices for safe service bays.'}]}},
+                    manager: { title: 'Leadership Development Path', levels: { 'Path': [{title: 'Leadership Fundamentals for Dealerships', overview: 'Core skills for team management.'}, {title: 'Managing Performance Reviews', overview: 'How to conduct impactful evaluations.'}, {title: 'Hyundai Retail Operations', overview: 'Learn the ins and outs of dealership workflows.'}, {title: 'Budget Planning and Forecasting', overview: 'Handle cost centers and revenue goals.'}, {title: 'Conflict Resolution Techniques', overview: 'De-escalate and manage disputes.'}, {title: 'CRM and Data Use in Management', overview: 'Utilize customer data effectively.'}, {title: 'Regulatory Awareness for Managers', overview: 'Stay updated on laws affecting teams.'}, {title: 'Leadership Communications', overview: 'Develop concise and motivating messages.'}, {title: 'Cross-Functional Collaboration', overview: 'Work smoothly across departments.'}, {title: 'Succession Planning', overview: 'Prepare for team transitions.'}]}},
+                    sales: { title: 'Sales Mastery Path', levels: { 'Path': [{title: 'Product Knowledge (by Model Line)', overview: 'Learn about Hyundai\'s vehicle lineup.'}, {title: 'Sales Process from Prospect to Close', overview: 'Master the steps of a successful sale.'}, {title: 'CRM Tools Training', overview: 'Efficiently manage customer relationships.'}, {title: 'Handling Customer Objections', overview: 'Turn objections into opportunities.'}, {title: 'Negotiation Tactics', overview: 'Learn to create win-win deals.'}, {title: 'Digital Retailing Skills', overview: 'Engage with customers online.'}, {title: 'Cross-Selling and Upselling', overview: 'Increase the value of each sale.'}]}},
+                    trainer: { title: 'Instructional Expertise Path', levels: { 'Path': [{title: 'Training Needs Assessment', overview: 'Identify learning gaps in the organization.'}, {title: 'Designing Learner-Centric Content', overview: 'Create engaging and memorable materials.'}, {title: 'Live Session Facilitation', overview: 'Master the art of leading a training session.'}, {title: 'Feedback and Assessment Models', overview: 'Measure the impact of your training.'}, {title: 'Using Authoring Tools (Articulate, Rise)', overview: 'Develop professional e-learning modules.'}, {title: 'Evaluating Training Impact', overview: 'Connect learning outcomes to business results.'}]}},
+                    compliance: { title: 'Compliance Operations Path', levels: { 'Path': [{title: 'Overview of Dealership Compliance', overview: 'Understand the key regulatory areas.'}, {title: 'Legal Frameworks (GDPR, CCPA, OSHA)', overview: 'Deep dive into major regulations.'}, {title: 'Incident Handling Procedures', overview: 'Learn the correct steps for responding to incidents.'}, {title: 'Internal Audit & Investigations', overview: 'Conduct fair and effective internal reviews.'}, {title: 'Policy Documentation Best Practices', overview: 'Write clear and enforceable policies.'}]}},
+                    executive: { title: 'Strategic Leadership Path', levels: { 'Path': [{title: 'Business Model Innovation', overview: 'Explore new revenue streams and strategies.'}, {title: 'M&A Risk Management in Dealership Networks', overview: 'Evaluate risks in expansion.'}, {title: 'Market Expansion and OEM Strategy', overview: 'Align with Hyundai\'s global vision.'}, {title: 'Data-Driven Decision-Making', overview: 'Use analytics to guide strategy.'}, {title: 'ESG & Sustainability in Automotive', overview: 'Lead on environmental and social governance.'}]}},
                 },
-                'emily': {
-                    name: 'Emily Johnson',
-                    email: 'emily.johnson@company.com', 
-                    department: 'Technical',
-                    region: 'EMEA',
-                    role: 'Senior Technical Specialist',
-                    team: 'Product Engineering - Europe'
-                },
-                'david': {
-                    name: 'David Park',
-                    email: 'david.park@company.com',
-                    department: 'Training',
-                    region: 'APAC', 
-                    role: 'Learning & Development Manager',
-                    team: 'Corporate Training - Asia'
-                },
-                'maria': {
-                    name: 'Maria Silva',
-                    email: 'maria.silva@company.com',
-                    department: 'Customer Success',
-                    region: 'Americas',
-                    role: 'Customer Success Manager',
-                    team: 'Client Relations - South'
+                compliance: {
+                    technician: [ { title: 'Workshop Hazard Awareness', overview: 'Learn to identify and mitigate workplace hazards.', relevance: 'Promotes a safe working environment.' }, { title: 'Hyundai EV Safety Guidelines', overview: 'Handle high-voltage systems safely.', relevance: 'Essential for EV servicing.' }, { title: 'Personal Protective Equipment Training', overview: 'Correct PPE usage in service environments.', relevance: 'Reduces injury risks.' }, { title: 'Fire Safety and Emergency Protocols', overview: 'What to do during workplace emergencies.', relevance: 'Supports business continuity.' }, { title: 'Environmental Waste Management', overview: 'Proper disposal of oils, batteries, and parts.', relevance: 'Ensures eco-compliance.' } ],
+                    sales: [ { title: 'Customer Data Privacy (GDPR/CCPA)', overview: 'Protect sensitive customer information.', relevance: 'Avoids significant legal penalties.' }, { title: 'Ethical Sales Practices', overview: 'Adhere to Hyundai\'s code of conduct.', relevance: 'Builds customer trust and brand loyalty.' }, { title: 'Finance & Insurance (F&I) Compliance', overview: 'Understand the legal requirements of financing.', relevance: 'Prevents fraud and legal action.' }, { title: 'Vehicle Disclosure Laws', overview: 'Know what information must be disclosed to buyers.', relevance: 'Ensures transparency and legal compliance.' }, { title: 'Fair Lending Practices', overview: 'Avoid discriminatory lending practices.', relevance: 'Upholds legal and ethical standards.' } ],
+                    manager: [ { title: 'Workplace Anti-Harassment Training', overview: 'Understand legal and ethical expectations.', relevance: 'Creates a safer culture.' }, { title: 'Fair Labor Standards Overview', overview: 'Avoid violations in pay, hours, and classification.', relevance: 'Mitigates HR risks.' }, { title: 'Service Quality Audits', overview: 'Review team compliance with Hyundai service standards.', relevance: 'Supports brand consistency.' }, { title: 'Privacy Law Compliance', overview: 'Protect customer and employee data.', relevance: 'Reduces legal exposure.' }, { title: 'Incident Investigation Basics', overview: 'Handle workplace complaints thoroughly.', relevance: 'Ensures procedural fairness.' } ],
+                    trainer: [ { title: 'Instructor Code of Conduct', overview: 'Maintain professionalism and ethics.', relevance: 'Sets a standard for all training.' }, { title: 'Copyright in Training Content', overview: 'Avoid legal issues with training materials.', relevance: 'Protects the company from litigation.' }, { title: 'Inclusive Learning & Accessibility', overview: 'Ensure training is accessible to all employees.', relevance: 'Promotes a fair and equitable workplace.' }, { title: 'Training Records Compliance', overview: 'Maintain accurate and secure training records.', relevance: 'Essential for audits and legal defense.' }, { title: 'Diversity & Cultural Sensitivity', overview: 'Foster an inclusive learning environment.', relevance: 'Improves employee engagement and respect.' } ],
+                    compliance: [ { title: 'Compliance Program Management', overview: 'Learn to build and manage an effective program.', relevance: 'The core function of the compliance role.' }, { title: 'Whistleblower Protection', overview: 'Understand the laws and procedures for protecting reporters.', relevance: 'Encourages ethical behavior and transparency.' }, { title: 'Anti-Corruption & Bribery', overview: 'Adhere to FCPA and other global standards.', relevance: 'Prevents severe legal and financial penalties.' }, { title: 'Legal Investigation Techniques', overview: 'Conduct legally sound internal investigations.', relevance: 'Ensures findings are defensible.' }, { title: 'Compliance Reporting Tools', overview: 'Master the software used for tracking and reporting.', relevance: 'Improves efficiency and accuracy.' } ],
+                    executive: [ { title: 'Corporate Governance & Ethics', overview: 'Understand the board\'s role in oversight.', relevance: 'Ensures the company is managed responsibly.' }, { title: 'Executive Accountability (SOX, FCPA)', overview: 'Know the legal responsibilities of leadership.', relevance: 'Mitigates personal and corporate liability.' }, { title: 'Insider Trading Awareness', overview: 'Prevent the illegal use of company information.', relevance: 'A critical component of securities law compliance.' }, { title: 'Strategic Legal Risk Management', overview: 'Integrate legal risk into strategic planning.', relevance: 'Protects the company from future threats.' }, { title: 'ESG Compliance in Auto Industry', overview: 'Meet evolving environmental and social standards.', relevance: 'Crucial for investors and regulators.' } ]
                 }
             };
-            
-            const profile = profiles[userKey];
-            if (profile) {
-                // Switch to user profile section
-                showSection('user-profile');
+
+            Object.assign(templates, {
+                card: (icon, title, value, label, change, colorClass) => `<div class="card"><div class="card-header"><div class="card-icon" style="background: ${colorClass.bg}; color: ${colorClass.text};">${icon}</div><div class="card-title">${title}</div></div><div class="metric-value" style="color: ${colorClass.text};">${value}</div>${label ? `<div class="metric-label">${label}</div>` : ''}${change ? `<div class="metric-change ${change.type}">${change.text}</div>` : ''}</div>`,
+                aiInsights: (title, insights) => `<div class="ai-insights"><h3>🤖 ${title}</h3>${insights.map(insight => `<div class="insight-item">${insight}</div>`).join('')}</div>`,
                 
-                // Update profile information
-                document.getElementById('profileName').textContent = profile.name;
-                document.getElementById('profileRole').textContent = `${profile.role} • ${profile.department} • 2.1 years experience`;
-                document.getElementById('profileAvatar').textContent = profile.name.split(' ').map(n => n[0]).join('');
-                document.getElementById('profileEmail').textContent = profile.email;
-                document.getElementById('profileManager').textContent = 'Sarah Martinez';
-                document.getElementById('profileDepartment').textContent = profile.department;
+                // --- DASHBOARDS ---
+                'sales-dashboard': () => `<div class="dashboard-grid">${templates.card('💰', 'Sales Performance', '124%', 'Quota Achievement', {type: 'positive', text: '🎯 Above target!'}, {bg: '#dcfce7', text: '#166534'})} ${templates.card('📚', 'Product Knowledge', '89%', 'Certification Level', null, {bg: '#fef3c7', text: '#d97706'})} ${templates.card('🎮', 'Leaderboard', '#3', 'Team Ranking', {type: 'positive', text: '🔥 Moving up!'}, {bg: '#dbeafe', text: '#1e40af'})} ${templates.card('⭐', 'STAR Points', '1,285', 'This Month', {type: 'positive', text: '+$1,425 payout'}, {bg: '#fef9c3', text: '#ca8a04'})}</div> ${templates.aiInsights('Sales AI Coach', ['<strong>Win Rate Correlation:</strong> Your closing rate improves 28% after objection handling refreshers.', '<strong>CRM Usage:</strong> Your pipeline accuracy increased 15% this month.', '<strong>Product Alert:</strong> New model launching next week.'])}`,
+                'manager-dashboard': () => `<div class="dashboard-grid">${templates.card('👨‍👩‍👧‍👦', 'Team Engagement', '88%', 'Active this week', {type: 'positive', text: '+5% vs last week'}, {bg: '#dbeafe', text: '#1e40af'})} ${templates.card('📈', 'Team Training Gaps', '4', 'Critical Gaps Identified', null, {bg: '#fef3c7', text: '#d97706'})} ${templates.card('🛡️', 'Team Compliance', '92%', 'Required Training Complete', {type: 'negative', text: '2 Overdue'}, {bg: '#fee2e2', text: '#b91c1c'})} ${templates.card('🎯', 'Team Progress', '65%', 'Toward Quarterly Goals', null, {bg: '#dcfce7', text: '#166534'})}</div> ${templates.aiInsights('AI Coaching Assistant', ['<strong>Coaching Alert:</strong> A team member is falling behind on the Sales Mastery path.', '<strong>Positive Trend:</strong> Your team\'s average quiz scores have increased by 8%.', '<strong>Succession Insight:</strong> Jordan Martinez shows strong leadership potential.'])}`,
+                'executive-dashboard': () => `<div class="dashboard-grid">${templates.card('🏢', 'Org. Engagement', '82%', 'Company-Wide', {type: 'positive', text: '+2% this month'}, {bg: '#dbeafe', text: '#1e40af'})} ${templates.card('💰', 'Learning ROI', '$1.2M', 'Estimated Impact YTD', null, {bg: '#dcfce7', text: '#166534'})} ${templates.card('⚡', 'AI Efficiency Gain', '18%', 'Time-to-Proficiency', null, {bg: '#f3e8ff', text: '#7e22ce'})} ${templates.card('🌍', 'Top Region', 'APAC', 'Learning Metrics', null, {bg: '#fef3c7', text: '#d97706'})}</div> ${templates.aiInsights('AI Strategic Advisor', ['<strong>Strategic Insight:</strong> Sales new hires who finish onboarding in 30 days have a 35% faster time-to-quota.', '<strong>Risk Alert:</strong> Field Service has a 15% lower safety compliance rate.', '<strong>Investment Opportunity:</strong> AI content tools reduced course dev time by 40%.'])}`,
+                'technician-dashboard': () => `<div class="dashboard-grid">${templates.card('🔧', 'Service Efficiency', '94%', 'First-Time Fix Rate', {type: 'positive', text: '+3% this month'}, {bg: '#dcfce7', text: '#166534'})} ${templates.card('🛡️', 'Safety Score', '100%', 'No incidents reported', null, {bg: '#dbeafe', text: '#1e40af'})} ${templates.card('📜', 'Certifications', '3', 'Active Certs', {type: 'warning', text: '1 expires in 60 days'}, {bg: '#fef3c7', text: '#d97706'})} ${templates.card('⭐', 'Knowledge Base', 'Top 5%', 'Contributor', null, {bg: '#f3e5f5', text: '#9c27b0'})}</div> ${templates.aiInsights('AI Field Assistant', ['<strong>New Resource:</strong> Video for "Model X-400 Repair" is now available.', '<strong>Safety Alert:</strong> "Hazardous Materials Handling" cert is expiring soon.', '<strong>Efficiency Tip:</strong> Diagnostic tool users complete jobs 20% faster.'])}`,
+                'trainer-dashboard': () => `<div class="dashboard-grid">${templates.card('📚', 'Active Courses', '42', 'In Content Library', null, {bg: '#dbeafe', text: '#1e40af'})} ${templates.card('⭐', 'Avg. Learner Rating', '4.6/5', 'Across all courses', {type: 'positive', text: '+0.1 this quarter'}, {bg: '#dcfce7', text: '#166534'})} ${templates.card('⏱️', 'Avg. Time to Create', '12h', 'Per Course', {type: 'positive', text: '-2h with AI Tools'}, {bg: '#f3e8ff', text: '#7e22ce'})} ${templates.card('🤔', 'Most Requested Topic', 'AI in Sales', 'From learner feedback', null, {bg: '#fef3c7', text: '#d97706'})}</div> ${templates.aiInsights('AI Content Assistant', ['<strong>Content Gap:</strong> Lack of intermediate "Project Management" content.', '<strong>Popular Format:</strong> Interactive simulations have the highest engagement.', '<strong>AI Suggestion:</strong> Create a micro-learning on "Advanced Negotiation Tactics".'])}`,
+                'compliance-dashboard': () => `<div class="dashboard-grid">${templates.card('🛡️', 'Org. Compliance', '98%', 'Completion Rate', {type: 'positive', text: '+1% this month'}, {bg: '#dcfce7', text: '#166534'})} ${templates.card('🚨', 'High-Risk Gaps', '12', 'Overdue Trainings', {type: 'negative', text: 'Action Required'}, {bg: '#fee2e2', text: '#b91c1c'})} ${templates.card('✍️', 'Audit Trail', 'Ready', 'Last Audit: June 1st', null, {bg: '#dbeafe', text: '#1e40af'})} ${templates.card('🔄', 'Policy Updates', '3', 'Pending Acknowledgement', null, {bg: '#fef3c7', text: '#d97706'})}</div> ${templates.aiInsights('AI Compliance Monitor', ['<strong>Risk Detected:</strong> The new "Data Privacy Act" training has a low adoption rate in the Sales department.', '<strong>Audit Prep:</strong> Automatically flagged 5 courses with outdated regulatory information for review.', '<strong>Efficiency:</strong> AI-generated reports show a 30% reduction in time spent on manual compliance tracking.'])}`,
+                'hr-dashboard': () => `<div class="dashboard-grid">${templates.card('🚀', 'Onboarding', '95%', 'Completion Rate (90 days)', {type: 'positive', text: 'All new hires on track'}, {bg: '#dcfce7', text: '#166534'})} ${templates.card('🌱', 'Talent Mobility', '18%', 'Internal Promotions', null, {bg: '#dbeafe', text: '#1e40af'})} ${templates.card(' Gallup Q12', 'Employee Engagement', '4.2/5', 'Linked to Learning', {type: 'positive', text: '+0.3 vs last year'}, {bg: '#f3e8ff', text: '#7e22ce'})} ${templates.card('👋', 'Attrition Risk', 'Low', 'Among engaged learners', null, {bg: '#fef3c7', text: '#d97706'})}</div> ${templates.aiInsights('AI Talent Advisor', ['<strong>Career Pathing:</strong> AI has identified 15 high-potential employees in Operations ready for leadership training.', '<strong>Onboarding Impact:</strong> New hires who complete onboarding 1 week early are 25% more likely to stay past 1 year.', '<strong>Skill Gap Alert:</strong> Analysis of performance reviews indicates a company-wide need for "Project Management" skills.'])}`,
+                'it-dashboard': () => `<div class="dashboard-grid">${templates.card('🌐', 'System Uptime', '99.99%', 'Last 30 days', null, {bg: '#dcfce7', text: '#166534'})} ${templates.card('🔗', 'API Integrations', '12/12', 'All Systems Synced', null, {bg: '#dbeafe', text: '#1e40af'})} ${templates.card('👤', 'Active Users', '47,832', 'Today', {type: 'positive', text: '+1,247 this month'}, {bg: '#f3e8ff', text: '#7e22ce'})} ${templates.card('🔐', 'Security', 'A+', '0 Incidents', null, {bg: '#e0f2fe', text: '#0369a1'})}</div> ${templates.aiInsights('AI Systems Monitor', ['<strong>Performance Alert:</strong> Report generation API is experiencing high latency during peak hours (9-11 AM).', '<strong>Sync Status:</strong> The HRIS data sync completed successfully with 5 new user profiles created.', '<strong>Security Tip:</strong> Enable multi-factor authentication for all Admin-level personas to enhance security.'])}`,
                 
-                showNotification(`Viewing profile for ${profile.name}`, 'info');
-            }
-        }
-
-        // Save SSO profile changes
-        function saveSSProfile() {
-            showNotification('✅ SSO profile preferences updated successfully!', 'success');
-            
-            // Simulate profile sync across systems
-            setTimeout(() => {
-                showNotification('🔄 Syncing profile across connected systems...', 'info');
-            }, 1000);
-            
-            setTimeout(() => {
-                showNotification('✅ Profile synchronized across all learning platforms!', 'success');
-            }, 3000);
-        }
-
-        // Enhanced keyboard navigation
-        document.addEventListener('keydown', function(e) {
-            if (e.ctrlKey || e.metaKey) {
-                switch(e.key) {
-                    case '1':
-                        e.preventDefault();
-                        showSection('dashboard');
-                        break;
-                    case '2':
-                        e.preventDefault();
-                        showSection('recommendations');
-                        break;
-                    case '3':
-                        e.preventDefault();
-                        showSection('learning-path');
-                        break;
-                    case '4':
-                        e.preventDefault();
-                        showSection('analytics');
-                        break;
-                    case '5':
-                        e.preventDefault();
-                        showSection('user-profile');
-                        break;
-                    case '6':
-                        e.preventDefault();
-                        showSection('sso-management');
-                        break;
-                }
-            }
-        });
-
-        // Close modal when clicking outside
-        document.addEventListener('click', function(event) {
-            const modal = document.getElementById('profile-modal');
-            if (event.target === modal) {
-                closeProfileModal();
-            }
-        });
-
-        // Close modal with escape key
-        document.addEventListener('keydown', function(event) {
-            if (event.key === 'Escape') {
-                closeProfileModal();
-            }
-        });
-
-        // Add additional persona dashboards and content sections
-        // This would include all the other sections from the original file
-        // such as training-gaps, star-rewards, top-performers, reports, sso-management, etc.
-        
-        // Simulate data updates
-        function simulateDataUpdates() {
-            const updateElements = [
-                { id: 'learningProgress', values: ['76%', '78%', '80%', '82%'] },
-                { id: 'skillsGaps', values: ['3', '2', '1', '2'] },
-                { id: 'badgesEarned', values: ['4', '5', '6', '5'] },
-                { id: 'mobileUsage', values: ['63%', '65%', '67%', '65%'] }
-            ];
-
-            updateElements.forEach(element => {
-                const el = document.getElementById(element.id);
-                if (el) {
-                    const randomValue = element.values[Math.floor(Math.random() * element.values.length)];
-                    if (el.textContent !== randomValue) {
-                        el.style.transform = 'scale(1.1)';
-                        el.textContent = randomValue;
-                        setTimeout(() => {
-                            el.style.transform = 'scale(1)';
-                        }, 200);
-                    }
-                }
+                // --- SECTIONS ---
+                'user_profile_section': (persona) => `<div class="content-header"><h1 class="content-title">👤 User Profile & Personalization</h1><p class="content-subtitle">Customize experience • Track achievements • Manage preferences</p></div><div class="dashboard-grid"><div class="card" style="grid-column: 1 / -1;"><div style="display: flex; flex-wrap: wrap; gap: 2rem; align-items: start;"><div style="width: 120px; height: 120px; border-radius: 16px; background: linear-gradient(135deg, #667eea, #764ba2); display: flex; align-items: center; justify-content: center; color: white; font-size: 3rem; font-weight: bold; flex-shrink:0;">${persona.avatar}</div><div style="flex: 1; min-width: 300px;"><h2 style="font-size: 2rem; font-weight: bold; color: #1e293b; margin-bottom: 0.5rem;">${persona.name}</h2><p style="color: #64748b; font-size: 1.1rem; margin-bottom: 1rem;">${persona.role} • ${persona.department}</p><div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;"><div><div style="font-size: 0.85rem; color: #64748b; margin-bottom: 2px;">Email</div><div style="font-weight: 600;">${persona.email}</div></div><div><div style="font-size: 0.85rem; color: #64748b; margin-bottom: 2px;">Manager</div><div style="font-weight: 600;">${persona.manager}</div></div><div><div style="font-size: 0.85rem; color: #64748b; margin-bottom: 2px;">Performance</div><div style="font-weight: 600; color: #059669;">${persona.performance}</div></div></div><div style="display: flex; gap: 1rem; flex-wrap:wrap;"><button class="btn btn-primary" onclick="openProfileModal()">✏️ Edit Profile Settings</button></div></div></div></div></div><div class="dashboard-grid"><div class="card"><div class="card-header"><div class="card-icon" style="background: #dcfce7; color: #166534;">🎓</div><div class="card-title">Current Skills</div></div><div style="display: flex; flex-direction: column; gap: 12px;">${persona.focusAreas.slice(0, 3).map(skill => `<div><div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;"><span style="font-size: 0.9rem; font-weight: 500;">${skill.label}</span><span style="color: #059669; font-size: 0.85rem;">✅ Proficient</span></div><div class="progress-bar" style="height: 6px;"><div class="progress-fill progress-green" style="width: ${Math.floor(Math.random() * 20) + 80}%;"></div></div></div>`).join('')}</div></div><div class="card"><div class="card-header"><div class="card-icon" style="background: #fef3c7; color: #d97706;">🏅</div><div class="card-title">Achievements & Badges</div></div><div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); gap: 8px; text-align: center;"><div style="padding: 8px; background: #fef3c7; border-radius: 8px;"><div style="font-size: 1.5rem; margin-bottom: 4px;">🥇</div><div style="font-size: 0.75rem; font-weight: 600;">Top Learner</div></div><div style="padding: 8px; background: #dcfce7; border-radius: 8px;"><div style="font-size: 1.5rem; margin-bottom: 4px;">🎯</div><div style="font-size: 0.75rem; font-weight: 600;">Goal Crusher</div></div><div style="padding: 8px; background: #dbeafe; border-radius: 8px;"><div style="font-size: 1.5rem; margin-bottom: 4px;">⚡</div><div style="font-size: 0.75rem; font-weight: 600;">Fast Finisher</div></div></div></div></div>`,
+                'star_rewards_section': (persona) => `<div class="content-header"><h1 class="content-title">⭐ STAR Rewards Program</h1><p class="content-subtitle">Complete overview of the Sales Training & Rewards program.</p></div><div class="card card-full" style="margin-bottom: 2rem;"><h3 class="card-title">🎯 Program Purpose & Design</h3><p class="metric-label">The STAR Rewards Program is an exclusive incentive system for Sales Consultants that directly ties learning achievements to financial rewards, creating a powerful motivation loop between professional development and compensation.</p><p><strong>Core Philosophy:</strong> Learning drives performance, Performance drives rewards, Rewards drive continued learning.</p></div><div class="dashboard-grid"><div class="card"><h3 class="card-title">💰 Financial Structure</h3><p><strong>Current Example:</strong> ${persona.name} has <strong>1,285 STAR points</strong> this month.</p><p><strong>Estimated Payout:</strong> <span style="color: #166534; font-weight: bold;">$1,425</span> based on current performance.</p><h4 style="margin-top: 1rem;">Tier System with Escalating Rewards:</h4><ul style="list-style: none; padding: 0;"><li style="background: #fef9c3; padding: 8px; border-radius: 8px; margin-top: 8px;"><strong>🥇 Gold (Current Tier):</strong> 1,000-1,499 pts - $75/achievement</li><li style="background: #f1f5f9; padding: 8px; border-radius: 8px; margin-top: 8px;"><strong>🥈 Platinum (Next Goal):</strong> 1,500-1,999 pts - $125/achievement (215 pts away)</li><li style="background: #f1f5f9; padding: 8px; border-radius: 8px; margin-top: 8px;"><strong>💎 Diamond (Ultimate Target):</strong> 2,000+ pts - $175/achievement</li></ul></div><div class="card"><h3 class="card-title">📊 Point Accumulation Model</h3><p><strong>Performance Split (70/30 Rule):</strong></p><p><strong>70% Learning-Based:</strong> 899 points from training</p><p><strong>30% Performance-Based:</strong> 386 points from sales results</p><h4 style="margin-top: 1rem;">Sources:</h4><p class="metric-label">Course completion, certifications, quota achievement, deal closure rates, peer mentoring, and more.</p></div></div><div class="card card-full" style="margin-top: 2rem;"><h3 class="card-title">🎓 STAR-Eligible Training Courses</h3><div class="recommendation-item"><div class="recommendation-content"><div class="recommendation-title">Advanced Objection Handling Mastery</div><div class="recommendation-meta"><strong>Points:</strong> +50 STAR Points | <strong>Impact:</strong> 28% win rate improvement</div><div class="recommendation-tags"><span class="tag priority">Available to enroll</span></div></div></div><div class="recommendation-item"><div class="recommendation-content"><div class="recommendation-title">CRM Pipeline Optimization</div><div class="recommendation-meta"><strong>Points:</strong> +35 STAR Points | <strong>Impact:</strong> 15% accuracy improvement</div><div class="recommendation-tags"><span class="tag">In Progress (60%)</span></div></div></div><div class="recommendation-item"><div class="recommendation-content"><div class="recommendation-title">Digital Sales Tools Fundamentals</div><div class="recommendation-meta"><strong>Points:</strong> +25 STAR Points | <strong>Score:</strong> 94%</div><div class="recommendation-tags"><span class="tag" style="background:#e6f4ea; color:#4caf50;">✅ Completed</span></div></div></div></div>${templates.aiInsights('AI-Powered Optimization', ['<strong>Smart Recommendation:</strong> Complete 2 more STAR-eligible courses this month to maximize your points multiplier. Estimated additional earnings: <strong>$275</strong>'])}`,
+                'sso_management_section': (persona) => `<div class="content-header"><h1 class="content-title">🔐 SSO Management</h1><p class="content-subtitle">Learner Identity Management System Overview</p></div><div class="card card-full" style="margin-bottom: 2rem;"><h3 class="card-title">📥 Learner Directory & Identity Context Switching</h3><p class="metric-label">As an administrator, you can view and manage learner profiles. Clicking 'View Profile' will switch your context to that user's profile page.</p><table class="styled-table"><thead><tr><th>Name</th><th>Email</th><th>Department</th><th>Action</th></tr></thead><tbody><tr><td>Sarah Chen</td><td>sarah.chen@company.com</td><td>Sales</td><td><button class="btn" style="padding: 5px 10px; font-size: 0.9rem;">View Profile</button></td></tr><tr><td>Mike Rodriguez</td><td>mike.rodriguez@company.com</td><td>Field Service</td><td><button class="btn" style="padding: 5px 10px; font-size: 0.9rem;">View Profile</button></td></tr></tbody></table></div><div class="dashboard-grid"><div class="card"><h3 class="card-title">📋 Unified SSO Profile Information</h3><p class="metric-label">User data is auto-synced from Azure AD, ensuring consistency across all connected platforms.</p><div class="form-group" style="margin-top: 1rem;"><label class="form-label">Example: Sarah Chen</label><input type="text" class="form-control" value="Role: Senior Sales Representative" readonly></div></div><div class="card"><h3 class="card-title">🔄 Connected Systems with SSO Access</h3><p class="metric-label">Federated identity tokens provide seamless access across all learning platforms without repeated logins.</p><ul style="list-style: '✅ '; padding-left: 20px; margin-top: 1rem;"><li>Learning Management System</li><li>GenAI Learning Chat</li><li>Certification Portal</li><li>Performance Dashboard</li></ul></div></div><div class="card card-full" style="margin-top: 2rem;"><h3 class="card-title">📡 Centralized Analytics Based on SSO Data</h3><p class="metric-label">All learner data flows into a central data lake, enabling comprehensive analytics across systems.</p><p><strong>Data Sources:</strong> LMS Progress (47K records), GenAI Chat Interactions (1.2M logs), Certification Completions (8.7K certs), HRIS Performance Data (15K reviews), CRM Activity Sync (89K).</p></div>`,
+                'recommendations_section': (persona) => { const recs = ldContent.recommendations[currentPersona] || []; return `<div class="content-header"><h1 class="content-title">🎯 AI Recommendations</h1><p class="content-subtitle">Dynamically suggested by AI for your role, behavior, and goals.</p></div>${recs.map(rec => `<div class="recommendation-item"><div class="recommendation-thumbnail">💡</div><div class="recommendation-content"><div class="recommendation-title">${rec.title}</div><p class="recommendation-meta">${rec.overview}</p><p style="font-size: 0.85rem; color: #4f46e5;"><strong>Why It's Relevant:</strong> ${rec.relevance}</p></div></div>`).join('') || '<div class="card">No specific recommendations for this role.</div>'}`; },
+                'learning_path_section': (persona) => { const pathData = ldContent.learningPath[currentPersona]; if (!pathData) return 'No learning path defined.'; let html = `<div class="content-header"><h1 class="content-title">🛤️ ${pathData.title}</h1><p class="content-subtitle">Structured learning sequences based on your role, job level, and milestones.</p></div>`; Object.keys(pathData.levels).forEach(level => { html += `<h3 class="path-level-title">${level}</h3><div class="learning-path">${pathData.levels[level].map((item, index) => `<div class="path-item ${index === 0 ? 'current' : ''}"><div class="path-number ${index === 0 ? 'current' : ''}">${index + 1}</div><div style="flex: 1;"><div style="font-weight: 600;">${item.title}</div><p class="recommendation-meta">${item.overview}</p></div></div>`).join('')}</div>`; }); return html; },
+                'training_gaps_section': (persona) => { const courses = ldContent.compliance[currentPersona] || []; return `<div class="content-header"><h1 class="content-title">📈 Training & Compliance</h1><p class="content-subtitle">Required, regulatory, and dealership-specific compliance training.</p></div><div class="card card-full"><h3 class="card-title">Required Training Courses</h3><table class="styled-table"><thead><tr><th>Course Title</th><th>Why It's Relevant</th><th>Status</th></tr></thead><tbody>${courses.map(course => `<tr><td>${course.title}</td><td>${course.relevance}</td><td><span class="tag required">Required</span></td></tr>`).join('')}</tbody></table></div>`; },
+                'certifications_section': (persona) => `<div class="content-header"><h1 class="content-title">📜 My Certifications</h1><p class="content-subtitle">Manage your active and expired certifications.</p></div><div class="card card-full"><table class="styled-table"><thead><tr><th>Certification</th><th>Status</th><th>Expiration Date</th><th>Action</th></tr></thead><tbody><tr><td>Model X-400 Repair</td><td><span class="tag" style="background:#e6f4ea; color:#4caf50;">Active</span></td><td>Jan 15, 2027</td><td><button class="btn-secondary" style="padding: 5px 10px; font-size: 0.9rem;">View</button></td></tr><tr><td>Hazardous Materials Handling</td><td><span class="tag warning">Expires Soon</span></td><td>Sep 25, 2025</td><td><button class="btn" style="padding: 5px 10px; font-size: 0.9rem;">Recertify</button></td></tr></tbody></table></div>`,
+                'analytics_section': (persona) => `<div class="content-header"><h1 class="content-title">📊 Learning Analytics</h1><p class="content-subtitle">Insights for ${persona.role}</p></div><div class="card"><h3 style="margin-bottom: 1rem;">Learning Habits Analysis</h3><div style="margin-bottom: 1rem;"><strong>Peak Learning Times:</strong><div style="margin-top: 0.5rem; display: flex; gap: 1rem; flex-wrap: wrap;"><span class="tag">9:00 AM - 11:00 AM</span></div></div></div>`,
+                'team_performance_section': (persona) => `<div class="content-header"><h1 class="content-title">👨‍👩‍👧‍👦 Team Performance</h1><p class="content-subtitle">Analytics for your direct reports.</p></div><div class="card card-full"><table class="styled-table"><thead><tr><th>Team Member</th><th>Progress</th><th>Compliance</th><th>Action</th></tr></thead><tbody><tr><td>Jordan Martinez</td><td>92%</td><td><span class="tag" style="background:#e6f4ea; color:#4caf50;">100%</span></td><td><button class="btn-secondary" style="padding: 5px 10px; font-size: 0.9rem;">View Path</button></td></tr><tr><td>Riley Thompson</td><td>85%</td><td><span class="tag overdue">1 Overdue</span></td><td><button class="btn" style="padding: 5px 10px; font-size: 0.9rem;">Send Nudge</button></td></tr></tbody></table></div>`,
+                'top_performers_section': (persona) => `<div class="content-header"><h1 class="content-title">🏆 Top Performer Analysis</h1><p class="content-subtitle">Unlock the secrets of high achievement.</p></div><div class="card card-full"><h3 class="card-title">Top Performer DNA (Sales Dept)</h3><p class="metric-label">Comparing top 10% with team average.</p><div class="dashboard-grid"><div class="card"><h4>Key Differentiators</h4><p>- <strong>2x more</strong> time on 'Advanced Negotiation' courses.</p><p>- <strong>3.5x more</strong> likely to complete optional 'Competitor Analysis' modules.</p></div><div class="card"><h4>Behavioral Patterns</h4><p>- Predominantly learn between <strong>7-9 AM</strong>.</p><p>- Prefer <strong>interactive simulations</strong> over video content.</p></div></div></div>`,
+                'reports_section': (persona) => `<div class="content-header"><h1 class="content-title">📋 Generate Reports</h1><p class="content-subtitle">Create and download custom reports.</p></div><div class="card card-full"><h3 class="card-title">Report Generator</h3><form class="dashboard-grid" style="grid-template-columns: 1fr 1fr 1fr auto; align-items: end;"><div class="form-group" style="margin:0;"><label class="form-label">Report Type</label><select class="form-control"><option>Course Completion</option><option>Compliance Status</option></select></div><div class="form-group" style="margin:0;"><label class="form-label">Select Group</label><select class="form-control"><option>My Team</option><option>Sales Department</option></select></div><div class="form-group" style="margin:0;"><label class="form-label">Date Range</label><input type="date" class="form-control"></div><button class="btn">Generate</button></form></div>`,
+                'course_builder_section': (persona) => `<div class="content-header"><h1 class="content-title">🛠️ Course Builder</h1><p class="content-subtitle">Create engaging learning experiences.</p></div><div class="card card-full"><h3 class="card-title">Create New Course</h3><div class="form-group"><label class="form-label">Course Title</label><input type="text" class="form-control" placeholder="e.g., Advanced Negotiation Tactics"></div><button class="btn btn-primary">Start Building</button></div>`,
+                'content_library_section': (persona) => `<div class="content-header"><h1 class="content-title">📚 Content Library</h1><p class="content-subtitle">Manage all learning resources.</p></div><div class="card card-full"><table class="styled-table"><thead><tr><th>Title</th><th>Type</th><th>Rating</th></tr></thead><tbody><tr><td>Advanced Negotiation</td><td>Course</td><td>4.8 ⭐</td></tr><tr><td>Objection Handling</td><td>Video</td><td>4.9 ⭐</td></tr></tbody></table></div>`,
             });
-        }
+            
+            document.getElementById('personaSwitcher').value = 'sales';
+            switchPersona();
 
-        // Update data every 30 seconds
-        setInterval(simulateDataUpdates, 30000);
+            document.addEventListener('click', e => {
+                if (e.target === document.getElementById('profile-modal')) closeProfileModal();
+            });
+            document.addEventListener('keydown', e => {
+                if (e.key === 'Escape') closeProfileModal();
+            });
+        });
     </script>
 </body>
 </html>
